@@ -1,0 +1,67 @@
+name: Deploy to GitHub Pages
+
+# Manual only, for now. On a GitHub *project* page the site is served from
+# /<repo>, but every image in this app is referenced with an absolute "/img/..."
+# path that Next does not rewrite (basePath only rewrites next/link and
+# next/image, not a plain <img src>). Until those paths go through an asset()
+# helper, an automatic deploy here would publish a page with no images.
+# Vercel and Netlify serve from the root, so they are unaffected.
+on:
+  workflow_dispatch:
+
+# Allow the Pages deployment to claim the token it needs.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; don't cancel a run that's mid-publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Resolve Pages base path
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build static bundle
+        env:
+          STATIC_EXPORT: "1"
+          # On a project site the app is served from /<repo>, so every asset URL
+          # needs that prefix or the CSS and JS 404 on the deployed page.
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.origin }}${{ steps.pages.outputs.base_path }}
+        run: npm run build:static
+
+      # Pages runs Jekyll by default, which strips directories beginning with an
+      # underscore — that would delete the whole _next bundle.
+      - name: Disable Jekyll
+        run: touch out/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
