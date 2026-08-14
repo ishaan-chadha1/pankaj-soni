@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" fill="none">
+<defs>
+  
+<filter id="fg" x="-5%" y="-5%" width="110%" height="110%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="14" result="n"/>
+  <feColorMatrix in="n" type="saturate" values="0" result="d"/>
+  <feComponentTransfer in="d" result="g">
+    <feFuncA type="linear" slope="0.4"/>
+  </feComponentTransfer>
+  <feBlend in="SourceGraphic" in2="g" mode="overlay"/>
+</filter>
+  <filter id="blurA" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="38"/></filter>
+  <filter id="blurB" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+
+  <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0"    stop-color="#ffffff" stop-opacity=".50"/>
+    <stop offset=".10"  stop-color="#a8324c" stop-opacity=".92"/>
+    <stop offset=".42"  stop-color="#4d1220"/>
+    <stop offset=".72"  stop-color="#a8324c"/>
+    <stop offset=".93"  stop-color="#ffffff" stop-opacity=".38"/>
+    <stop offset="1"    stop-color="#4d1220" stop-opacity=".8"/>
+  </linearGradient>
+
+  <linearGradient id="depth" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0"   stop-color="#ffffff" stop-opacity=".22"/>
+    <stop offset=".35" stop-color="#ffffff" stop-opacity="0"/>
+    <stop offset=".82" stop-color="#000000" stop-opacity=".30"/>
+    <stop offset="1"   stop-color="#000000" stop-opacity=".52"/>
+  </linearGradient>
+
+  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0"   stop-color="#5c421a"/>
+    <stop offset=".22" stop-color="#c9a961"/>
+    <stop offset=".44" stop-color="#f6e9c6"/>
+    <stop offset=".68" stop-color="#b8964e"/>
+    <stop offset="1"   stop-color="#6b4f1d"/>
+  </linearGradient>
+
+  <radialGradient id="floor" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#000" stop-opacity=".55"/>
+    <stop offset="1" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+
+  <radialGradient id="amb" cx=".5" cy=".38" r=".62">
+    <stop offset="0" stop-color="#a8324c" stop-opacity=".26"/>
+    <stop offset="1" stop-color="#a8324c" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+
+<!-- ambient halo so the bottle sits in light rather than on a flat field -->
+<rect width="900" height="1200" fill="url(#amb)"/>
+
+<!-- contact shadow -->
+<ellipse cx="450" cy="1068" rx="322.4" ry="34" fill="url(#floor)"/>
+
+<g filter="url(#fg)">
+  <!-- neck -->
+  <rect x="393" y="322" width="114" height="82" fill="url(#glass)" opacity=".9"/>
+
+  <!-- body -->
+  <rect x="190" y="380" width="520" height="670" rx="190" fill="url(#glass)"/>
+  <rect x="190" y="380" width="520" height="670" rx="190" fill="url(#depth)"/>
+
+  <!-- liquid meniscus: a brighter band where the fill line sits -->
+  <rect x="200" y="514" width="500" height="3"
+        fill="#ffffff" opacity=".20"/>
+
+  <!-- left specular column -->
+  <rect x="229" y="414" width="39" height="574" rx="19.24" fill="#fff" opacity=".30" filter="url(#blurB)"/>
+  <!-- narrow hot edge on the right -->
+  <rect x="655.4000000000001" y="432" width="11.44" height="538" rx="4" fill="#fff" opacity=".55" filter="url(#blurB)"/>
+
+  <!-- engraved plaque (kept blank; the name is set in HTML) -->
+  <rect x="294" y="728.4000000000001" width="312" height="134" rx="2" fill="#000" opacity=".14"/>
+  <rect x="294" y="728.4000000000001" width="312" height="1"
+        fill="#fff" opacity=".22"/>
+
+  <!-- collar -->
+  <rect x="385.4" y="306" width="129.20000000000002" height="22" rx="3" fill="url(#metal)"/>
+
+  <!-- cap -->
+  <rect x="355" y="188" width="190" height="118" rx="14" fill="url(#metal)"/>
+  <rect x="355" y="188" width="190" height="18.88" fill="#fff" opacity=".16"/>
+  <rect x="355" y="298" width="190" height="8" fill="#000" opacity=".22"/>
+</g>
+
+<!-- glow lifted off the shoulders -->
+<ellipse cx="450" cy="420" rx="260" ry="60" fill="#fff" opacity=".07" filter="url(#blurA)"/>
+</svg>

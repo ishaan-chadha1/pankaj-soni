@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" width="900" height="620" fill="none">
+<defs>
+  
+<filter id="eg" x="-5%" y="-5%" width="110%" height="110%">
+  <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="4" seed="14" result="n"/>
+  <feColorMatrix in="n" type="saturate" values="0" result="d"/>
+  <feComponentTransfer in="d" result="g">
+    <feFuncA type="linear" slope="0.32"/>
+  </feComponentTransfer>
+  <feBlend in="SourceGraphic" in2="g" mode="overlay"/>
+</filter>
+  <filter id="eb" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
+  <linearGradient id="lens" x1="0" y1="0" x2=".7" y2="1">
+    <stop offset="0"   stop-color="#ffffff" stop-opacity=".55"/>
+    <stop offset=".28" stop-color="#1e2a30"/>
+    <stop offset=".78" stop-color="#070c0f"/>
+    <stop offset="1"   stop-color="#000" stop-opacity=".65"/>
+  </linearGradient>
+  <linearGradient id="fr" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#1a1a1a" stop-opacity=".75"/>
+    <stop offset=".5" stop-color="#1a1a1a"/>
+    <stop offset="1" stop-color="#000"/>
+  </linearGradient>
+  <radialGradient id="eamb" cx=".5" cy=".5" r=".6">
+    <stop offset="0" stop-color="#1e2a30" stop-opacity=".18"/>
+    <stop offset="1" stop-color="#1e2a30" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+
+<rect width="900" height="620" fill="url(#eamb)"/>
+<ellipse cx="450" cy="478" rx="270" ry="26" fill="#000" opacity=".26" filter="url(#eb)"/>
+
+<g filter="url(#eg)">
+  <!-- temples -->
+  <path d="M112 254 q-90 6 -128 58" stroke="url(#fr)" stroke-width="13" stroke-linecap="round"/>
+  <path d="M788 254 q90 6 128 58" stroke="url(#fr)" stroke-width="13" stroke-linecap="round"/>
+
+  <!-- bridge -->
+  <path d="M394 248 q68 -30 112 0" stroke="url(#fr)" stroke-width="12" stroke-linecap="round"/>
+
+  <!-- lenses -->
+  <path d="M262 204 a96 96 0 1 1 -0.1 0 z" fill="url(#lens)" stroke="url(#fr)" stroke-width="11"/>
+  <path d="M638 204 a96 96 0 1 1 -0.1 0 z" fill="url(#lens)" stroke="url(#fr)" stroke-width="11"/>
+
+  <!-- specular streaks across the glass -->
+  <path d="M166 334 l104 -104" stroke="#fff" stroke-width="16" opacity=".26" stroke-linecap="round" filter="url(#eb)"/>
+  <path d="M206 352 l104 -104" stroke="#fff" stroke-width="7"  opacity=".20" stroke-linecap="round" filter="url(#eb)"/>
+  <path d="M542 334 l104 -104" stroke="#fff" stroke-width="16" opacity=".26" stroke-linecap="round" filter="url(#eb)"/>
+  <path d="M582 352 l104 -104" stroke="#fff" stroke-width="7"  opacity=".20" stroke-linecap="round" filter="url(#eb)"/>
+</g>
+</svg>

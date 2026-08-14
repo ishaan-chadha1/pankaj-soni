@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" fill="none">
+<defs>
+  
+<filter id="pg8" x="-5%" y="-5%" width="110%" height="110%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" seed="21" result="n"/>
+  <feColorMatrix in="n" type="saturate" values="0" result="d"/>
+  <feComponentTransfer in="d" result="g">
+    <feFuncA type="linear" slope="0.7"/>
+  </feComponentTransfer>
+  <feBlend in="SourceGraphic" in2="g" mode="overlay"/>
+</filter>
+  <filter id="pb8" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="96"/></filter>
+  <linearGradient id="bg8" x1="0" y1="0" x2=".6" y2="1">
+    <stop offset="0" stop-color="#0c0708"/>
+    <stop offset="1" stop-color="#2b1219"/>
+  </linearGradient>
+  <radialGradient id="key8" cx=".64" cy=".3" r=".7">
+    <stop offset="0" stop-color="#c58592" stop-opacity=".40"/>
+    <stop offset=".55" stop-color="#c58592" stop-opacity=".08"/>
+    <stop offset="1" stop-color="#c58592" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="vig8" cx=".5" cy=".5" r=".78">
+    <stop offset=".45" stop-color="#000" stop-opacity="0"/>
+    <stop offset="1" stop-color="#000" stop-opacity=".62"/>
+  </radialGradient>
+</defs>
+
+<g filter="url(#pg8)">
+  <rect width="1600" height="900" fill="url(#bg8)"/>
+  <g filter="url(#pb8)">
+    <ellipse cx="992" cy="396" rx="544" ry="378" fill="#c58592" opacity=".16"/>
+    <ellipse cx="480" cy="594" rx="480" ry="270" fill="#2b1219" opacity=".5"/></g>
+  <rect width="1600" height="900" fill="url(#key8)"/>
+</g>
+<rect width="1600" height="900" fill="url(#vig8)"/>
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1125" width="2000" height="1125" fill="none">
+<defs>
+  
+<filter id="pg1" x="-5%" y="-5%" width="110%" height="110%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" seed="21" result="n"/>
+  <feColorMatrix in="n" type="saturate" values="0" result="d"/>
+  <feComponentTransfer in="d" result="g">
+    <feFuncA type="linear" slope="0.7"/>
+  </feComponentTransfer>
+  <feBlend in="SourceGraphic" in2="g" mode="overlay"/>
+</filter>
+  <filter id="pb1" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="120"/></filter>
+  <linearGradient id="bg1" x1="0" y1="0" x2=".6" y2="1">
+    <stop offset="0" stop-color="#0a0a0b"/>
+    <stop offset="1" stop-color="#1c1512"/>
+  </linearGradient>
+  <radialGradient id="key1" cx=".64" cy=".3" r=".7">
+    <stop offset="0" stop-color="#c9a961" stop-opacity=".40"/>
+    <stop offset=".55" stop-color="#c9a961" stop-opacity=".08"/>
+    <stop offset="1" stop-color="#c9a961" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="vig1" cx=".5" cy=".5" r=".78">
+    <stop offset=".45" stop-color="#000" stop-opacity="0"/>
+    <stop offset="1" stop-color="#000" stop-opacity=".62"/>
+  </radialGradient>
+</defs>
+
+<g filter="url(#pg1)">
+  <rect width="2000" height="1125" fill="url(#bg1)"/>
+  <g filter="url(#pb1)">
+    <g opacity=".5">
+      <path d="M200 -112.5 L 920 -112.5 L 400 1237.5 L -120 1237.5 Z" fill="#c9a961" opacity=".22"/>
+      <path d="M1040 -112.5 L 1400 -112.5 L 1000 1237.5 L 680 1237.5 Z" fill="#c9a961" opacity=".14"/>
+      <path d="M1640 -112.5 L 2040 -112.5 L 1720 1237.5 L 1360 1237.5 Z" fill="#c9a961" opacity=".10"/>
+    </g></g>
+  <rect width="2000" height="1125" fill="url(#key1)"/>
+</g>
+<rect width="2000" height="1125" fill="url(#vig1)"/>
+</svg>

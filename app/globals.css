@@ -1,0 +1,491 @@
+@import "tailwindcss";
+
+/*
+ * PANKAJ SONI — design tokens.
+ *
+ * Everything is scoped under `.ps-root`, which sits on <body>. Light editorial
+ * sections re-point the same variables rather than declaring a second palette,
+ * so shared components reskin without a second set of props.
+ */
+
+.ps-root {
+  --noir: #0a0a0b;
+  --noir-2: #121214;
+  --noir-3: #1a1a1d;
+  --ivory: #f4f1ea;
+  --ivory-2: #e9e4d9;
+  --bone: #cfc9bb;
+  --gold: #c9a961;
+  --gold-dim: #8f7740;
+  --oxblood: #5e1420;
+
+  --ps-text: var(--ivory);
+  --ps-muted: rgba(244, 241, 234, 0.56);
+  --ps-faint: rgba(244, 241, 234, 0.34);
+  --ps-line: rgba(244, 241, 234, 0.14);
+  --ps-line-strong: rgba(244, 241, 234, 0.28);
+  --ps-bg: var(--noir);
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  background: var(--ps-bg);
+  color: var(--ps-text);
+  font-family: var(--font-ps-sans), "Jost", system-ui, sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Light editorial sections invert the same tokens rather than re-declaring. */
+.ps-root .ps-light,
+.ps-light {
+  --ps-text: #14120f;
+  --ps-muted: rgba(20, 18, 15, 0.62);
+  --ps-faint: rgba(20, 18, 15, 0.4);
+  --ps-line: rgba(20, 18, 15, 0.16);
+  --ps-line-strong: rgba(20, 18, 15, 0.34);
+  --ps-bg: var(--ivory);
+  background: var(--ps-bg);
+  color: var(--ps-text);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #0a0a0b;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ── Typography ────────────────────────────────────────────────── */
+
+.ps-display {
+  font-family: var(--font-ps-display), "Bodoni Moda", "Didot", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 0.98;
+}
+
+.ps-display-i {
+  font-family: var(--font-ps-display), "Bodoni Moda", "Didot", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Wide-tracked caps: the load-bearing luxury signal. Tracking has to grow as
+   size shrinks or small labels turn to mush. */
+.ps-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 400;
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.ps-caps-lg {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.ps-wordmark {
+  font-family: var(--font-ps-display), "Bodoni Moda", Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  font-weight: 500;
+  /* the tracking adds a phantom space after the last glyph */
+  text-indent: 0.34em;
+}
+
+/* ── Rules & links ─────────────────────────────────────────────── */
+
+.ps-rule {
+  height: 1px;
+  background: var(--ps-line);
+  border: 0;
+}
+
+/* Underline that draws in from the left on hover. */
+.ps-link {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+.ps-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease);
+}
+.ps-link:hover::after,
+.ps-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Persistent underline that retracts to the right instead. */
+.ps-link-on::after {
+  transform: scaleX(1);
+}
+.ps-link-on:hover::after {
+  transform-origin: right;
+  transform: scaleX(0);
+}
+
+/* ── Buttons ───────────────────────────────────────────────────── */
+
+.ps-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7em;
+  padding: 1.05rem 2.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.7rem;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.6s var(--ease);
+}
+/* Fill wipes up from the bottom. */
+.ps-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  transform: translateY(101%);
+  transition: transform 0.6s var(--ease);
+  z-index: 0;
+}
+.ps-btn > * {
+  position: relative;
+  z-index: 1;
+}
+.ps-btn:hover::before,
+.ps-btn:focus-visible::before {
+  transform: translateY(0);
+}
+.ps-root .ps-btn:hover {
+  color: var(--ps-bg);
+}
+
+.ps-btn-solid {
+  background: var(--ivory);
+  color: #14120f;
+  border-color: var(--ivory);
+}
+.ps-btn-solid::before {
+  background: var(--gold);
+}
+.ps-root .ps-btn-solid:hover {
+  color: #14120f;
+}
+
+.ps-btn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ── Media ─────────────────────────────────────────────────────── */
+
+.ps-media {
+  overflow: hidden;
+  background: var(--noir-2);
+  position: relative;
+}
+.ps-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Slow push-in on hover — the whole grid feels expensive because of this. */
+.ps-zoom img {
+  transition: transform 1.4s var(--ease), opacity 0.9s var(--ease);
+}
+.ps-zoom:hover img {
+  transform: scale(1.045);
+}
+
+/* Two stacked plates; the second fades up on hover. */
+.ps-swap .ps-swap-b {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease);
+}
+.ps-swap:hover .ps-swap-b {
+  opacity: 1;
+}
+
+/* ── Grain ─────────────────────────────────────────────────────── */
+
+/* A single fixed grain plate over the whole maison. Keeps flat noir from
+   looking like flat #000 on cheap panels. */
+.ps-grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Reveal ────────────────────────────────────────────────────── */
+
+.ps-rise {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 1.1s var(--ease), transform 1.1s var(--ease);
+}
+.ps-rise[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.ps-mask {
+  display: block;
+  overflow: hidden;
+}
+.ps-mask > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 1.15s var(--ease);
+}
+[data-shown="true"] > .ps-mask > span,
+.ps-mask[data-shown="true"] > span {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-rise,
+  .ps-mask > span {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .ps-zoom img {
+    transition: none;
+  }
+}
+
+/* ── Marquee ───────────────────────────────────────────────────── */
+
+.ps-marquee {
+  display: flex;
+  width: max-content;
+  animation: ps-slide 44s linear infinite;
+}
+@keyframes ps-slide {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ps-marquee-slow {
+  animation-duration: 90s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps-marquee {
+    animation: none;
+  }
+}
+
+/* ── Form controls ─────────────────────────────────────────────── */
+
+.ps-field {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ps-line-strong);
+  padding: 0.85rem 0;
+  color: inherit;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  outline: none;
+  transition: border-color 0.5s var(--ease);
+}
+.ps-field::placeholder {
+  color: var(--ps-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.68rem;
+}
+.ps-field:focus {
+  border-color: var(--gold);
+}
+
+/* Selectable chip for sizes and shades. */
+.ps-chip {
+  border: 1px solid var(--ps-line-strong);
+  padding: 0.75rem 1.1rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.4s var(--ease), background 0.4s var(--ease),
+    color 0.4s var(--ease);
+  background: transparent;
+  color: inherit;
+  text-align: center;
+}
+.ps-chip:hover {
+  border-color: var(--ps-text);
+}
+.ps-chip[aria-pressed="true"] {
+  background: var(--ps-text);
+  color: var(--ps-bg);
+  border-color: var(--ps-text);
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────── */
+
+.ps-root ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.ps-root ::-webkit-scrollbar-track {
+  background: var(--noir);
+}
+.ps-root ::-webkit-scrollbar-thumb {
+  background: #2c2c30;
+}
+.ps-root ::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-dim);
+}
+
+.ps-root ::selection {
+  background: var(--gold);
+  color: #0a0a0b;
+}
+
+/* Utility: hide scrollbar on horizontal rails. */
+.ps-norail::-webkit-scrollbar {
+  display: none;
+}
+.ps-norail {
+  scrollbar-width: none;
+}
+
+/* ── Skip link ─────────────────────────────────────────────────── */
+
+.ps-skip {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -120%);
+  z-index: 300;
+  background: var(--ivory);
+  color: #14120f;
+  padding: 0.85rem 1.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.66rem;
+  transition: transform 0.4s var(--ease);
+}
+.ps-skip:focus {
+  transform: translate(-50%, 0);
+}
+
+/* ── Custom cursor ─────────────────────────────────────────────── */
+
+/* Only hide the native cursor once the custom one is actually mounted, so
+   touch and reduced-motion users are never left with no pointer at all. */
+.ps-has-cursor,
+.ps-has-cursor * {
+  cursor: none !important;
+}
+
+.ps-cursor-ring,
+.ps-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 250;
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.ps-has-cursor .ps-cursor-ring,
+.ps-has-cursor .ps-cursor-dot {
+  opacity: 1;
+}
+
+.ps-cursor-ring {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(201, 169, 97, 0.85);
+  transition: width 0.45s var(--ease), height 0.45s var(--ease),
+    background 0.45s var(--ease), opacity 0.3s ease;
+}
+.ps-cursor-ring[data-active="true"] {
+  width: 58px;
+  height: 58px;
+  background: rgba(201, 169, 97, 0.12);
+}
+
+.ps-cursor-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--ivory);
+  transition: opacity 0.3s ease;
+}
+
+/* ── Scroll progress ───────────────────────────────────────────── */
+
+.ps-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 120;
+  pointer-events: none;
+}
+.ps-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+}
+
+/* ── Page enter ────────────────────────────────────────────────── */
+
+/* Every route fades up a touch on mount. Cheap, and it stops navigation from
+   feeling like a hard cut between two static pages. */
+@keyframes ps-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+main {
+  animation: ps-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  main {
+    animation: none;
+  }
+}
