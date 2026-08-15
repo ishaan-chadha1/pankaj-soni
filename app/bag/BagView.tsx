@@ -33,9 +33,14 @@ export default function BagView() {
   };
 
   // Nothing renders from localStorage until it has been read, or SSR and the
-  // client disagree about an empty bag.
+  // client disagree about an empty bag. The heading still ships, so the page is
+  // never served with an empty document outline.
   if (!ready) {
-    return <div className="min-h-[52svh]" />;
+    return (
+      <div className="mx-auto min-h-[52svh] max-w-[1560px] px-5 pt-12 sm:px-8">
+        <h1 className="ps-display text-[2.6rem] sm:text-[3.6rem]">Your Bag</h1>
+      </div>
+    );
   }
 
   if (lines.length === 0) {
@@ -128,7 +133,7 @@ export default function BagView() {
                     <button
                       type="button"
                       onClick={() => remove(l.slug, l.variantId)}
-                      className="ps-caps ps-link"
+                      className="ps-tap ps-caps ps-link"
                       style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}
                     >
                       Remove

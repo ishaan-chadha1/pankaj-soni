@@ -683,3 +683,29 @@ main {
     animation: none;
   }
 }
+
+/* ── Touch targets ─────────────────────────────────────────────── */
+
+/*
+ * The header icons and inline controls are small by design — a 17px glyph is
+ * the right visual weight for the chrome. Rather than inflate the artwork, the
+ * hit area is pushed out to 44px with a pseudo-element, which is what Apple's
+ * and Google's guidance actually asks for. Coarse pointers only, so a mouse
+ * still gets tight, precise targets.
+ */
+@media (pointer: coarse) {
+  .ps-tap {
+    position: relative;
+  }
+  .ps-tap::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+    /* purely a hit area — never paints */
+    background: transparent;
+  }
+}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CATEGORIES, byCategory, category, type Category } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../../components/Reveal";
+import { JsonLd, breadcrumbLd, itemListLd } from "@/lib/seo";
 import CategoryGrid from "./CategoryGrid";
 
 export function generateStaticParams() {
@@ -14,9 +15,18 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { category: slug } = await props.params;
   const c = category(slug);
-  return c
-    ? { title: c.label, description: c.tagline }
-    : { title: "Not found" };
+  if (!c) return { title: "Not found" };
+  return {
+    title: c.label,
+    description: c.tagline,
+    alternates: { canonical: `/c/${c.slug}` },
+    openGraph: {
+      title: `${c.label} | PANKAJ SONI`,
+      description: c.tagline,
+      url: `/c/${c.slug}`,
+      images: [{ url: c.image, alt: c.label }],
+    },
+  };
 }
 
 export default async function CategoryPage(props: PageProps<"/c/[category]">) {
@@ -28,6 +38,16 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          itemListLd(products, `/c/${c.slug}`),
+          breadcrumbLd([
+            { name: "Maison", path: "/" },
+            { name: c.label, path: `/c/${c.slug}` },
+          ]),
+        ]}
+      />
+
       {/* banner */}
       <section className="relative flex min-h-[52svh] items-end overflow-hidden">
         <div className="absolute inset-0">
@@ -53,6 +73,7 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
           </Reveal>
 
           <MaskLines
+            as="h1"
             className="ps-display ps-h1 mt-6"
             delay={100}
             lines={[c.label]}

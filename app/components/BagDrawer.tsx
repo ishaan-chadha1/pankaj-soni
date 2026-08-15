@@ -134,7 +134,7 @@ export default function BagDrawer() {
                       <button
                         type="button"
                         onClick={() => remove(l.slug, l.variantId)}
-                        className="ps-caps ps-link"
+                        className="ps-tap ps-caps ps-link"
                         style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}
                       >
                         Remove

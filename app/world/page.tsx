@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "The Maison",
   description:
     "Inside the house of PANKAJ SONI — the shoulder, the maturation room, and the case for making fewer things.",
+  alternates: { canonical: "/world" },
 };
 
 const CHAPTERS = [
@@ -59,6 +60,7 @@ export default function WorldPage() {
             </p>
           </Reveal>
           <MaskLines
+            as="h1"
             className="ps-display mt-8 text-[2.8rem] leading-[1] sm:text-[5rem]"
             delay={150}
             lines={["We make fewer", "things, and we", <span key="finish" className="ps-display-i">finish them.</span>]}
@@ -110,6 +112,7 @@ export default function WorldPage() {
                 </p>
               </Reveal>
               <MaskLines
+            as="h2"
                 className="ps-display mt-5 text-[2.4rem] leading-none sm:text-[3.4rem]"
                 delay={80}
                 lines={[c.title]}
@@ -132,6 +135,7 @@ export default function WorldPage() {
       <section style={{ borderTop: "1px solid var(--ps-line)" }}>
         <div className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
           <MaskLines
+            as="h2"
             className="ps-display ps-h2 mb-16"
             lines={["Client Services"]}
           />
@@ -153,7 +157,7 @@ export default function WorldPage() {
       {/* journal */}
       <section style={{ borderTop: "1px solid var(--ps-line)" }}>
         <div className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
-          <MaskLines className="ps-display ps-h2 mb-14" lines={["From the Journal"]} />
+          <MaskLines as="h2" className="ps-display ps-h2 mb-14" lines={["From the Journal"]} />
           <div className="grid gap-10 md:grid-cols-3">
             {EDITORIAL.map((e, i) => (
               <Reveal key={e.slug} delay={i * 110}>
@@ -188,6 +192,7 @@ export default function WorldPage() {
             </p>
           </Reveal>
           <MaskLines
+            as="h2"
             className="ps-display mt-6 text-[2.4rem] leading-none sm:text-[3.8rem]"
             delay={100}
             lines={["Five rooms,", <span key="appt" className="ps-display-i">by appointment.</span>]}

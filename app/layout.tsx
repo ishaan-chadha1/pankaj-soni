@@ -10,6 +10,7 @@ import Cursor from "./components/Cursor";
 import ScrollProgress from "./components/ScrollProgress";
 import ThemeScript from "./components/ThemeScript";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { JsonLd, organizationLd, websiteLd } from "@/lib/seo";
 
 /* A didone for display, a geometric grotesque for everything else — the
    standard couture pairing. Both variable, so no weight list is needed. */
@@ -61,6 +62,7 @@ export const metadata: Metadata = {
     description: "Private Atelier fragrance, colour, eyewear and evening tailoring.",
     images: ["/img/og.png"],
   },
+  alternates: { canonical: "/" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -86,6 +88,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main" className="ps-skip">
           Skip to content
         </a>
+        <JsonLd data={[organizationLd(), websiteLd()]} />
         <ThemeProvider>
           <CartProvider>
             <Preloader />

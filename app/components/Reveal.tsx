@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  createElement,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 
 /**
  * Scroll reveal. The animation lives in CSS (`.ps-rise` / `.ps-mask`); this only
@@ -54,19 +60,25 @@ export function Reveal({
 /**
  * Line-by-line masked rise for display headlines. Each line needs its own
  * overflow-hidden box, so the caller passes an array rather than a string.
+ *
+ * `as` matters more than it looks: these carry nearly every headline on the
+ * site, so defaulting to <div> left the whole store with no <h1> and a document
+ * outline that started at <h3>. Pass the real level.
  */
 export function MaskLines({
   lines,
   className,
   delay = 0,
   step = 90,
+  as = "div",
 }: {
   lines: ReactNode[];
   className?: string;
   delay?: number;
   step?: number;
+  as?: "h1" | "h2" | "h3" | "div";
 }) {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const ref = useRef<HTMLElement | null>(null);
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
@@ -85,13 +97,16 @@ export function MaskLines({
     return () => io.disconnect();
   }, []);
 
-  return (
-    <div ref={ref} className={className}>
-      {lines.map((l, i) => (
-        <span key={i} className="ps-mask" data-shown={shown}>
-          <span style={{ transitionDelay: `${delay + i * step}ms` }}>{l}</span>
-        </span>
-      ))}
-    </div>
+  // createElement rather than a `Tag` variable: a union of intrinsic tags does
+  // not narrow to a usable JSX component type, and casting to ElementType makes
+  // TS resolve the props to `never`.
+  return createElement(
+    as,
+    { ref, className },
+    lines.map((l, i) => (
+      <span key={i} className="ps-mask" data-shown={shown}>
+        <span style={{ transitionDelay: `${delay + i * step}ms` }}>{l}</span>
+      </span>
+    ))
   );
 }

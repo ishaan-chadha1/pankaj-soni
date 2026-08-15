@@ -313,7 +313,7 @@ export default function Header() {
             type="button"
             aria-label="Open menu"
             onClick={() => setMobile(true)}
-            className="flex flex-col gap-[5px] lg:hidden"
+            className="ps-tap flex flex-col gap-[5px] lg:hidden"
           >
             <span className="block h-px w-6" style={{ background: "currentColor" }} />
             <span className="block h-px w-6" style={{ background: "currentColor" }} />
@@ -335,14 +335,14 @@ export default function Header() {
               type="button"
               aria-label="Search"
               onClick={() => setSearch(true)}
-              className="opacity-80 transition-opacity duration-500 hover:opacity-100"
+              className="ps-tap opacity-80 transition-opacity duration-500 hover:opacity-100"
             >
               {Ico.search}
             </button>
             <Link
               href="/world"
               aria-label="Account"
-              className="hidden opacity-80 transition-opacity duration-500 hover:opacity-100 sm:block"
+              className="ps-tap hidden opacity-80 transition-opacity duration-500 hover:opacity-100 sm:block"
             >
               {Ico.user}
             </Link>
@@ -350,7 +350,7 @@ export default function Header() {
               type="button"
               aria-label={`Bag, ${count} items`}
               onClick={() => setBag(true)}
-              className="relative opacity-80 transition-opacity duration-500 hover:opacity-100"
+              className="ps-tap relative opacity-80 transition-opacity duration-500 hover:opacity-100"
             >
               {Ico.bag}
               {ready && count > 0 ? (

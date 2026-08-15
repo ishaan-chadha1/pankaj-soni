@@ -41,6 +41,7 @@ export default function PsHome() {
           </Reveal>
 
           <MaskLines
+            as="h1"
             className="ps-display ps-h1 mt-7"
             delay={180}
             lines={[
@@ -99,6 +100,7 @@ export default function PsHome() {
       <section className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8 lg:py-32">
         <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
           <MaskLines
+            as="h2"
             className="ps-display ps-h2"
             lines={["The House"]}
           />
@@ -157,6 +159,7 @@ export default function PsHome() {
             </Reveal>
 
             <MaskLines
+            as="h2"
               className="ps-display mt-6 text-[2.8rem] leading-[0.98] sm:text-[4.2rem]"
               delay={80}
               lines={["Noir", <span key="imperial" className="ps-display-i">Impérial</span>]}
@@ -203,6 +206,7 @@ export default function PsHome() {
       <section className="py-24 lg:py-32">
         <div className="mx-auto mb-14 flex max-w-[1560px] flex-wrap items-end justify-between gap-6 px-5 sm:px-8">
           <MaskLines
+            as="h2"
             className="ps-display ps-h2"
             lines={["Selected by the maison"]}
           />
@@ -240,6 +244,7 @@ export default function PsHome() {
               </p>
             </Reveal>
             <MaskLines
+            as="h2"
               className="ps-display mt-6 text-[2.6rem] leading-[1] sm:text-[3.8rem]"
               delay={80}
               lines={[
@@ -305,6 +310,7 @@ export default function PsHome() {
             </p>
           </Reveal>
           <MaskLines
+            as="h2"
             className="ps-display ps-h2 mt-7"
             delay={120}
             lines={[
@@ -325,7 +331,7 @@ export default function PsHome() {
       {/* ───────────────────────── JOURNAL ───────────────────────── */}
       <section className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8 lg:py-32">
         <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
-          <MaskLines className="ps-display ps-h2" lines={["Journal"]} />
+          <MaskLines as="h2" className="ps-display ps-h2" lines={["Journal"]} />
           <Reveal delay={120}>
             <Link href="/world" className="ps-caps ps-link ps-link-on">
               All Stories

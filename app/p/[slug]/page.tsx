@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { PRODUCTS, bySlug, category, related } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../../components/Reveal";
 import ProductCard from "../../components/ProductCard";
+import { JsonLd, breadcrumbLd, productLd } from "@/lib/seo";
 import Buy from "./Buy";
 
 export function generateStaticParams() {
@@ -15,9 +16,18 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const p = bySlug(slug);
-  return p
-    ? { title: p.name, description: `${p.kicker} — ${p.line} by PANKAJ SONI.` }
-    : { title: "Not found" };
+  if (!p) return { title: "Not found" };
+  return {
+    title: p.name,
+    description: `${p.kicker} — ${p.line} by PANKAJ SONI.`,
+    alternates: { canonical: `/p/${p.slug}` },
+    openGraph: {
+      title: `${p.name} | PANKAJ SONI`,
+      description: p.kicker,
+      url: `/p/${p.slug}`,
+      images: [{ url: p.image, alt: p.name }],
+    },
+  };
 }
 
 export default async function ProductPage(props: PageProps<"/p/[slug]">) {
@@ -52,6 +62,17 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          productLd(product),
+          breadcrumbLd([
+            { name: "Maison", path: "/" },
+            { name: cat?.label ?? product.category, path: `/c/${product.category}` },
+            { name: product.name, path: `/p/${product.slug}` },
+          ]),
+        ]}
+      />
+
       <div className="mx-auto max-w-[1560px] px-5 pt-8 sm:px-8">
         <nav className="ps-caps flex flex-wrap items-center gap-2" style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}>
           <Link href="/" className="ps-link">
@@ -105,6 +126,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
           </Reveal>
 
           <MaskLines
+            as="h1"
             className="ps-display mt-4 text-[2.6rem] leading-[1] sm:text-[3.4rem]"
             delay={60}
             lines={[product.name]}
@@ -164,6 +186,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
                 </p>
               </Reveal>
               <MaskLines
+            as="h2"
                 className="ps-display mt-5 text-[2.2rem] sm:text-[3rem]"
                 delay={80}
                 lines={["Read from the top down"]}
@@ -203,7 +226,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
       {/* ── related ── */}
       <section className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
         <div className="mb-12 flex flex-wrap items-end justify-between gap-5">
-          <MaskLines className="ps-display text-[2rem] sm:text-[2.8rem]" lines={["You may also like"]} />
+          <MaskLines as="h2" className="ps-display text-[2rem] sm:text-[2.8rem]" lines={["You may also like"]} />
           <Reveal delay={100}>
             <Link href={`/c/${product.category}`} className="ps-caps ps-link ps-link-on">
               All {cat?.label}
