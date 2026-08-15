@@ -65,7 +65,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    /* ThemeScript writes data-theme onto this element before React hydrates, so
+       the server markup deliberately differs from the client DOM. Suppressing
+       here is the fix — the alternative is a hydration error on every load. It
+       only affects attributes on <html> itself, not the tree below. */
+    <html
+      lang="en"
+      className={`${display.variable} ${sans.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <ThemeScript />
         {/* Belt-and-braces with the `scripting: none` block in globals.css, for
