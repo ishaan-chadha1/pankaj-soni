@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CATEGORIES, byCategory, category, type Category } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../../components/Reveal";
 import { JsonLd, breadcrumbLd, itemListLd } from "@/lib/seo";
+import SplitText from "../../components/SplitText";
 import CategoryGrid from "./CategoryGrid";
 
 export function generateStaticParams() {
@@ -72,12 +73,7 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
             </nav>
           </Reveal>
 
-          <MaskLines
-            as="h1"
-            className="ps-display ps-h1 mt-6"
-            delay={100}
-            lines={[c.label]}
-          />
+          <SplitText as="h1" text={c.label} delay={100} className="ps-display ps-h1 mt-6" />
 
           <Reveal delay={300}>
             <p className="mt-5 max-w-[46ch] text-[.95rem] font-light" style={{ color: "var(--ps-muted)" }}>

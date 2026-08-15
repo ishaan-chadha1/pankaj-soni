@@ -709,3 +709,106 @@ main {
     background: transparent;
   }
 }
+
+/* ── View transitions ──────────────────────────────────────────── */
+
+/*
+ * The product plate morphs from its grid cell into the product page hero.
+ * React names both ends; these rules only shape the timing. A blur mid-flight
+ * hides the fact that the two images are cropped differently (cover in the
+ * grid, contain on the page) — without it the morph reads as a stretch.
+ */
+::view-transition-group(.morph) {
+  animation-duration: 620ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: ps-morph-blur;
+  animation-duration: 620ms;
+}
+@keyframes ps-morph-blur {
+  35% {
+    filter: blur(4px);
+  }
+}
+
+/* Cross-fade the rest of the page under the morph rather than hard-cutting. */
+::view-transition-old(root) {
+  animation: ps-vt-out 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+::view-transition-new(root) {
+  animation: ps-vt-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes ps-vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes ps-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* ── Split-character display ───────────────────────────────────── */
+
+/*
+ * Per-glyph rise for the largest headlines. Each character is its own
+ * inline-block with a staggered delay driven by --i, so the line assembles
+ * rather than arriving whole. Reserved for hero type — at small sizes the
+ * per-character offset reads as a rendering fault, not an effect.
+ */
+.ps-split span[data-ch] {
+  display: inline-block;
+  white-space: pre;
+  transform: translateY(110%) rotate(2deg);
+  opacity: 0;
+  transition: transform 0.95s var(--ease), opacity 0.7s ease;
+  transition-delay: calc(var(--i) * 26ms + var(--d, 0ms));
+}
+.ps-split[data-shown="true"] span[data-ch] {
+  transform: none;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce), (scripting: none) {
+  .ps-split span[data-ch] {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+}
+
+/* ── Pinned scroll storytelling ────────────────────────────────── */
+
+/* The frame sticks while its taller parent scrolls past, so the beats inside
+   advance against a held image. */
+.ps-pin-track {
+  position: relative;
+}
+.ps-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.ps-beat {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  pointer-events: none;
+}
+.ps-beat[data-active="true"] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}

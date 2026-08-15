@@ -16,6 +16,12 @@ const isStatic = process.env.STATIC_EXPORT === "1";
 const nextConfig: NextConfig = {
   ...(isStatic ? { output: "export" as const, images: { unoptimized: true } } : {}),
   trailingSlash: isStatic,
+  experimental: {
+    // Enables React's <ViewTransition>, used to morph a product plate from the
+    // grid into the product page hero. Browsers without the View Transitions
+    // API just navigate normally.
+    viewTransition: true,
+  },
 };
 
 export default nextConfig;

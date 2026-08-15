@@ -2,6 +2,7 @@
 
 import {
   createElement,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -79,6 +80,9 @@ export function MaskLines({
   as?: "h1" | "h2" | "h3" | "div";
 }) {
   const ref = useRef<HTMLElement | null>(null);
+  const setRef = useCallback((node: HTMLElement | null) => {
+    ref.current = node;
+  }, []);
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
@@ -100,9 +104,14 @@ export function MaskLines({
   // createElement rather than a `Tag` variable: a union of intrinsic tags does
   // not narrow to a usable JSX component type, and casting to ElementType makes
   // TS resolve the props to `never`.
+  //
+  // The lint rule below treats any ref handed to a function call as a render-
+  // time read. That is a false positive here: createElement is the element
+  // factory, and React invokes the callback after commit, not during render.
   return createElement(
     as,
-    { ref, className },
+    // eslint-disable-next-line react-hooks/refs
+    { ref: setRef, className },
     lines.map((l, i) => (
       <span key={i} className="ps-mask" data-shown={shown}>
         <span style={{ transitionDelay: `${delay + i * step}ms` }}>{l}</span>

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { notFound } from "next/navigation";
 import { PRODUCTS, bySlug, category, related } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../../components/Reveal";
 import ProductCard from "../../components/ProductCard";
 import { JsonLd, breadcrumbLd, productLd } from "@/lib/seo";
+import SplitText from "../../components/SplitText";
 import Buy from "./Buy";
 
 export function generateStaticParams() {
@@ -92,7 +94,15 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
         {/* gallery */}
         <div className="space-y-5">
           <div className="ps-media relative aspect-[4/5]">
-            <img src={product.image} alt={product.name} className="h-full w-full object-contain p-8 sm:p-16" />
+            {/* Matches the name on the grid card, so the plate morphs in from
+                wherever it was clicked instead of the page hard-cutting. */}
+            <ViewTransition name={`plate-${product.slug}`} share="morph">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="h-full w-full object-contain p-8 sm:p-16"
+              />
+            </ViewTransition>
             <div
               className="pointer-events-none absolute inset-0 -z-10"
               style={{ background: "radial-gradient(circle at 50% 42%, rgba(201,169,97,.14), transparent 65%)" }}
@@ -125,11 +135,11 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
             </p>
           </Reveal>
 
-          <MaskLines
+          <SplitText
             as="h1"
-            className="ps-display mt-4 text-[2.6rem] leading-[1] sm:text-[3.4rem]"
+            text={product.name}
             delay={60}
-            lines={[product.name]}
+            className="ps-display mt-4 text-[2.6rem] leading-[1] sm:text-[3.4rem]"
           />
 
           <Reveal delay={180}>

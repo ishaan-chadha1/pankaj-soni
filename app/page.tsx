@@ -3,6 +3,8 @@ import { CATEGORIES, EDITORIAL, PRODUCTS, bySlug, featured, money } from "@/lib/
 import { MaskLines, Reveal } from "./components/Reveal";
 import { HeroPlate, Parallax } from "./components/Parallax";
 import ProductCard from "./components/ProductCard";
+import HorizontalRail from "./components/HorizontalRail";
+import Pinned from "./components/Pinned";
 
 const MARQUEE = [
   "Private Atelier",
@@ -11,6 +13,27 @@ const MARQUEE = [
   "Refillable flacons",
   "Engraving on request",
   "Appointment only",
+];
+
+const BEATS = [
+  {
+    n: "I",
+    title: "The Shoulder",
+    body: "Every jacket is drafted from one shoulder — extended by a centimetre, softly padded, cut high in the armhole so the body stays still while the arm moves. The least visible decision in the collection, and the only one never up for discussion.",
+    image: "/img/p-ed-02.svg",
+  },
+  {
+    n: "II",
+    title: "Eleven Weeks",
+    body: "A finished composition goes into steel and stays there for eleven weeks before a single flacon is filled. Nothing is added in that time. The materials simply stop arguing with each other.",
+    image: "/img/p-ed-01.svg",
+  },
+  {
+    n: "III",
+    title: "Fewer Things",
+    body: "Editions are capped at nine hundred, and ready-to-wear is cut in a single run. We are asked constantly to make more and have declined every time — scarcity is what happens when the finishing is done by the same eleven people.",
+    image: "/img/p-ed-03.svg",
+  },
 ];
 
 const SERVICES = [
@@ -217,74 +240,65 @@ export default function PsHome() {
           </Reveal>
         </div>
 
-        <div className="ps-norail overflow-x-auto pb-2">
-          <div className="flex gap-5 px-5 sm:px-8" style={{ width: "max-content" }}>
-            {rail.map((p, i) => (
-              <Reveal key={p.slug} delay={i * 70} className="w-[74vw] sm:w-[38vw] lg:w-[23vw] xl:w-[19vw]">
-                <ProductCard product={p} index={i} />
-              </Reveal>
-            ))}
-          </div>
-        </div>
       </section>
 
-      {/* ───────────────────────── LIGHT EDITORIAL ───────────────────────── */}
+      {/* Vertical scroll drives this sideways on desktop; a plain swipe rail
+          below lg. Sits outside the section above so the pinned frame has the
+          full viewport to work with. */}
+      <HorizontalRail>
+        {rail.map((p, i) => (
+          <div key={p.slug} className="w-[74vw] sm:w-[38vw] lg:w-[23vw] xl:w-[19vw]">
+            <ProductCard product={p} index={i} />
+          </div>
+        ))}
+      </HorizontalRail>
+
+      {/* ───────────────────────── PINNED EDITORIAL ───────────────────────── */}
       <section className="ps-alt">
-        <div className="mx-auto grid max-w-[1560px] items-center gap-14 px-5 py-24 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:gap-24 lg:py-36">
+        <div className="mx-auto max-w-[1560px] px-5 pt-24 sm:px-8 lg:pt-32">
           <Reveal>
-            <div className="ps-media ps-zoom aspect-[4/5]">
-              <img src="/img/p-ed-02.svg" alt="" loading="lazy" decoding="async" />
+            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
+              The Atelier
+            </p>
+          </Reveal>
+          <MaskLines
+            as="h2"
+            className="ps-display ps-h2 mt-6"
+            delay={80}
+            lines={[
+              "Nothing leaves the atelier",
+              <span key="unfinished" className="ps-display-i">
+                unfinished.
+              </span>,
+            ]}
+          />
+        </div>
+
+        {/* The frame holds while these three beats advance against it. */}
+        <Pinned beats={BEATS} />
+
+        <div className="mx-auto max-w-[1560px] px-5 pb-24 sm:px-8 lg:pb-32">
+          <Reveal>
+            <div className="grid grid-cols-3 gap-8">
+              {[
+                ["1998", "Maison founded"],
+                ["11", "Weeks of maturation"],
+                ["900", "Flacons per edition"],
+              ].map(([n, l]) => (
+                <div key={l} style={{ borderTop: "1px solid var(--ps-line)" }} className="pt-4">
+                  <p className="ps-display text-[2.2rem] leading-none">{n}</p>
+                  <p className="ps-caps mt-2" style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}>
+                    {l}
+                  </p>
+                </div>
+              ))}
             </div>
           </Reveal>
-
-          <div>
-            <Reveal>
-              <p className="ps-caps" style={{ color: "var(--ps-faint)" }}>
-                The Atelier
-              </p>
-            </Reveal>
-            <MaskLines
-            as="h2"
-              className="ps-display mt-6 text-[2.6rem] leading-[1] sm:text-[3.8rem]"
-              delay={80}
-              lines={[
-                "Nothing leaves",
-                "the atelier",
-                <span key="unfinished" className="ps-display-i">
-                  unfinished.
-                </span>,
-              ]}
-            />
-            <Reveal delay={280}>
-              <p className="mt-8 max-w-[54ch] text-[.95rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
-                Every jacket is drafted from one shoulder — extended, softly padded,
-                high in the armhole. Every flacon is polished by hand and matured
-                before filling. We make fewer pieces than we could sell, and we have
-                never once regretted it.
-              </p>
-            </Reveal>
-            <Reveal delay={380}>
-              <div className="mt-12 grid grid-cols-3 gap-8">
-                {[
-                  ["1998", "Maison founded"],
-                  ["11", "Weeks of maturation"],
-                  ["900", "Flacons per edition"],
-                ].map(([n, l]) => (
-                  <div key={l} style={{ borderTop: "1px solid var(--ps-line)" }} className="pt-4">
-                    <p className="ps-display text-[2.2rem] leading-none">{n}</p>
-                    <p className="ps-caps mt-2" style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}>
-                      {l}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-            <Reveal delay={460}>
-              <Link href="/world" className="ps-btn mt-12">
-                <span>Inside the Maison</span>
-              </Link>
-            </Reveal>
-          </div>
+          <Reveal delay={160}>
+            <Link href="/world" className="ps-btn mt-12">
+              <span>Inside the Maison</span>
+            </Link>
+          </Reveal>
         </div>
       </section>
 

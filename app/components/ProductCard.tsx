@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, ViewTransition } from "react";
 import { money, type Product } from "@/lib/catalog";
 import { useCart } from "../CartProvider";
 
@@ -36,13 +36,18 @@ export default function ProductCard({
       style={{ transitionDelay: `${index * 40}ms` }}
     >
       <div className="ps-media ps-zoom ps-swap relative aspect-[3/4]">
-        <img
-          src={product.image}
-          alt={product.name}
-          loading={priority ? "eager" : "lazy"}
-          decoding="async"
-          className="h-full w-full object-cover"
-        />
+        {/* Named identity for the morph into the product page. The same name is
+            on the PDP hero, so the browser animates one object moving rather
+            than two swapping. */}
+        <ViewTransition name={`plate-${product.slug}`} share="morph">
+          <img
+            src={product.image}
+            alt={product.name}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
+        </ViewTransition>
         <img
           src={product.hover}
           alt=""
