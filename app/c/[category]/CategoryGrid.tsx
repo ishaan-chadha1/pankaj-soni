@@ -45,7 +45,7 @@ export default function CategoryGrid({ products }: { products: Product[] }) {
       <div
         className="sticky top-[68px] z-30 -mx-5 mb-12 px-5 py-4 sm:-mx-8 sm:px-8"
         style={{
-          background: "rgba(10,10,11,.86)",
+          background: "color-mix(in srgb, var(--ps-bg) 88%, transparent)",
           backdropFilter: "blur(14px)",
           borderBottom: "1px solid var(--ps-line)",
         }}
@@ -59,7 +59,7 @@ export default function CategoryGrid({ products }: { products: Product[] }) {
                 onClick={() => setLine(l)}
                 className="ps-caps ps-link whitespace-nowrap"
                 style={{
-                  color: line === l ? "var(--gold)" : "var(--ps-muted)",
+                  color: line === l ? "var(--ps-accent)" : "var(--ps-muted)",
                   transition: "color .45s var(--ease)",
                 }}
               >
@@ -82,7 +82,7 @@ export default function CategoryGrid({ products }: { products: Product[] }) {
                 style={{ color: "var(--ps-text)" }}
               >
                 {SORTS.map((s) => (
-                  <option key={s.id} value={s.id} style={{ background: "#111", color: "#f4f1ea" }}>
+                  <option key={s.id} value={s.id} style={{ background: "var(--ps-surface)", color: "var(--ps-text)" }}>
                     {s.label}
                   </option>
                 ))}

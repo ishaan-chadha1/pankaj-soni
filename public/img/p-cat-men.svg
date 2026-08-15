@@ -2,36 +2,37 @@
 <defs>
   
 <filter id="pg11" x="-5%" y="-5%" width="110%" height="110%">
-  <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" seed="28" result="n"/>
+  <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" seed="52" result="n"/>
   <feColorMatrix in="n" type="saturate" values="0" result="d"/>
   <feComponentTransfer in="d" result="g">
-    <feFuncA type="linear" slope="0.7"/>
+    <feFuncA type="linear" slope="0.4"/>
   </feComponentTransfer>
-  <feBlend in="SourceGraphic" in2="g" mode="overlay"/>
+  <feBlend in="SourceGraphic" in2="g" mode="soft-light"/>
 </filter>
-  <filter id="pb11" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="96"/></filter>
-  <linearGradient id="bg11" x1="0" y1="0" x2=".6" y2="1">
-    <stop offset="0" stop-color="#08080a"/>
-    <stop offset="1" stop-color="#15161c"/>
+  <filter id="pb11" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="88"/></filter>
+  <linearGradient id="bg11" x1="0" y1="0" x2=".55" y2="1">
+    <stop offset="0" stop-color="#fbfbfc"/>
+    <stop offset="1" stop-color="#dfe1e6"/>
   </linearGradient>
-  <radialGradient id="key11" cx=".64" cy=".3" r=".7">
-    <stop offset="0" stop-color="#9aa0b2" stop-opacity=".40"/>
-    <stop offset=".55" stop-color="#9aa0b2" stop-opacity=".08"/>
-    <stop offset="1" stop-color="#9aa0b2" stop-opacity="0"/>
+  <radialGradient id="key11" cx=".6" cy=".28" r=".72">
+    <stop offset="0" stop-color="#ffffff" stop-opacity=".92"/>
+    <stop offset=".5" stop-color="#ffffff" stop-opacity=".24"/>
+    <stop offset="1" stop-color="#9298a6" stop-opacity=".1"/>
   </radialGradient>
-  <radialGradient id="vig11" cx=".5" cy=".5" r=".78">
-    <stop offset=".45" stop-color="#000" stop-opacity="0"/>
-    <stop offset="1" stop-color="#000" stop-opacity=".62"/>
+  <!-- a whisper of edge shading, so the plate has a body rather than reading flat -->
+  <radialGradient id="vig11" cx=".5" cy=".48" r=".76">
+    <stop offset=".5" stop-color="#8a7f6b" stop-opacity="0"/>
+    <stop offset="1" stop-color="#8a7f6b" stop-opacity=".2"/>
   </radialGradient>
 </defs>
 
 <g filter="url(#pg11)">
   <rect width="1600" height="900" fill="url(#bg11)"/>
   <g filter="url(#pb11)">
-    <g opacity=".5">
-      <path d="M160 -90 L 736 -90 L 320 990.0000000000001 L -96 990.0000000000001 Z" fill="#9aa0b2" opacity=".22"/>
-      <path d="M832 -90 L 1120 -90 L 800 990.0000000000001 L 544 990.0000000000001 Z" fill="#9aa0b2" opacity=".14"/>
-      <path d="M1312 -90 L 1632 -90 L 1376 990.0000000000001 L 1088 990.0000000000001 Z" fill="#9aa0b2" opacity=".10"/>
+    <g>
+      <path d="M160 -90 L 736 -90 L 320 990.0000000000001 L -96 990.0000000000001 Z" fill="#ffffff" opacity=".55"/>
+      <path d="M832 -90 L 1120 -90 L 800 990.0000000000001 L 544 990.0000000000001 Z" fill="#9298a6" opacity=".16"/>
+      <path d="M1312 -90 L 1632 -90 L 1376 990.0000000000001 L 1088 990.0000000000001 Z" fill="#ffffff" opacity=".38"/>
     </g></g>
   <rect width="1600" height="900" fill="url(#key11)"/>
 </g>

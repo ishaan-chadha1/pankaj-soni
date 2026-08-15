@@ -36,7 +36,7 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(180deg, rgba(6,6,7,.66) 0%, rgba(6,6,7,.2) 40%, rgba(10,10,11,.95) 100%)",
+                "linear-gradient(180deg, rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 38%, var(--ps-bg) 100%)",
             }}
           />
         </div>
@@ -48,18 +48,18 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
                 Maison
               </Link>
               <span>/</span>
-              <span style={{ color: "var(--gold)" }}>{c.label}</span>
+              <span style={{ color: "var(--ps-accent)" }}>{c.label}</span>
             </nav>
           </Reveal>
 
           <MaskLines
-            className="ps-display mt-6 text-[3rem] leading-none sm:text-[5rem]"
+            className="ps-display ps-h1 mt-6"
             delay={100}
             lines={[c.label]}
           />
 
           <Reveal delay={300}>
-            <p className="mt-5 max-w-[46ch] text-[.95rem] font-light" style={{ color: "rgba(244,241,234,.72)" }}>
+            <p className="mt-5 max-w-[46ch] text-[.95rem] font-light" style={{ color: "var(--ps-muted)" }}>
               {c.tagline}
             </p>
           </Reveal>
@@ -73,7 +73,7 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
       {/* other categories */}
       <section style={{ borderTop: "1px solid var(--ps-line)" }}>
         <div className="mx-auto max-w-[1560px] px-5 py-20 sm:px-8">
-          <p className="ps-caps mb-9" style={{ color: "var(--gold)" }}>
+          <p className="ps-caps mb-9" style={{ color: "var(--ps-accent)" }}>
             Continue in the house
           </p>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">

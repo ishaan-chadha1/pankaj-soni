@@ -68,12 +68,12 @@ export default function CheckoutView() {
             <span
               className="flex h-6 w-6 items-center justify-center rounded-full text-[.6rem]"
               style={{
-                border: `1px solid ${i <= step ? "var(--gold)" : "var(--ps-line-strong)"}`,
-                color: i <= step ? "var(--gold)" : "var(--ps-faint)",
-                background: i < step ? "var(--gold)" : "transparent",
+                border: `1px solid ${i <= step ? "var(--ps-accent)" : "var(--ps-line-strong)"}`,
+                color: i <= step ? "var(--ps-accent)" : "var(--ps-faint)",
+                background: i < step ? "var(--ps-accent)" : "transparent",
               }}
             >
-              {i < step ? <span style={{ color: "#0a0a0b" }}>✓</span> : i + 1}
+              {i < step ? <span style={{ color: "var(--ps-bg)" }}>✓</span> : i + 1}
             </span>
             <span
               className="ps-caps"
@@ -130,7 +130,7 @@ export default function CheckoutView() {
                   <span className="sr-only">Country</span>
                   <select className="ps-field cursor-pointer" value={form.country} onChange={set("country")}>
                     {["India", "France", "Italy", "United Kingdom", "United States", "Japan"].map((c) => (
-                      <option key={c} value={c} style={{ background: "#111", color: "#f4f1ea" }}>
+                      <option key={c} value={c} style={{ background: "var(--ps-surface)", color: "var(--ps-text)" }}>
                         {c}
                       </option>
                     ))}
@@ -138,7 +138,7 @@ export default function CheckoutView() {
                 </label>
               </div>
 
-              <h3 className="ps-caps mt-12" style={{ color: "var(--gold)" }}>
+              <h3 className="ps-caps mt-12" style={{ color: "var(--ps-accent)" }}>
                 Method
               </h3>
               <div className="mt-5 space-y-2.5">
@@ -150,7 +150,7 @@ export default function CheckoutView() {
                     aria-pressed={ship === d.id}
                     className="flex w-full items-center justify-between p-5 text-left transition-colors duration-500"
                     style={{
-                      border: `1px solid ${ship === d.id ? "var(--gold)" : "var(--ps-line)"}`,
+                      border: `1px solid ${ship === d.id ? "var(--ps-accent)" : "var(--ps-line)"}`,
                       background: ship === d.id ? "rgba(201,169,97,.06)" : "transparent",
                     }}
                   >
@@ -160,7 +160,7 @@ export default function CheckoutView() {
                         {d.note}
                       </span>
                     </span>
-                    <span className="ps-caps" style={{ fontSize: ".55rem", color: "var(--gold)" }}>
+                    <span className="ps-caps" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
                       Complimentary
                     </span>
                   </button>
@@ -208,7 +208,7 @@ export default function CheckoutView() {
               {/* Deliberately inert. This is a demonstration storefront, so it
                   collects no card details and contacts no payment processor. */}
               <div className="mt-10 p-6" style={{ border: "1px dashed var(--ps-line-strong)" }}>
-                <p className="ps-caps" style={{ color: "var(--gold)" }}>
+                <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
                   Payment
                 </p>
                 <p className="mt-3 text-[.85rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
@@ -238,7 +238,7 @@ export default function CheckoutView() {
 
           {step === 3 ? (
             <section className="py-6">
-              <p className="ps-caps" style={{ color: "var(--gold)" }}>
+              <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
                 Order {orderNo}
               </p>
               <h2 className="ps-display mt-6 text-[2.4rem] leading-[1] sm:text-[3.2rem]">
@@ -266,8 +266,8 @@ export default function CheckoutView() {
         {/* summary */}
         {step !== 3 ? (
           <aside className="lg:sticky lg:top-[110px] lg:h-fit">
-            <div className="p-7" style={{ border: "1px solid var(--ps-line)", background: "#0d0d0f" }}>
-              <p className="ps-caps" style={{ color: "var(--gold)" }}>
+            <div className="p-7" style={{ border: "1px solid var(--ps-line)", background: "var(--ps-surface)" }}>
+              <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
                 {count} {count === 1 ? "piece" : "pieces"}
               </p>
 

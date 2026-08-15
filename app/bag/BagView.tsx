@@ -41,7 +41,7 @@ export default function BagView() {
   if (lines.length === 0) {
     return (
       <div className="flex min-h-[52svh] flex-col items-center justify-center px-6 text-center">
-        <p className="ps-caps" style={{ color: "var(--gold)" }}>
+        <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
           Your Bag
         </p>
         <h1 className="ps-display mt-6 text-[2.6rem] sm:text-[3.6rem]">Nothing here yet</h1>
@@ -87,7 +87,7 @@ export default function BagView() {
                 <div className="flex flex-1 flex-col">
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
-                      <p className="ps-caps" style={{ fontSize: ".54rem", color: "var(--gold)" }}>
+                      <p className="ps-caps" style={{ fontSize: ".54rem", color: "var(--ps-accent)" }}>
                         {l.product.line}
                       </p>
                       <Link href={`/p/${l.slug}`} className="ps-display mt-2 block text-[1.5rem] leading-tight">
@@ -148,8 +148,8 @@ export default function BagView() {
 
         {/* summary */}
         <aside className="lg:sticky lg:top-[110px] lg:h-fit">
-          <div className="p-8" style={{ border: "1px solid var(--ps-line)", background: "#0d0d0f" }}>
-            <p className="ps-caps" style={{ color: "var(--gold)" }}>
+          <div className="p-8" style={{ border: "1px solid var(--ps-line)", background: "var(--ps-surface)" }}>
+            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
               Order Summary
             </p>
 
@@ -159,7 +159,7 @@ export default function BagView() {
                 <dd>{money(subtotal)}</dd>
               </div>
               {applied ? (
-                <div className="flex justify-between" style={{ color: "var(--gold)" }}>
+                <div className="flex justify-between" style={{ color: "var(--ps-accent)" }}>
                   <dt>Discount — {applied.code}</dt>
                   <dd>−{money(discount)}</dd>
                 </div>
@@ -190,7 +190,7 @@ export default function BagView() {
                 type="checkbox"
                 checked={gift}
                 onChange={(e) => setGift(e.target.checked)}
-                className="mt-1 accent-[var(--gold)]"
+                className="mt-1 accent-[var(--ps-accent)]"
               />
               <span className="text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>
                 Gift presentation — lacquer box, grosgrain ribbon and a hand-written card ({money(20)})
@@ -216,7 +216,7 @@ export default function BagView() {
                 </p>
               ) : null}
               {applied ? (
-                <p className="mt-2 text-[.72rem]" style={{ color: "var(--gold)" }}>
+                <p className="mt-2 text-[.72rem]" style={{ color: "var(--ps-accent)" }}>
                   {applied.code} applied — {Math.round(applied.rate * 100)}% off.
                 </p>
               ) : (

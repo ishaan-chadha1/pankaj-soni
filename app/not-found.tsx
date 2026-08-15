@@ -9,11 +9,11 @@ export default function NotFound() {
           alt=""
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0" style={{ background: "rgba(6,6,7,.78)" }} />
+        <div className="absolute inset-0" style={{ background: "rgba(255,255,255,.58)" }} />
       </div>
 
       <div className="relative z-[2] text-center">
-        <p className="ps-caps" style={{ color: "var(--gold)" }}>
+        <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
           Error 404
         </p>
         <h1 className="ps-display mt-7 text-[3rem] leading-[0.98] sm:text-[5rem]">
@@ -23,7 +23,7 @@ export default function NotFound() {
         </h1>
         <p
           className="mx-auto mt-6 max-w-[42ch] text-[.94rem] font-light"
-          style={{ color: "rgba(244,241,234,.7)" }}
+          style={{ color: "var(--ps-muted)" }}
         >
           The page you were looking for is no longer here. The archive, however,
           is still open.

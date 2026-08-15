@@ -84,6 +84,35 @@ lib/catalog.ts         the entire invented catalogue
 scripts/assets.mjs     generates every image in public/img
 ```
 
+## Palettes
+
+Six of them, all light. The picker sits in the header (and at the foot of the
+mobile menu); the choice persists to `localStorage`.
+
+| | Ground | Accent |
+|---|---|---|
+| **Bone** — default | warm paper | antique gold |
+| **Porcelain** | cool white | slate blue |
+| **Blush** | pale rose | deep berry |
+| **Sand** | desert linen | burnt clay |
+| **Sage** | cool green | deep moss |
+| **Alabaster** | near-white | none — pure editorial |
+
+How it fits together:
+
+- A palette is one `[data-theme="…"]` block in `globals.css` plus one row in
+  `lib/themes.ts`. That is the whole surface area for adding a seventh.
+- Components read only the semantic `--ps-*` tokens, never a raw hex. **A
+  hardcoded colour in a component is a bug** — it is what breaks reskinning.
+- `ThemeScript` writes `data-theme` onto `<html>` in a blocking inline script
+  before first paint. Applying it in an effect instead would paint once in the
+  default palette and then snap — the classic theme flash.
+- Every palette clears WCAG AA (4.5:1) for body, muted and accent text. The
+  accent carries the small-caps eyebrow labels, so it is held to the normal-text
+  threshold rather than the large-text one.
+- `.ps-invert` is the one exception: a single high-contrast band per page, the
+  way print editorial uses one. It is a dark *block*, not a dark theme.
+
 ## The imagery
 
 All 30 assets are generated. Rerun after editing the script:
@@ -92,12 +121,19 @@ All 30 assets are generated. Rerun after editing the script:
 npm run assets
 ```
 
+Everything is composed on a luminous pale ground, so the product shots read as
+catalogue photography on paper and one asset set works under all six palettes.
+Plates are tied to the active accent in CSS with a `multiply` tint (`.ps-tint`)
+rather than by generating six variants of every file.
+
 - **Flacons** — SVG, drawn from primitives: layered glass gradients, a specular
   column, a hot edge, and a five-stop metal ramp for the cap. Four silhouettes so
-  eight fragrances don't read as one bottle in eight colours.
+  eight fragrances don't read as one bottle in eight colours. On a light ground
+  glass reads by its *edges*, so the gradients are built around bright rims and a
+  translucent core rather than a dark body.
 - **Eyewear / cosmetics** — same approach, different geometry.
-- **Campaign plates** — duotone fields with `feTurbulence` grain and a soft key
-  light. The shared duotone is what makes a page of them read as one campaign.
+- **Campaign plates** — pale washes with `feTurbulence` grain and a soft key
+  light, kept low-contrast so display type sits over them without a heavy scrim.
 - **`og.png`** — encoded as a real PNG (raw scanlines → `zlib.deflate` → IHDR/IDAT/IEND),
   because social platforms ignore SVG cards. No image dependency.
 

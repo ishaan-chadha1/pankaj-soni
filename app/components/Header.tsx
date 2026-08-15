@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { PRODUCTS, money } from "@/lib/catalog";
 import { useCart } from "../CartProvider";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 type MenuCol = { title: string; links: { label: string; href: string }[] };
 type MenuDef = {
@@ -214,8 +215,8 @@ export default function Header() {
   const [q, setQ] = useState("");
   const hoverTimer = useRef<number | null>(null);
 
-  // The home hero is full-bleed dark, so the bar floats transparent there and
-  // goes solid everywhere else (and once you scroll).
+  // The home and atelier heroes are full-bleed, so the bar floats transparent
+  // over them and goes solid everywhere else (and once you scroll).
   const overHero = pathname === "/" || pathname === "/atelier";
 
   useEffect(() => {
@@ -269,7 +270,11 @@ export default function Header() {
       {/* announcement */}
       <div
         className="ps-caps relative z-[60] flex items-center justify-center overflow-hidden py-2.5 text-center"
-        style={{ background: "#000", color: "var(--gold)", fontSize: ".56rem" }}
+        style={{
+          background: "var(--ps-invert-bg)",
+          color: "var(--ps-invert-text)",
+          fontSize: ".56rem",
+        }}
       >
         <span>Complimentary shipping and returns — engraving on all flacons</span>
       </div>
@@ -277,7 +282,7 @@ export default function Header() {
       <header
         className="sticky top-0 z-50 transition-all duration-700"
         style={{
-          background: opaque ? "rgba(10,10,11,.9)" : "transparent",
+          background: opaque ? "color-mix(in srgb, var(--ps-bg) 88%, transparent)" : "transparent",
           backdropFilter: opaque ? "blur(16px) saturate(140%)" : "none",
           borderBottom: `1px solid ${opaque ? "var(--ps-line)" : "transparent"}`,
           transitionTimingFunction: "cubic-bezier(.16,1,.3,1)",
@@ -295,7 +300,7 @@ export default function Header() {
                 onFocus={() => enter(m.label)}
                 className="ps-caps ps-link"
                 style={{
-                  color: openMenu === m.label ? "var(--gold)" : "var(--ps-text)",
+                  color: openMenu === m.label ? "var(--ps-accent)" : "var(--ps-text)",
                   transition: "color .5s var(--ease)",
                 }}
               >
@@ -323,6 +328,9 @@ export default function Header() {
 
           {/* right */}
           <div className="flex items-center justify-end gap-5 sm:gap-6">
+            <div className="hidden lg:block">
+              <ThemeSwitcher />
+            </div>
             <button
               type="button"
               aria-label="Search"
@@ -348,7 +356,7 @@ export default function Header() {
               {ready && count > 0 ? (
                 <span
                   className="absolute -right-2 -top-1.5 flex h-[15px] min-w-[15px] items-center justify-center rounded-full px-1 text-[9px] font-normal"
-                  style={{ background: "var(--gold)", color: "#0a0a0b" }}
+                  style={{ background: "var(--ps-accent)", color: "var(--ps-bg)" }}
                 >
                   {count}
                 </span>
@@ -370,7 +378,7 @@ export default function Header() {
             <div
               key={m.label}
               style={{
-                background: "rgba(10,10,11,.97)",
+                background: "var(--ps-surface)",
                 backdropFilter: "blur(20px)",
                 borderBottom: "1px solid var(--ps-line)",
               }}
@@ -378,7 +386,7 @@ export default function Header() {
               <div className="mx-auto flex max-w-[1560px] gap-16 px-8 py-14">
                 {m.cols.map((c) => (
                   <div key={c.title} className="min-w-[190px]">
-                    <p className="ps-caps mb-5" style={{ color: "var(--gold)", fontSize: ".56rem" }}>
+                    <p className="ps-caps mb-5" style={{ color: "var(--ps-accent)", fontSize: ".56rem" }}>
                       {c.title}
                     </p>
                     <ul className="space-y-3">
@@ -402,7 +410,7 @@ export default function Header() {
                     <div className="ps-media ps-zoom aspect-[4/3]">
                       <img src={m.feature.image} alt="" loading="lazy" decoding="async" />
                     </div>
-                    <p className="ps-caps mt-4" style={{ color: "var(--gold)", fontSize: ".56rem" }}>
+                    <p className="ps-caps mt-4" style={{ color: "var(--ps-accent)", fontSize: ".56rem" }}>
                       {m.feature.eyebrow}
                     </p>
                     <p className="ps-display mt-1.5 text-[1.2rem]">{m.feature.title}</p>
@@ -418,7 +426,7 @@ export default function Header() {
       <div
         className="fixed inset-0 z-[70] transition-opacity duration-700"
         style={{
-          background: "rgba(6,6,7,.97)",
+          background: "var(--ps-surface)",
           backdropFilter: "blur(18px)",
           opacity: search ? 1 : 0,
           pointerEvents: search ? "auto" : "none",
@@ -426,7 +434,7 @@ export default function Header() {
       >
         <div className="mx-auto max-w-[880px] px-6 pt-[16vh]">
           <div className="flex items-center justify-between">
-            <p className="ps-caps" style={{ color: "var(--gold)" }}>
+            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
               Search the maison
             </p>
             <button type="button" aria-label="Close search" onClick={() => setSearch(false)}>
@@ -474,7 +482,7 @@ export default function Header() {
       <div
         className="fixed inset-0 z-[70] lg:hidden"
         style={{
-          background: "rgba(8,8,9,.98)",
+          background: "var(--ps-bg)",
           backdropFilter: "blur(18px)",
           transform: mobile ? "translateX(0)" : "translateX(-100%)",
           transition: "transform .8s cubic-bezier(.16,1,.3,1)",
@@ -497,12 +505,16 @@ export default function Header() {
               {m.label}
             </Link>
           ))}
-          <Link href="/atelier" className="ps-display block py-4 text-[2rem]" style={{ color: "var(--gold)" }}>
+          <Link href="/atelier" className="ps-display block py-4 text-[2rem]" style={{ color: "var(--ps-accent)" }}>
             The Olfactory Engine
           </Link>
           <Link href="/world" className="ps-caps mt-6 block py-2" style={{ color: "var(--ps-muted)" }}>
             The Maison
           </Link>
+
+          <div className="mt-10 pt-8" style={{ borderTop: "1px solid var(--ps-line)" }}>
+            <ThemeSwitcher compact />
+          </div>
         </nav>
       </div>
     </>

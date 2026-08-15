@@ -93,27 +93,35 @@ const fragment = /* glsl */ `
     float md = length(uv - mouse);
     f += 0.15 * exp(-md * 2.7) * sin(uTime * 0.75 - md * 7.0);
 
-    vec3 col = mix(uA, uB, clamp(f * f * 2.3, 0.0, 1.0));
-    col = mix(col, uC, clamp(length(r) * 0.7, 0.0, 1.0));
+    // Light-first composition: rather than painting smoke onto black, this
+    // TINTS paper. Each accord pulls the sheet a limited distance from white,
+    // which is what keeps the field luminous instead of muddy.
+    vec3 paper = vec3(0.980, 0.969, 0.949);
 
-    // hot cores where the density is highest
-    col = mix(col, vec3(1.0), clamp(pow(f, 5.0) * uDensity, 0.0, 1.0) * 0.30);
+    vec3 col = paper;
+    col = mix(col, uA, clamp(f * f * 1.9, 0.0, 1.0) * 0.62);
+    col = mix(col, uB, clamp(length(r) * 0.62, 0.0, 1.0) * 0.44);
+    col = mix(col, uC, clamp(pow(f, 2.4), 0.0, 1.0) * 0.38);
 
-    // gold filaments along one iso-band of the field
+    // where density peaks the sheet bleaches back toward white
+    col = mix(col, vec3(1.0), clamp(pow(f, 4.0) * uDensity, 0.0, 1.0) * 0.55);
+
+    // a single darker filament along one iso-band, so the field has a drawn
+    // line in it — on a pale ground this has to subtract, not glow
     float fil = smoothstep(0.60, 0.69, f) - smoothstep(0.69, 0.79, f);
-    col += vec3(0.79, 0.66, 0.38) * fil * 0.55;
+    col -= vec3(0.16, 0.15, 0.12) * fil * 0.5;
 
-    // bloom-ish lift around the cursor
-    col += vec3(0.85, 0.74, 0.48) * exp(-md * 4.2) * 0.16;
+    // the cursor lifts the sheet rather than lighting it
+    col = mix(col, vec3(1.0), exp(-md * 4.2) * 0.22);
 
-    // vignette
+    // inverse vignette: edges settle, centre stays open
     vec2 d = vUv - 0.5;
-    col *= 1.0 - dot(d, d) * 1.15;
+    col -= dot(d, d) * 0.14;
 
-    // grain, so flat regions never band on wide gamut panels
-    col += (hash(vUv * 937.0 + fract(uTime) * 3.1) - 0.5) * 0.035;
+    // grain, so flat regions never band on wide-gamut panels
+    col += (hash(vUv * 937.0 + fract(uTime) * 3.1) - 0.5) * 0.028;
 
-    gl_FragColor = vec4(max(col, 0.0), 1.0);
+    gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
   }
 `;
 

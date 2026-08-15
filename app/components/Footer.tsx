@@ -45,12 +45,12 @@ const COLS = [
 
 export default function Footer() {
   return (
-    <footer style={{ borderTop: "1px solid var(--ps-line)", background: "#08080a" }}>
+    <footer style={{ borderTop: "1px solid var(--ps-line)", background: "var(--ps-bg-alt)" }}>
       {/* newsletter */}
       <div className="mx-auto max-w-[1560px] px-5 py-20 sm:px-8 lg:py-28">
         <div className="grid gap-14 lg:grid-cols-[1fr_1fr] lg:gap-24">
           <div>
-            <p className="ps-caps" style={{ color: "var(--gold)" }}>
+            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
               Correspondence
             </p>
             <h2 className="ps-display mt-6 text-[2.4rem] leading-[1.02] sm:text-[3.2rem]">
@@ -91,7 +91,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-4 lg:grid-cols-5">
           {COLS.map((c) => (
             <div key={c.title}>
-              <p className="ps-caps mb-5" style={{ fontSize: ".56rem", color: "var(--gold)" }}>
+              <p className="ps-caps mb-5" style={{ fontSize: ".56rem", color: "var(--ps-accent)" }}>
                 {c.title}
               </p>
               <ul className="space-y-2.5">
@@ -111,7 +111,7 @@ export default function Footer() {
           ))}
 
           <div className="col-span-2 sm:col-span-4 lg:col-span-1">
-            <p className="ps-caps mb-5" style={{ fontSize: ".56rem", color: "var(--gold)" }}>
+            <p className="ps-caps mb-5" style={{ fontSize: ".56rem", color: "var(--ps-accent)" }}>
               Boutiques
             </p>
             <ul className="space-y-2.5 text-[.82rem] font-light" style={{ color: "var(--ps-muted)" }}>
@@ -134,7 +134,7 @@ export default function Footer() {
           style={{
             fontSize: "clamp(2.2rem, 11.2vw, 11rem)",
             color: "transparent",
-            WebkitTextStroke: "1px rgba(244,241,234,.22)",
+            WebkitTextStroke: "1px var(--ps-line-strong)",
             letterSpacing: "0.14em",
             textIndent: "0.14em",
           }}

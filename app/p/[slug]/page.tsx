@@ -62,7 +62,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
             {cat?.label}
           </Link>
           <span>/</span>
-          <span style={{ color: "var(--gold)" }}>{product.name}</span>
+          <span style={{ color: "var(--ps-accent)" }}>{product.name}</span>
         </nav>
       </div>
 
@@ -79,7 +79,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
             {product.badge ? (
               <span
                 className="ps-caps absolute left-5 top-5 px-3 py-1.5"
-                style={{ background: "rgba(10,10,11,.6)", color: "var(--gold)", fontSize: ".54rem" }}
+                style={{ background: "color-mix(in srgb, var(--ps-invert-bg) 78%, transparent)", color: "var(--ps-invert-text)", fontSize: ".54rem" }}
               >
                 {product.badge}
               </span>
@@ -99,7 +99,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
         {/* buy column */}
         <div className="lg:sticky lg:top-[110px] lg:h-fit lg:pt-4">
           <Reveal>
-            <p className="ps-caps" style={{ color: "var(--gold)" }}>
+            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
               {product.line}
             </p>
           </Reveal>
@@ -136,7 +136,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
                   {a.title}
                   <span
                     className="text-[1rem] transition-transform duration-500 group-open:rotate-45"
-                    style={{ color: "var(--gold)" }}
+                    style={{ color: "var(--ps-accent)" }}
                   >
                     +
                   </span>
@@ -155,11 +155,11 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
 
       {/* ── notes pyramid ── */}
       {product.notes ? (
-        <section style={{ background: "#0e0d0c", borderTop: "1px solid var(--ps-line)" }}>
+        <section style={{ background: "var(--ps-bg-alt)", borderTop: "1px solid var(--ps-line)" }}>
           <div className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
             <div className="mb-14 text-center">
               <Reveal>
-                <p className="ps-caps" style={{ color: "var(--gold)" }}>
+                <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
                   The Composition
                 </p>
               </Reveal>
@@ -174,10 +174,10 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
               {(["head", "heart", "base"] as const).map((k, i) => (
                 <Reveal key={k} delay={i * 130}>
                   <div className="text-center">
-                    <p className="ps-display text-[2.6rem] leading-none" style={{ color: "var(--gold-dim)" }}>
+                    <p className="ps-display text-[2.6rem] leading-none" style={{ color: "var(--ps-faint)" }}>
                       0{i + 1}
                     </p>
-                    <p className="ps-caps mt-4" style={{ color: "var(--gold)" }}>
+                    <p className="ps-caps mt-4" style={{ color: "var(--ps-accent)" }}>
                       {k === "head" ? "Top Notes" : k === "heart" ? "Heart" : "Base"}
                     </p>
                     <hr className="ps-rule mx-auto my-6 w-16" />

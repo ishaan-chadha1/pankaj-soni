@@ -1,89 +1,93 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" fill="none">
 <defs>
   
+  <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fdfaf5"/>
+    <stop offset="1" stop-color="#efe4d5"/>
+  </linearGradient>
+  <radialGradient id="key" cx=".5" cy=".38" r=".6">
+    <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/>
+    <stop offset=".6" stop-color="#7a5a3c" stop-opacity=".10"/>
+    <stop offset="1" stop-color="#7a5a3c" stop-opacity="0"/>
+  </radialGradient>
+  
 <filter id="fg" x="-5%" y="-5%" width="110%" height="110%">
-  <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="14" result="n"/>
+  <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves="4" seed="26" result="n"/>
   <feColorMatrix in="n" type="saturate" values="0" result="d"/>
   <feComponentTransfer in="d" result="g">
-    <feFuncA type="linear" slope="0.4"/>
+    <feFuncA type="linear" slope="0.26"/>
   </feComponentTransfer>
-  <feBlend in="SourceGraphic" in2="g" mode="overlay"/>
+  <feBlend in="SourceGraphic" in2="g" mode="soft-light"/>
 </filter>
-  <filter id="blurA" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="38"/></filter>
-  <filter id="blurB" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+  <filter id="bA" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="30"/></filter>
+  <filter id="bB" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="9"/></filter>
+  <filter id="bS" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="22"/></filter>
 
+  <!-- Glass on a light ground reads by its EDGES: bright rims, a translucent
+       core, and a deeper shoulder where the wall thickens. -->
   <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0"    stop-color="#ffffff" stop-opacity=".50"/>
-    <stop offset=".10"  stop-color="#3b2417" stop-opacity=".92"/>
-    <stop offset=".42"  stop-color="#150b06"/>
-    <stop offset=".72"  stop-color="#3b2417"/>
-    <stop offset=".93"  stop-color="#ffffff" stop-opacity=".38"/>
-    <stop offset="1"    stop-color="#150b06" stop-opacity=".8"/>
+    <stop offset="0"    stop-color="#3f2a18" stop-opacity=".72"/>
+    <stop offset=".07"  stop-color="#ffffff" stop-opacity=".82"/>
+    <stop offset=".22"  stop-color="#7a5a3c" stop-opacity=".78"/>
+    <stop offset=".5"   stop-color="#7a5a3c" stop-opacity=".92"/>
+    <stop offset=".78"  stop-color="#7a5a3c" stop-opacity=".76"/>
+    <stop offset=".93"  stop-color="#ffffff" stop-opacity=".78"/>
+    <stop offset="1"    stop-color="#3f2a18" stop-opacity=".70"/>
   </linearGradient>
 
   <linearGradient id="depth" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0"   stop-color="#ffffff" stop-opacity=".22"/>
-    <stop offset=".35" stop-color="#ffffff" stop-opacity="0"/>
-    <stop offset=".82" stop-color="#000000" stop-opacity=".30"/>
-    <stop offset="1"   stop-color="#000000" stop-opacity=".52"/>
+    <stop offset="0"   stop-color="#ffffff" stop-opacity=".55"/>
+    <stop offset=".28" stop-color="#ffffff" stop-opacity=".06"/>
+    <stop offset=".84" stop-color="#3f2a18" stop-opacity=".22"/>
+    <stop offset="1"   stop-color="#3f2a18" stop-opacity=".40"/>
   </linearGradient>
 
   <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0"   stop-color="#131313"/>
-    <stop offset=".22" stop-color="#3d3d3d"/>
-    <stop offset=".44" stop-color="#6f6f6f"/>
-    <stop offset=".68" stop-color="#2a2a2a"/>
-    <stop offset="1"   stop-color="#0c0c0c"/>
+    <stop offset="0"   stop-color="#4a4a4d"/>
+    <stop offset=".22" stop-color="#8d8d92"/>
+    <stop offset=".44" stop-color="#c9c9ce"/>
+    <stop offset=".68" stop-color="#6d6d72"/>
+    <stop offset="1"   stop-color="#3d3d40"/>
   </linearGradient>
 
-  <radialGradient id="floor" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".55"/>
-    <stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-
-  <radialGradient id="amb" cx=".5" cy=".38" r=".62">
-    <stop offset="0" stop-color="#3b2417" stop-opacity=".26"/>
-    <stop offset="1" stop-color="#3b2417" stop-opacity="0"/>
+  <radialGradient id="shadow" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#6d6250" stop-opacity=".38"/>
+    <stop offset="1" stop-color="#6d6250" stop-opacity="0"/>
   </radialGradient>
 </defs>
 
-<!-- ambient halo so the bottle sits in light rather than on a flat field -->
-<rect width="900" height="1200" fill="url(#amb)"/>
+<rect width="900" height="1200" fill="url(#pg)"/>
+<rect width="900" height="1200" fill="url(#key)"/>
 
-<!-- contact shadow -->
-<ellipse cx="450" cy="1068" rx="223.2" ry="34" fill="url(#floor)"/>
+<!-- soft contact shadow, thrown slightly right as if lit from upper left -->
+<ellipse cx="466" cy="1062" rx="216" ry="30" fill="url(#shadow)" filter="url(#bS)"/>
 
 <g filter="url(#fg)">
-  <!-- neck -->
-  <rect x="397.2" y="168" width="105.6" height="106" fill="url(#glass)" opacity=".9"/>
+  <rect x="397.2" y="168" width="105.6" height="106" fill="url(#glass)" opacity=".82"/>
 
-  <!-- body -->
   <rect x="270" y="250" width="360" height="800" rx="6" fill="url(#glass)"/>
   <rect x="270" y="250" width="360" height="800" rx="6" fill="url(#depth)"/>
 
-  <!-- liquid meniscus: a brighter band where the fill line sits -->
-  <rect x="280" y="410" width="340" height="3"
-        fill="#ffffff" opacity=".20"/>
+  <!-- fill line -->
+  <rect x="278" y="402" width="344" height="2.5"
+        fill="#ffffff" opacity=".55"/>
 
-  <!-- left specular column -->
-  <rect x="297" y="284" width="27" height="704" rx="13.319999999999999" fill="#fff" opacity=".30" filter="url(#blurB)"/>
-  <!-- narrow hot edge on the right -->
-  <rect x="592.2" y="302" width="7.92" height="668" rx="4" fill="#fff" opacity=".55" filter="url(#blurB)"/>
+  <!-- broad soft highlight down the left wall -->
+  <rect x="300.6" y="280" width="30.6" height="708" rx="15.120000000000001" fill="#fff" opacity=".62" filter="url(#bB)"/>
+  <!-- crisp hot rim on the right -->
+  <rect x="594" y="296" width="7.2" height="676" rx="4" fill="#fff" opacity=".85"/>
 
-  <!-- engraved plaque (kept blank; the name is set in HTML) -->
-  <rect x="342" y="666" width="216" height="160" rx="2" fill="#000" opacity=".14"/>
+  <!-- engraved plaque (blank; the name is set in HTML) -->
+  <rect x="342" y="666" width="216" height="160" rx="2" fill="#ffffff" opacity=".2"/>
   <rect x="342" y="666" width="216" height="1"
-        fill="#fff" opacity=".22"/>
+        fill="#ffffff" opacity=".7"/>
 
-  <!-- collar -->
   <rect x="390.15999999999997" y="152" width="119.68" height="22" rx="3" fill="url(#metal)"/>
 
-  <!-- cap -->
   <rect x="362" y="-26" width="176" height="178" rx="3" fill="url(#metal)"/>
-  <rect x="362" y="-26" width="176" height="28.48" fill="#fff" opacity=".16"/>
-  <rect x="362" y="144" width="176" height="8" fill="#000" opacity=".22"/>
+  <rect x="362" y="-26" width="176" height="26.7" fill="#fff" opacity=".45"/>
+  <rect x="362" y="143" width="176" height="9" fill="#7a6a4a" opacity=".22"/>
 </g>
 
-<!-- glow lifted off the shoulders -->
-<ellipse cx="450" cy="290" rx="180" ry="60" fill="#fff" opacity=".07" filter="url(#blurA)"/>
+<ellipse cx="450" cy="280" rx="165.6" ry="52" fill="#fff" opacity=".38" filter="url(#bA)"/>
 </svg>

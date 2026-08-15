@@ -3,56 +3,151 @@
 /*
  * PANKAJ SONI — design tokens.
  *
- * Everything is scoped under `.ps-root`, which sits on <body>. Light editorial
- * sections re-point the same variables rather than declaring a second palette,
- * so shared components reskin without a second set of props.
+ * SIX LIGHT PALETTES. Every one is a warm or cool paper ground with near-black
+ * text and a single accent; none of them is a dark theme. A palette is selected
+ * by setting `data-theme` on <html> (ThemeScript does it before first paint, so
+ * there is no flash of the wrong colours).
+ *
+ * Components read only the semantic `--ps-*` tokens below, never a raw hex —
+ * that is what lets one stylesheet reskin the whole site. If a component
+ * hardcodes a colour, it is a bug.
  */
 
-.ps-root {
-  --noir: #0a0a0b;
-  --noir-2: #121214;
-  --noir-3: #1a1a1d;
-  --ivory: #f4f1ea;
-  --ivory-2: #e9e4d9;
-  --bone: #cfc9bb;
-  --gold: #c9a961;
-  --gold-dim: #8f7740;
-  --oxblood: #5e1420;
+/* ── Palette: Bone (default) ───────────────────────────────────── */
 
-  --ps-text: var(--ivory);
-  --ps-muted: rgba(244, 241, 234, 0.56);
-  --ps-faint: rgba(244, 241, 234, 0.34);
-  --ps-line: rgba(244, 241, 234, 0.14);
-  --ps-line-strong: rgba(244, 241, 234, 0.28);
-  --ps-bg: var(--noir);
+:root,
+[data-theme="bone"] {
+  --ps-bg: #faf7f1;
+  --ps-bg-alt: #f3eee4;
+  --ps-surface: #ffffff;
+  --ps-wash: #f0e8d8;
 
+  --ps-text: #1a1713;
+  --ps-muted: #6b6459;
+  --ps-faint: #9c9488;
+  --ps-line: rgba(26, 23, 19, 0.13);
+  --ps-line-strong: rgba(26, 23, 19, 0.3);
+
+  /* 4.8:1 on the Bone ground — the small-caps eyebrows use this, so it has
+     to clear AA for normal text, not just large. */
+  --ps-accent: #856a28;
+  --ps-accent-soft: rgba(133, 106, 40, 0.14);
+
+  --ps-invert-bg: #1a1713;
+  --ps-invert-text: #faf7f1;
+}
+
+/* ── Palette: Porcelain ────────────────────────────────────────── */
+
+[data-theme="porcelain"] {
+  --ps-bg: #f7f9fb;
+  --ps-bg-alt: #eef2f6;
+  --ps-surface: #ffffff;
+  --ps-wash: #e4ebf1;
+
+  --ps-text: #14181c;
+  --ps-muted: #5c6670;
+  --ps-faint: #8f99a3;
+  --ps-line: rgba(20, 24, 28, 0.12);
+  --ps-line-strong: rgba(20, 24, 28, 0.28);
+
+  --ps-accent: #4d7288;
+  --ps-accent-soft: rgba(77, 114, 136, 0.14);
+
+  --ps-invert-bg: #14181c;
+  --ps-invert-text: #f7f9fb;
+}
+
+/* ── Palette: Blush ────────────────────────────────────────────── */
+
+[data-theme="blush"] {
+  --ps-bg: #fbf4f2;
+  --ps-bg-alt: #f6e9e6;
+  --ps-surface: #fffdfd;
+  --ps-wash: #f2ded9;
+
+  --ps-text: #26161b;
+  --ps-muted: #6f5a5f;
+  --ps-faint: #a08d91;
+  --ps-line: rgba(38, 22, 27, 0.12);
+  --ps-line-strong: rgba(38, 22, 27, 0.28);
+
+  --ps-accent: #a5495f;
+  --ps-accent-soft: rgba(165, 73, 95, 0.13);
+
+  --ps-invert-bg: #26161b;
+  --ps-invert-text: #fbf4f2;
+}
+
+/* ── Palette: Sand ─────────────────────────────────────────────── */
+
+[data-theme="sand"] {
+  --ps-bg: #f8f1e5;
+  --ps-bg-alt: #f1e7d6;
+  --ps-surface: #fffcf7;
+  --ps-wash: #ebdcc4;
+
+  --ps-text: #241d14;
+  --ps-muted: #6d6152;
+  --ps-faint: #9d9080;
+  --ps-line: rgba(36, 29, 20, 0.14);
+  --ps-line-strong: rgba(36, 29, 20, 0.3);
+
+  /* 5.0:1 on the Sand ground. */
+  --ps-accent: #9c552a;
+  --ps-accent-soft: rgba(156, 85, 42, 0.14);
+
+  --ps-invert-bg: #241d14;
+  --ps-invert-text: #f8f1e5;
+}
+
+/* ── Palette: Sage ─────────────────────────────────────────────── */
+
+[data-theme="sage"] {
+  --ps-bg: #f3f6f1;
+  --ps-bg-alt: #e9efe6;
+  --ps-surface: #fdfefd;
+  --ps-wash: #dde7d9;
+
+  --ps-text: #18211a;
+  --ps-muted: #5a6659;
+  --ps-faint: #8c978a;
+  --ps-line: rgba(24, 33, 26, 0.12);
+  --ps-line-strong: rgba(24, 33, 26, 0.28);
+
+  --ps-accent: #4e7048;
+  --ps-accent-soft: rgba(78, 112, 72, 0.14);
+
+  --ps-invert-bg: #18211a;
+  --ps-invert-text: #f3f6f1;
+}
+
+/* ── Palette: Alabaster (pure editorial, no colour) ────────────── */
+
+[data-theme="alabaster"] {
+  --ps-bg: #fcfcfa;
+  --ps-bg-alt: #f4f4f1;
+  --ps-surface: #ffffff;
+  --ps-wash: #ebebe7;
+
+  --ps-text: #111111;
+  --ps-muted: #5f5f5f;
+  --ps-faint: #949494;
+  --ps-line: rgba(17, 17, 17, 0.12);
+  --ps-line-strong: rgba(17, 17, 17, 0.3);
+
+  --ps-accent: #111111;
+  --ps-accent-soft: rgba(17, 17, 17, 0.07);
+
+  --ps-invert-bg: #111111;
+  --ps-invert-text: #fcfcfa;
+}
+
+/* ── Base ──────────────────────────────────────────────────────── */
+
+:root {
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-
-  background: var(--ps-bg);
-  color: var(--ps-text);
-  font-family: var(--font-ps-sans), "Jost", system-ui, sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.01em;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Light editorial sections invert the same tokens rather than re-declaring. */
-.ps-root .ps-light,
-.ps-light {
-  --ps-text: #14120f;
-  --ps-muted: rgba(20, 18, 15, 0.62);
-  --ps-faint: rgba(20, 18, 15, 0.4);
-  --ps-line: rgba(20, 18, 15, 0.16);
-  --ps-line-strong: rgba(20, 18, 15, 0.34);
-  --ps-bg: var(--ivory);
-  background: var(--ps-bg);
-  color: var(--ps-text);
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background: #0a0a0b;
+  --shell: 1560px;
 }
 
 *,
@@ -61,19 +156,80 @@ body {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.ps-root {
+  background: var(--ps-bg);
+  color: var(--ps-text);
+  font-family: var(--font-ps-sans), "Jost", system-ui, sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+  /* Colours cross-fade when the palette changes rather than snapping. */
+  transition: background 0.7s var(--ease), color 0.7s var(--ease);
+}
+
+/* Sections that sit a shade deeper than the page. */
+.ps-alt {
+  background: var(--ps-bg-alt);
+}
+.ps-wash {
+  background: var(--ps-wash);
+}
+
+/* The one place the palette inverts: a single high-contrast band per page, for
+   emphasis. Not a dark theme — a dark *block*, the way print editorial uses one. */
+.ps-invert {
+  background: var(--ps-invert-bg);
+  color: var(--ps-invert-text);
+  --ps-text: var(--ps-invert-text);
+  --ps-muted: rgba(255, 255, 255, 0.62);
+  --ps-faint: rgba(255, 255, 255, 0.4);
+  --ps-line: rgba(255, 255, 255, 0.16);
+  --ps-line-strong: rgba(255, 255, 255, 0.32);
+  --ps-bg: var(--ps-invert-bg);
+  --ps-surface: rgba(255, 255, 255, 0.05);
+}
+
 /* ── Typography ────────────────────────────────────────────────── */
 
 .ps-display {
   font-family: var(--font-ps-display), "Bodoni Moda", "Didot", Georgia, serif;
   font-weight: 400;
-  letter-spacing: -0.005em;
-  line-height: 0.98;
+  letter-spacing: -0.012em;
+  line-height: 0.95;
 }
 
 .ps-display-i {
   font-family: var(--font-ps-display), "Bodoni Moda", "Didot", Georgia, serif;
   font-style: italic;
   font-weight: 400;
+}
+
+/* Editorial display scale. The best fashion sites run headlines far larger than
+   a typical site; these clamp from mobile up to the 1560px shell. */
+.ps-h1 {
+  font-size: clamp(2.6rem, 8.4vw, 8.5rem);
+}
+.ps-h2 {
+  font-size: clamp(2rem, 5.4vw, 4.6rem);
+}
+.ps-h3 {
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
 }
 
 /* Wide-tracked caps: the load-bearing luxury signal. Tracking has to grow as
@@ -100,6 +256,10 @@ body {
   font-weight: 500;
   /* the tracking adds a phantom space after the last glyph */
   text-indent: 0.34em;
+}
+
+.ps-accent {
+  color: var(--ps-accent);
 }
 
 /* ── Rules & links ─────────────────────────────────────────────── */
@@ -153,20 +313,20 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-size: 0.7rem;
-  border: 1px solid currentColor;
+  border: 1px solid var(--ps-line-strong);
   background: transparent;
-  color: inherit;
+  color: var(--ps-text);
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: color 0.6s var(--ease);
+  transition: color 0.6s var(--ease), border-color 0.6s var(--ease);
 }
 /* Fill wipes up from the bottom. */
 .ps-btn::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: currentColor;
+  background: var(--ps-text);
   transform: translateY(101%);
   transition: transform 0.6s var(--ease);
   z-index: 0;
@@ -179,20 +339,24 @@ body {
 .ps-btn:focus-visible::before {
   transform: translateY(0);
 }
-.ps-root .ps-btn:hover {
+.ps-btn:hover,
+.ps-btn:focus-visible {
   color: var(--ps-bg);
+  border-color: var(--ps-text);
 }
 
 .ps-btn-solid {
-  background: var(--ivory);
-  color: #14120f;
-  border-color: var(--ivory);
+  background: var(--ps-text);
+  color: var(--ps-bg);
+  border-color: var(--ps-text);
 }
 .ps-btn-solid::before {
-  background: var(--gold);
+  background: var(--ps-accent);
 }
-.ps-root .ps-btn-solid:hover {
-  color: #14120f;
+.ps-btn-solid:hover,
+.ps-btn-solid:focus-visible {
+  color: #fff;
+  border-color: var(--ps-accent);
 }
 
 .ps-btn:disabled {
@@ -204,7 +368,7 @@ body {
 
 .ps-media {
   overflow: hidden;
-  background: var(--noir-2);
+  background: var(--ps-bg-alt);
   position: relative;
 }
 .ps-media img {
@@ -233,18 +397,29 @@ body {
   opacity: 1;
 }
 
+/* Ties the neutral campaign plates to the active palette without regenerating
+   them: a multiply wash of the accent, kept low so it reads as a tint. */
+.ps-tint::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ps-accent);
+  mix-blend-mode: multiply;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
 /* ── Grain ─────────────────────────────────────────────────────── */
 
-/* A single fixed grain plate over the whole maison. Keeps flat noir from
-   looking like flat #000 on cheap panels. */
+/* One fixed grain plate over the whole site, so flat paper never bands. */
 .ps-grain::after {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 9;
-  opacity: 0.05;
-  mix-blend-mode: overlay;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -286,6 +461,18 @@ body {
   }
 }
 
+/* Reveals start hidden and are un-hidden by an IntersectionObserver, so without
+   scripting the whole page would render blank. Both fallbacks below force the
+   end state; `scripting` covers modern browsers, the <noscript> block in the
+   layout covers the rest. */
+@media (scripting: none) {
+  .ps-rise,
+  .ps-mask > span {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* ── Marquee ───────────────────────────────────────────────────── */
 
 .ps-marquee {
@@ -315,7 +502,7 @@ body {
   border: 0;
   border-bottom: 1px solid var(--ps-line-strong);
   padding: 0.85rem 0;
-  color: inherit;
+  color: var(--ps-text);
   font-size: 0.9rem;
   letter-spacing: 0.04em;
   outline: none;
@@ -328,7 +515,7 @@ body {
   font-size: 0.68rem;
 }
 .ps-field:focus {
-  border-color: var(--gold);
+  border-color: var(--ps-accent);
 }
 
 /* Selectable chip for sizes and shades. */
@@ -342,7 +529,7 @@ body {
   transition: border-color 0.4s var(--ease), background 0.4s var(--ease),
     color 0.4s var(--ease);
   background: transparent;
-  color: inherit;
+  color: var(--ps-text);
   text-align: center;
 }
 .ps-chip:hover {
@@ -354,6 +541,13 @@ body {
   border-color: var(--ps-text);
 }
 
+/* ── Focus ─────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--ps-accent);
+  outline-offset: 3px;
+}
+
 /* ── Scrollbar ─────────────────────────────────────────────────── */
 
 .ps-root ::-webkit-scrollbar {
@@ -361,21 +555,21 @@ body {
   height: 10px;
 }
 .ps-root ::-webkit-scrollbar-track {
-  background: var(--noir);
+  background: var(--ps-bg-alt);
 }
 .ps-root ::-webkit-scrollbar-thumb {
-  background: #2c2c30;
+  background: var(--ps-line-strong);
 }
 .ps-root ::-webkit-scrollbar-thumb:hover {
-  background: var(--gold-dim);
+  background: var(--ps-accent);
 }
 
 .ps-root ::selection {
-  background: var(--gold);
-  color: #0a0a0b;
+  background: var(--ps-accent);
+  color: #fff;
 }
 
-/* Utility: hide scrollbar on horizontal rails. */
+/* Utility: hide the scrollbar on horizontal rails. */
 .ps-norail::-webkit-scrollbar {
   display: none;
 }
@@ -391,8 +585,8 @@ body {
   left: 50%;
   transform: translate(-50%, -120%);
   z-index: 300;
-  background: var(--ivory);
-  color: #14120f;
+  background: var(--ps-text);
+  color: var(--ps-bg);
   padding: 0.85rem 1.6rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -405,8 +599,8 @@ body {
 
 /* ── Custom cursor ─────────────────────────────────────────────── */
 
-/* Only hide the native cursor once the custom one is actually mounted, so
-   touch and reduced-motion users are never left with no pointer at all. */
+/* Only hide the native cursor once the custom one is actually mounted, so touch
+   and reduced-motion users are never left with no pointer at all. */
 .ps-has-cursor,
 .ps-has-cursor * {
   cursor: none !important;
@@ -431,20 +625,20 @@ body {
 .ps-cursor-ring {
   width: 34px;
   height: 34px;
-  border: 1px solid rgba(201, 169, 97, 0.85);
+  border: 1px solid var(--ps-accent);
   transition: width 0.45s var(--ease), height 0.45s var(--ease),
     background 0.45s var(--ease), opacity 0.3s ease;
 }
 .ps-cursor-ring[data-active="true"] {
   width: 58px;
   height: 58px;
-  background: rgba(201, 169, 97, 0.12);
+  background: var(--ps-accent-soft);
 }
 
 .ps-cursor-dot {
   width: 4px;
   height: 4px;
-  background: var(--ivory);
+  background: var(--ps-text);
   transition: opacity 0.3s ease;
 }
 
@@ -464,7 +658,7 @@ body {
   width: 100%;
   transform: scaleX(0);
   transform-origin: left;
-  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  background: var(--ps-accent);
 }
 
 /* ── Page enter ────────────────────────────────────────────────── */
@@ -482,7 +676,7 @@ body {
   }
 }
 main {
-  animation: ps-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: ps-enter 0.7s var(--ease) both;
 }
 @media (prefers-reduced-motion: reduce) {
   main {

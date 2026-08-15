@@ -21,31 +21,35 @@ type Note = {
   word: string;
 };
 
+/* Pigments, not inks. The shader tints a pale sheet, so these sit in the mid
+   range — a near-black base note would punch a hole in the field rather than
+   colour it. The swatch dots in the picker use the same values, which is why
+   they read as a chalk palette. */
 const TOP: Note[] = [
-  { id: "bergamot", label: "Bergamot", color: "#9bb04a", turb: 0.9, density: 0.7, word: "Bright" },
-  { id: "pepper", label: "Pink Pepper", color: "#c2564f", turb: 1.35, density: 0.9, word: "Sharp" },
-  { id: "saffron", label: "Saffron", color: "#c98a2e", turb: 1.1, density: 1.0, word: "Gilded" },
-  { id: "plum", label: "Black Plum", color: "#6b2540", turb: 0.75, density: 0.8, word: "Dark" },
-  { id: "salt", label: "Sea Salt", color: "#7f9aa6", turb: 1.2, density: 0.55, word: "Cold" },
-  { id: "cardamom", label: "Cardamom", color: "#9a8c5c", turb: 1.0, density: 0.7, word: "Spiced" },
+  { id: "bergamot", label: "Bergamot", color: "#b9c96f", turb: 0.9, density: 0.7, word: "Bright" },
+  { id: "pepper", label: "Pink Pepper", color: "#d97f76", turb: 1.35, density: 0.9, word: "Sharp" },
+  { id: "saffron", label: "Saffron", color: "#e0a94e", turb: 1.1, density: 1.0, word: "Gilded" },
+  { id: "plum", label: "Black Plum", color: "#9c5a72", turb: 0.75, density: 0.8, word: "Dark" },
+  { id: "salt", label: "Sea Salt", color: "#a6bcc6", turb: 1.2, density: 0.55, word: "Cold" },
+  { id: "cardamom", label: "Cardamom", color: "#c0b184", turb: 1.0, density: 0.7, word: "Spiced" },
 ];
 
 const HEART: Note[] = [
-  { id: "rose", label: "Turkish Rose", color: "#a8324c", turb: 0.85, density: 0.9, word: "Rose" },
-  { id: "orris", label: "Orris Butter", color: "#cfc4b4", turb: 0.55, density: 0.6, word: "Powder" },
-  { id: "jasmine", label: "Jasmine Sambac", color: "#e0d9a8", turb: 0.9, density: 0.95, word: "Bloom" },
-  { id: "suede", label: "Suede", color: "#8a6244", turb: 0.5, density: 0.5, word: "Velvet" },
-  { id: "tobacco", label: "Tobacco Leaf", color: "#7a4a1e", turb: 0.7, density: 0.65, word: "Vesper" },
-  { id: "cedar", label: "Smoked Cedar", color: "#4a5a3c", turb: 0.65, density: 0.5, word: "Cedar" },
+  { id: "rose", label: "Turkish Rose", color: "#cc6a80", turb: 0.85, density: 0.9, word: "Rose" },
+  { id: "orris", label: "Orris Butter", color: "#e2d9cb", turb: 0.55, density: 0.6, word: "Powder" },
+  { id: "jasmine", label: "Jasmine Sambac", color: "#ece5bc", turb: 0.9, density: 0.95, word: "Bloom" },
+  { id: "suede", label: "Suede", color: "#b8906e", turb: 0.5, density: 0.5, word: "Velvet" },
+  { id: "tobacco", label: "Tobacco Leaf", color: "#b07d4a", turb: 0.7, density: 0.65, word: "Vesper" },
+  { id: "cedar", label: "Smoked Cedar", color: "#8a9a74", turb: 0.65, density: 0.5, word: "Cedar" },
 ];
 
 const BASE: Note[] = [
-  { id: "leather", label: "Tanned Leather", color: "#3a2216", turb: 0.45, density: 0.55, word: "Impérial" },
-  { id: "oud", label: "Laotian Oud", color: "#2a180f", turb: 0.35, density: 0.45, word: "Silence" },
-  { id: "amber", label: "Amber", color: "#b07a2a", turb: 0.6, density: 0.85, word: "Meridian" },
-  { id: "vetiver", label: "Vetiver Root", color: "#3f4a2c", turb: 0.55, density: 0.5, word: "Absolute" },
-  { id: "tonka", label: "Tonka Bean", color: "#6e4a26", turb: 0.5, density: 0.75, word: "Privé" },
-  { id: "ambergris", label: "Ambergris", color: "#8d8266", turb: 0.4, density: 0.6, word: "Nocturne" },
+  { id: "leather", label: "Tanned Leather", color: "#a17a5e", turb: 0.45, density: 0.55, word: "Impérial" },
+  { id: "oud", label: "Laotian Oud", color: "#8e7058", turb: 0.35, density: 0.45, word: "Silence" },
+  { id: "amber", label: "Amber", color: "#dcae62", turb: 0.6, density: 0.85, word: "Meridian" },
+  { id: "vetiver", label: "Vetiver Root", color: "#8b9670", turb: 0.55, density: 0.5, word: "Absolute" },
+  { id: "tonka", label: "Tonka Bean", color: "#bd9668", turb: 0.5, density: 0.75, word: "Privé" },
+  { id: "ambergris", label: "Ambergris", color: "#c2b89b", turb: 0.4, density: 0.6, word: "Nocturne" },
 ];
 
 /** Which flacon the maison would actually pour a given base into. */
@@ -73,7 +77,7 @@ function Column({
 }) {
   return (
     <div>
-      <p className="ps-caps mb-4" style={{ fontSize: ".55rem", color: "var(--gold)" }}>
+      <p className="ps-caps mb-4" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
         {title}
       </p>
       <div className="space-y-1.5">
@@ -138,9 +142,9 @@ export default function Engine() {
       <div
         className="absolute inset-0"
         style={{
-          background: `radial-gradient(120% 90% at 62% 34%, ${top.color}22, transparent 60%),
-                       radial-gradient(90% 80% at 30% 70%, ${heart.color}33, transparent 62%),
-                       linear-gradient(160deg, ${base.color}, #060607 78%)`,
+          background: `radial-gradient(120% 90% at 62% 34%, ${top.color}30, transparent 60%),
+                       radial-gradient(90% 80% at 30% 70%, ${heart.color}38, transparent 62%),
+                       linear-gradient(160deg, ${base.color}44, var(--ps-bg) 74%)`,
           transition: "background 1.2s cubic-bezier(.16,1,.3,1)",
         }}
       />
@@ -152,14 +156,14 @@ export default function Engine() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(6,6,7,.72) 0%, rgba(6,6,7,.12) 30%, rgba(6,6,7,.30) 62%, rgba(6,6,7,.92) 100%)",
+            "linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.14) 30%, rgba(255,255,255,.42) 62%, var(--ps-bg) 100%)",
         }}
       />
 
       <div className="relative z-[2] mx-auto flex min-h-[100svh] max-w-[1560px] flex-col px-5 pb-14 pt-16 sm:px-8">
         {/* heading */}
         <div className="max-w-[700px]">
-          <p className="ps-caps" style={{ color: "var(--gold)" }}>
+          <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
             The Olfactory Engine — Beta
           </p>
           <h1 className="ps-display mt-6 text-[2.6rem] leading-[0.98] sm:text-[4.2rem]">
@@ -167,7 +171,7 @@ export default function Engine() {
             <br />
             <span className="ps-display-i">cannot describe.</span>
           </h1>
-          <p className="mt-6 max-w-[50ch] text-[.92rem] font-light leading-relaxed" style={{ color: "rgba(244,241,234,.72)" }}>
+          <p className="mt-6 max-w-[50ch] text-[.92rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
             Three choices — a top, a heart, a base. The field above is the composition
             rendered in real time: colour from the materials, movement from their
             volatility. Move your cursor through it.
@@ -179,9 +183,9 @@ export default function Engine() {
           <div
             className="grid gap-10 p-7 sm:p-9 lg:grid-cols-[1fr_1fr_1fr_1.15fr] lg:gap-12"
             style={{
-              background: "rgba(8,8,10,.58)",
+              background: "rgba(255,255,255,.72)",
               backdropFilter: "blur(22px) saturate(130%)",
-              border: "1px solid rgba(244,241,234,.14)",
+              border: "1px solid var(--ps-line)",
             }}
           >
             <Column title="Top" notes={TOP} value={top} onChange={setTop} />
@@ -189,8 +193,8 @@ export default function Engine() {
             <Column title="Base" notes={BASE} value={base} onChange={setBase} />
 
             {/* readout */}
-            <div className="lg:border-l lg:pl-12" style={{ borderColor: "rgba(244,241,234,.14)" }}>
-              <p className="ps-caps mb-4" style={{ fontSize: ".55rem", color: "var(--gold)" }}>
+            <div className="lg:border-l lg:pl-12" style={{ borderColor: "var(--ps-line)" }}>
+              <p className="ps-caps mb-4" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
                 Your Composition
               </p>
 
@@ -204,7 +208,7 @@ export default function Engine() {
                   <label htmlFor="intensity" className="ps-caps" style={{ fontSize: ".54rem" }}>
                     Concentration
                   </label>
-                  <span className="ps-caps" style={{ fontSize: ".54rem", color: "var(--gold)" }}>
+                  <span className="ps-caps" style={{ fontSize: ".54rem", color: "var(--ps-accent)" }}>
                     {strength}%
                   </span>
                 </div>
@@ -216,14 +220,14 @@ export default function Engine() {
                   step={0.01}
                   value={intensity}
                   onChange={(e) => setIntensity(Number(e.target.value))}
-                  className="mt-3 w-full accent-[var(--gold)]"
+                  className="mt-3 w-full accent-[var(--ps-accent)]"
                 />
                 <p className="mt-2 text-[.68rem]" style={{ color: "var(--ps-faint)" }}>
                   {strength < 24 ? "Eau de Parfum" : strength < 29 ? "Extrait léger" : "Extrait de Parfum"}
                 </p>
               </div>
 
-              <div className="mt-8 pt-6" style={{ borderTop: "1px solid rgba(244,241,234,.14)" }}>
+              <div className="mt-8 pt-6" style={{ borderTop: "1px solid var(--ps-line)" }}>
                 <p className="text-[.74rem] font-light" style={{ color: "var(--ps-muted)" }}>
                   Closest in the Private Atelier
                 </p>

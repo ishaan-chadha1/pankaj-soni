@@ -25,6 +25,12 @@ export default function Preloader() {
     }
 
     if (seen || reduce) {
+      // Unavoidable setState-in-effect: sessionStorage does not exist on the
+      // server, so "has this tab already seen the curtain" can only be answered
+      // after mount. Deciding in a state initialiser would break SSR; deferring
+      // it to a timeout would flash the curtain for a frame on every repeat
+      // visit, which is the exact thing this branch exists to prevent.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPhase("done");
       return;
     }
@@ -60,7 +66,7 @@ export default function Preloader() {
       aria-hidden
       className="fixed inset-0 z-[200] flex flex-col items-center justify-center"
       style={{
-        background: "#08080a",
+        background: "var(--ps-bg-alt)",
         transform: phase === "out" ? "translateY(-100%)" : "translateY(0)",
         transition: "transform 1s cubic-bezier(.76,0,.24,1)",
       }}
@@ -85,12 +91,12 @@ export default function Preloader() {
         </p>
       </div>
 
-      <div className="mt-9 h-px w-[190px] sm:w-[260px]" style={{ background: "rgba(244,241,234,.16)" }}>
+      <div className="mt-9 h-px w-[190px] sm:w-[260px]" style={{ background: "var(--ps-line)" }}>
         <div
           className="h-px"
           style={{
             width: phase === "in" || phase === "out" ? "100%" : "0%",
-            background: "var(--gold)",
+            background: "var(--ps-accent)",
             transition: "width 1.85s cubic-bezier(.4,0,.2,1) .35s",
           }}
         />

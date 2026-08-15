@@ -80,11 +80,14 @@ export function HeroPlate({ src, alt = "" }: { src: string; alt?: string }) {
           transition: "transform 3.6s cubic-bezier(.16,1,.3,1)",
         }}
       />
+      {/* A paper veil, not a shade. The plate is pale and the type over it is
+          ink, so this lightens toward the bottom and dissolves into the page
+          background rather than darkening the image. */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(6,6,7,.62) 0%, rgba(6,6,7,.18) 34%, rgba(6,6,7,.34) 68%, rgba(6,6,7,.88) 100%)",
+            "linear-gradient(180deg, rgba(255,255,255,.30) 0%, rgba(255,255,255,.04) 30%, rgba(255,255,255,.46) 68%, var(--ps-bg) 100%)",
         }}
       />
     </div>

@@ -56,9 +56,9 @@ export default function ProductCard({
           <span
             className="ps-caps absolute left-4 top-4 z-[2] px-2.5 py-1"
             style={{
-              background: "rgba(10,10,11,.62)",
+              background: "color-mix(in srgb, var(--ps-invert-bg) 78%, transparent)",
               backdropFilter: "blur(6px)",
-              color: "var(--gold)",
+              color: "var(--ps-accent)",
               fontSize: ".58rem",
             }}
           >
@@ -76,14 +76,14 @@ export default function ProductCard({
               type="button"
               onClick={quickAdd}
               className="ps-caps w-full py-4 text-center"
-              style={{ background: "rgba(244,241,234,.94)", color: "#14120f" }}
+              style={{ background: "var(--ps-surface)", color: "var(--ps-text)" }}
             >
               {busy ? "Added" : "Add to Bag"}
             </button>
           ) : (
             <span
               className="ps-caps block w-full py-4 text-center"
-              style={{ background: "rgba(244,241,234,.94)", color: "#14120f" }}
+              style={{ background: "var(--ps-surface)", color: "var(--ps-text)" }}
             >
               Select Options
             </span>

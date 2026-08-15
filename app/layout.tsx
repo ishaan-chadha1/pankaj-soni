@@ -8,6 +8,8 @@ import BagDrawer from "./components/BagDrawer";
 import Preloader from "./components/Preloader";
 import Cursor from "./components/Cursor";
 import ScrollProgress from "./components/ScrollProgress";
+import ThemeScript from "./components/ThemeScript";
+import { ThemeProvider } from "./components/ThemeProvider";
 
 /* A didone for display, a geometric grotesque for everything else — the
    standard couture pairing. Both variable, so no weight list is needed. */
@@ -23,9 +25,11 @@ const sans = Jost({
   display: "swap",
 });
 
+/* Must be a literal colour — the browser chrome reads this before any CSS
+   exists, so a var() here resolves to nothing. Matches the Bone default. */
 export const viewport: Viewport = {
-  themeColor: "#0a0a0b",
-  colorScheme: "dark",
+  themeColor: "#faf7f1",
+  colorScheme: "light",
 };
 
 /* Set NEXT_PUBLIC_SITE_URL at build time so canonical and OG URLs are absolute
@@ -62,19 +66,29 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
+      <head>
+        <ThemeScript />
+        {/* Belt-and-braces with the `scripting: none` block in globals.css, for
+            browsers that do not support that media feature. */}
+        <noscript>
+          <style>{`.ps-rise,.ps-mask>span{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
+      </head>
       <body className="ps-root ps-grain">
         <a href="#main" className="ps-skip">
           Skip to content
         </a>
-        <CartProvider>
-          <Preloader />
-          <Cursor />
-          <ScrollProgress />
-          <Header />
-          <main id="main">{children}</main>
-          <Footer />
-          <BagDrawer />
-        </CartProvider>
+        <ThemeProvider>
+          <CartProvider>
+            <Preloader />
+            <Cursor />
+            <ScrollProgress />
+            <Header />
+            <main id="main">{children}</main>
+            <Footer />
+            <BagDrawer />
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

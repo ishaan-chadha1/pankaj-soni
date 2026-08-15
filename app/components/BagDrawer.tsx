@@ -18,7 +18,7 @@ export default function BagDrawer() {
         onClick={() => setOpen(false)}
         className="fixed inset-0 z-[80] transition-opacity duration-700"
         style={{
-          background: "rgba(4,4,5,.62)",
+          background: "rgba(26,23,19,.42)",
           backdropFilter: "blur(3px)",
           opacity: open ? 1 : 0,
           pointerEvents: open ? "auto" : "none",
@@ -30,7 +30,7 @@ export default function BagDrawer() {
         aria-hidden={!open}
         className="fixed right-0 top-0 z-[90] flex h-full w-full max-w-[460px] flex-col"
         style={{
-          background: "#0d0d0f",
+          background: "var(--ps-surface)",
           borderLeft: "1px solid var(--ps-line)",
           transform: open ? "translateX(0)" : "translateX(100%)",
           transition: "transform .85s cubic-bezier(.16,1,.3,1)",
@@ -58,7 +58,7 @@ export default function BagDrawer() {
             <div className="h-px w-full" style={{ background: "var(--ps-line)" }}>
               <div
                 className="h-px transition-all duration-1000"
-                style={{ width: `${pct}%`, background: "var(--gold)" }}
+                style={{ width: `${pct}%`, background: "var(--ps-accent)" }}
               />
             </div>
           </div>

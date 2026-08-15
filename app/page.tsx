@@ -35,18 +35,18 @@ export default function PsHome() {
 
         <div className="relative z-[2] mx-auto w-full max-w-[1560px] px-5 pb-20 sm:px-8 lg:pb-28">
           <Reveal>
-            <p className="ps-caps" style={{ color: "var(--gold)" }}>
+            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
               Autumn Collection — Private Atelier
             </p>
           </Reveal>
 
           <MaskLines
-            className="ps-display mt-7 text-[3rem] leading-[0.95] sm:text-[5.4rem] lg:text-[7.4rem]"
+            className="ps-display ps-h1 mt-7"
             delay={180}
             lines={[
               "Dressed for",
               <span key="hours">
-                the <span className="ps-display-i" style={{ color: "var(--gold)" }}>hours</span> that
+                the <span className="ps-display-i" style={{ color: "var(--ps-accent)" }}>hours</span> that
               </span>,
               "follow.",
             ]}
@@ -54,7 +54,7 @@ export default function PsHome() {
 
           <div className="mt-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
             <Reveal delay={520}>
-              <p className="max-w-[42ch] text-[.95rem] font-light" style={{ color: "rgba(244,241,234,.74)" }}>
+              <p className="max-w-[42ch] text-[.95rem] font-light" style={{ color: "var(--ps-muted)" }}>
                 Eight compositions built on leather, oud and incense — matured eleven
                 weeks before a single flacon is filled.
               </p>
@@ -73,7 +73,7 @@ export default function PsHome() {
 
         <div
           className="absolute bottom-0 left-1/2 z-[2] hidden h-16 w-px -translate-x-1/2 lg:block"
-          style={{ background: "linear-gradient(180deg, transparent, rgba(244,241,234,.5))" }}
+          style={{ background: "linear-gradient(180deg, transparent, var(--ps-line-strong))" }}
         />
       </section>
 
@@ -84,7 +84,7 @@ export default function PsHome() {
             <div key={dup} className="flex shrink-0" aria-hidden={dup === 1}>
               {MARQUEE.map((m) => (
                 <span key={m} className="ps-caps flex items-center whitespace-nowrap px-9">
-                  <span style={{ color: "var(--gold)" }} className="mr-9">
+                  <span style={{ color: "var(--ps-accent)" }} className="mr-9">
                     ✦
                   </span>
                   {m}
@@ -99,7 +99,7 @@ export default function PsHome() {
       <section className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8 lg:py-32">
         <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
           <MaskLines
-            className="ps-display text-[2.4rem] leading-none sm:text-[3.4rem]"
+            className="ps-display ps-h2"
             lines={["The House"]}
           />
           <Reveal delay={120}>
@@ -113,19 +113,19 @@ export default function PsHome() {
           {triptych.map((c, i) => (
             <Reveal key={c.slug} delay={i * 130}>
               <Link href={`/c/${c.slug}`} className="group block">
-                <div className="ps-media ps-zoom aspect-[3/4.1]">
+                <div className="ps-media ps-zoom ps-tint aspect-[3/4.1]">
                   <img src={c.image} alt="" loading="lazy" decoding="async" />
                   <div
                     className="absolute inset-x-0 bottom-0 p-7"
                     style={{
-                      background: "linear-gradient(0deg, rgba(6,6,7,.86), transparent)",
+                      background: "linear-gradient(0deg, var(--ps-bg) 4%, rgba(255,255,255,.72) 42%, transparent 82%)",
                     }}
                   >
                     <h3 className="ps-display text-[2rem] leading-none">{c.label}</h3>
-                    <p className="mt-2.5 max-w-[30ch] text-[.8rem] font-light" style={{ color: "rgba(244,241,234,.72)" }}>
+                    <p className="mt-2.5 max-w-[30ch] text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>
                       {c.tagline}
                     </p>
-                    <span className="ps-caps ps-link ps-link-on mt-5 inline-block" style={{ color: "var(--gold)" }}>
+                    <span className="ps-caps ps-link ps-link-on mt-5 inline-block" style={{ color: "var(--ps-accent)" }}>
                       Discover
                     </span>
                   </div>
@@ -137,7 +137,7 @@ export default function PsHome() {
       </section>
 
       {/* ───────────────────────── SIGNATURE ───────────────────────── */}
-      <section className="relative overflow-hidden" style={{ background: "#0e0d0c" }}>
+      <section className="ps-alt relative overflow-hidden">
         <div className="mx-auto grid max-w-[1560px] items-center gap-14 px-5 py-24 sm:px-8 lg:grid-cols-2 lg:gap-24 lg:py-36">
           <Parallax speed={0.14} className="relative">
             <div className="ps-media aspect-[4/5]">
@@ -151,7 +151,7 @@ export default function PsHome() {
 
           <div>
             <Reveal>
-              <p className="ps-caps" style={{ color: "var(--gold)" }}>
+              <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
                 The Signature — {hero.line}
               </p>
             </Reveal>
@@ -173,7 +173,7 @@ export default function PsHome() {
                 <dl className="mt-12 grid gap-8 sm:grid-cols-3">
                   {(["head", "heart", "base"] as const).map((k) => (
                     <div key={k} style={{ borderTop: "1px solid var(--ps-line)" }} className="pt-4">
-                      <dt className="ps-caps mb-3" style={{ fontSize: ".55rem", color: "var(--gold)" }}>
+                      <dt className="ps-caps mb-3" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
                         {k === "head" ? "Top" : k === "heart" ? "Heart" : "Base"}
                       </dt>
                       <dd className="space-y-1.5 text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>
@@ -203,7 +203,7 @@ export default function PsHome() {
       <section className="py-24 lg:py-32">
         <div className="mx-auto mb-14 flex max-w-[1560px] flex-wrap items-end justify-between gap-6 px-5 sm:px-8">
           <MaskLines
-            className="ps-display text-[2.4rem] leading-none sm:text-[3.4rem]"
+            className="ps-display ps-h2"
             lines={["Selected by the maison"]}
           />
           <Reveal delay={120}>
@@ -225,7 +225,7 @@ export default function PsHome() {
       </section>
 
       {/* ───────────────────────── LIGHT EDITORIAL ───────────────────────── */}
-      <section className="ps-light">
+      <section className="ps-alt">
         <div className="mx-auto grid max-w-[1560px] items-center gap-14 px-5 py-24 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:gap-24 lg:py-36">
           <Reveal>
             <div className="ps-media ps-zoom aspect-[4/5]">
@@ -235,7 +235,7 @@ export default function PsHome() {
 
           <div>
             <Reveal>
-              <p className="ps-caps" style={{ color: "var(--gold-dim)" }}>
+              <p className="ps-caps" style={{ color: "var(--ps-faint)" }}>
                 The Atelier
               </p>
             </Reveal>
@@ -284,20 +284,28 @@ export default function PsHome() {
       </section>
 
       {/* ───────────────────────── CAMPAIGN ───────────────────────── */}
-      <section className="relative flex min-h-[86svh] items-center justify-center overflow-hidden">
+      <section className="ps-invert relative flex min-h-[86svh] items-center justify-center overflow-hidden">
         <Parallax speed={0.3} className="absolute inset-0 scale-110">
           <img src="/img/p-hero-03.svg" alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
         </Parallax>
-        <div className="absolute inset-0" style={{ background: "rgba(6,6,7,.5)" }} />
+        {/* This is the one inverted band on the page, so the veil has to darken
+            rather than lighten — the type above it is paper-coloured. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, color-mix(in srgb, var(--ps-invert-bg) 82%, transparent), color-mix(in srgb, var(--ps-invert-bg) 68%, transparent))",
+          }}
+        />
 
         <div className="relative z-[2] mx-auto max-w-[900px] px-6 text-center">
           <Reveal>
-            <p className="ps-caps" style={{ color: "var(--gold)" }}>
+            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
               Campaign — Autumn
             </p>
           </Reveal>
           <MaskLines
-            className="ps-display mt-7 text-[2.6rem] leading-[1] sm:text-[4.6rem]"
+            className="ps-display ps-h2 mt-7"
             delay={120}
             lines={[
               "Elegance is what",
@@ -317,7 +325,7 @@ export default function PsHome() {
       {/* ───────────────────────── JOURNAL ───────────────────────── */}
       <section className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8 lg:py-32">
         <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
-          <MaskLines className="ps-display text-[2.4rem] leading-none sm:text-[3.4rem]" lines={["Journal"]} />
+          <MaskLines className="ps-display ps-h2" lines={["Journal"]} />
           <Reveal delay={120}>
             <Link href="/world" className="ps-caps ps-link ps-link-on">
               All Stories
@@ -329,10 +337,10 @@ export default function PsHome() {
           {EDITORIAL.map((e, i) => (
             <Reveal key={e.slug} delay={i * 120}>
               <Link href="/world" className="group block">
-                <div className="ps-media ps-zoom aspect-[4/3]">
+                <div className="ps-media ps-zoom ps-tint aspect-[4/3]">
                   <img src={e.image} alt="" loading="lazy" decoding="async" />
                 </div>
-                <p className="ps-caps mt-5" style={{ fontSize: ".55rem", color: "var(--gold)" }}>
+                <p className="ps-caps mt-5" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
                   {e.eyebrow}
                 </p>
                 <h3 className="ps-display mt-2.5 text-[1.6rem] leading-tight">{e.title}</h3>
@@ -353,7 +361,7 @@ export default function PsHome() {
         <div className="mx-auto grid max-w-[1560px] gap-y-12 px-5 py-20 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:gap-x-10">
           {SERVICES.map((s, i) => (
             <Reveal key={s.t} delay={i * 90} className="lg:px-2">
-              <p className="ps-display text-[1.15rem]" style={{ color: "var(--gold)" }}>
+              <p className="ps-display text-[1.15rem]" style={{ color: "var(--ps-accent)" }}>
                 0{i + 1}
               </p>
               <h3 className="ps-caps-lg mt-4">{s.t}</h3>

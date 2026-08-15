@@ -54,7 +54,7 @@ export default function WorldPage() {
         <HeroPlate src="/img/p-hero-02.svg" />
         <div className="relative z-[2] mx-auto max-w-[960px] px-6 text-center">
           <Reveal>
-            <p className="ps-caps" style={{ color: "var(--gold)" }}>
+            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
               The Maison — Since 1998
             </p>
           </Reveal>
@@ -67,7 +67,7 @@ export default function WorldPage() {
       </section>
 
       {/* manifesto */}
-      <section className="ps-light">
+      <section className="ps-alt">
         <div className="mx-auto max-w-[880px] px-5 py-24 text-center sm:px-8 lg:py-32">
           <Reveal>
             <p
@@ -79,7 +79,7 @@ export default function WorldPage() {
             </p>
           </Reveal>
           <Reveal delay={200}>
-            <p className="ps-caps mt-10" style={{ color: "var(--gold-dim)" }}>
+            <p className="ps-caps mt-10" style={{ color: "var(--ps-faint)" }}>
               The House Position
             </p>
           </Reveal>
@@ -90,7 +90,7 @@ export default function WorldPage() {
       {CHAPTERS.map((c, i) => (
         <section
           key={c.n}
-          style={{ background: i % 2 ? "#0e0d0c" : "var(--noir)", borderTop: "1px solid var(--ps-line)" }}
+          style={{ background: i % 2 ? "var(--ps-bg-alt)" : "var(--ps-bg)", borderTop: "1px solid var(--ps-line)" }}
         >
           <div
             className={`mx-auto grid max-w-[1560px] items-center gap-14 px-5 py-24 sm:px-8 lg:grid-cols-2 lg:gap-24 lg:py-32 ${
@@ -105,7 +105,7 @@ export default function WorldPage() {
 
             <div>
               <Reveal>
-                <p className="ps-display text-[3rem] leading-none" style={{ color: "var(--gold-dim)" }}>
+                <p className="ps-display text-[3rem] leading-none" style={{ color: "var(--ps-faint)" }}>
                   {c.n}
                 </p>
               </Reveal>
@@ -132,7 +132,7 @@ export default function WorldPage() {
       <section style={{ borderTop: "1px solid var(--ps-line)" }}>
         <div className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
           <MaskLines
-            className="ps-display mb-16 text-[2.4rem] leading-none sm:text-[3.4rem]"
+            className="ps-display ps-h2 mb-16"
             lines={["Client Services"]}
           />
           <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
@@ -153,7 +153,7 @@ export default function WorldPage() {
       {/* journal */}
       <section style={{ borderTop: "1px solid var(--ps-line)" }}>
         <div className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
-          <MaskLines className="ps-display mb-14 text-[2.4rem] sm:text-[3.4rem]" lines={["From the Journal"]} />
+          <MaskLines className="ps-display ps-h2 mb-14" lines={["From the Journal"]} />
           <div className="grid gap-10 md:grid-cols-3">
             {EDITORIAL.map((e, i) => (
               <Reveal key={e.slug} delay={i * 110}>
@@ -161,7 +161,7 @@ export default function WorldPage() {
                   <div className="ps-media ps-zoom aspect-[4/3]">
                     <img src={e.image} alt="" loading="lazy" decoding="async" />
                   </div>
-                  <p className="ps-caps mt-5" style={{ fontSize: ".55rem", color: "var(--gold)" }}>
+                  <p className="ps-caps mt-5" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
                     {e.eyebrow}
                   </p>
                   <h3 className="ps-display mt-2.5 text-[1.6rem] leading-tight">{e.title}</h3>
@@ -180,10 +180,10 @@ export default function WorldPage() {
         <Parallax speed={0.26} className="absolute inset-0 scale-110">
           <img src="/img/p-hero-01.svg" alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
         </Parallax>
-        <div className="absolute inset-0" style={{ background: "rgba(6,6,7,.62)" }} />
+        <div className="absolute inset-0" style={{ background: "rgba(255,255,255,.48)" }} />
         <div className="relative z-[2] mx-auto w-full max-w-[1560px] px-5 sm:px-8">
           <Reveal>
-            <p className="ps-caps" style={{ color: "var(--gold)" }}>
+            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
               Boutiques
             </p>
           </Reveal>
@@ -203,7 +203,7 @@ export default function WorldPage() {
               <Reveal key={city} delay={i * 90}>
                 <div className="pt-4" style={{ borderTop: "1px solid var(--ps-line-strong)" }}>
                   <p className="ps-display text-[1.5rem]">{city}</p>
-                  <p className="mt-1.5 text-[.8rem] font-light" style={{ color: "rgba(244,241,234,.66)" }}>
+                  <p className="mt-1.5 text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>
                     {street}
                   </p>
                 </div>

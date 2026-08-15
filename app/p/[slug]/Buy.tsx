@@ -38,7 +38,7 @@ export default function Buy({ product }: { product: Product }) {
 
       {product.variants.length > 1 ? (
         <div className="mt-9">
-          <p className="ps-caps mb-4" style={{ fontSize: ".56rem", color: "var(--gold)" }}>
+          <p className="ps-caps mb-4" style={{ fontSize: ".56rem", color: "var(--ps-accent)" }}>
             {shades ? "Shade" : product.category === "fragrance" ? "Size" : "Size"}
           </p>
 
@@ -57,7 +57,7 @@ export default function Buy({ product }: { product: Product }) {
                     className="block h-11 w-11 rounded-full transition-transform duration-500"
                     style={{
                       background: v.swatch,
-                      outline: v.id === variantId ? "1px solid var(--gold)" : "1px solid var(--ps-line)",
+                      outline: v.id === variantId ? "1px solid var(--ps-accent)" : "1px solid var(--ps-line)",
                       outlineOffset: 3,
                       transform: v.id === variantId ? "scale(1.06)" : undefined,
                     }}
@@ -130,15 +130,15 @@ export default function Buy({ product }: { product: Product }) {
 
       <ul className="mt-9 space-y-2.5 text-[.78rem] font-light" style={{ color: "var(--ps-muted)" }}>
         <li className="flex gap-3">
-          <span style={{ color: "var(--gold)" }}>—</span>
+          <span style={{ color: "var(--ps-accent)" }}>—</span>
           Complimentary express delivery, dispatched within 24 hours
         </li>
         <li className="flex gap-3">
-          <span style={{ color: "var(--gold)" }}>—</span>
+          <span style={{ color: "var(--ps-accent)" }}>—</span>
           Presented in signature lacquer with grosgrain ribbon
         </li>
         <li className="flex gap-3">
-          <span style={{ color: "var(--gold)" }}>—</span>
+          <span style={{ color: "var(--ps-accent)" }}>—</span>
           Complimentary returns within 30 days
         </li>
       </ul>

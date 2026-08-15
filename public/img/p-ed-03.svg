@@ -2,34 +2,35 @@
 <defs>
   
 <filter id="pg6" x="-5%" y="-5%" width="110%" height="110%">
-  <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" seed="21" result="n"/>
+  <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" seed="39" result="n"/>
   <feColorMatrix in="n" type="saturate" values="0" result="d"/>
   <feComponentTransfer in="d" result="g">
-    <feFuncA type="linear" slope="0.7"/>
+    <feFuncA type="linear" slope="0.4"/>
   </feComponentTransfer>
-  <feBlend in="SourceGraphic" in2="g" mode="overlay"/>
+  <feBlend in="SourceGraphic" in2="g" mode="soft-light"/>
 </filter>
-  <filter id="pb6" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="72"/></filter>
-  <linearGradient id="bg6" x1="0" y1="0" x2=".6" y2="1">
-    <stop offset="0" stop-color="#0b0709"/>
-    <stop offset="1" stop-color="#26141a"/>
+  <filter id="pb6" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="66"/></filter>
+  <linearGradient id="bg6" x1="0" y1="0" x2=".55" y2="1">
+    <stop offset="0" stop-color="#fdf8f8"/>
+    <stop offset="1" stop-color="#f2dfdc"/>
   </linearGradient>
-  <radialGradient id="key6" cx=".64" cy=".3" r=".7">
-    <stop offset="0" stop-color="#bf8390" stop-opacity=".40"/>
-    <stop offset=".55" stop-color="#bf8390" stop-opacity=".08"/>
-    <stop offset="1" stop-color="#bf8390" stop-opacity="0"/>
+  <radialGradient id="key6" cx=".6" cy=".28" r=".72">
+    <stop offset="0" stop-color="#ffffff" stop-opacity=".92"/>
+    <stop offset=".5" stop-color="#ffffff" stop-opacity=".24"/>
+    <stop offset="1" stop-color="#c08b96" stop-opacity=".1"/>
   </radialGradient>
-  <radialGradient id="vig6" cx=".5" cy=".5" r=".78">
-    <stop offset=".45" stop-color="#000" stop-opacity="0"/>
-    <stop offset="1" stop-color="#000" stop-opacity=".62"/>
+  <!-- a whisper of edge shading, so the plate has a body rather than reading flat -->
+  <radialGradient id="vig6" cx=".5" cy=".48" r=".76">
+    <stop offset=".5" stop-color="#8a7f6b" stop-opacity="0"/>
+    <stop offset="1" stop-color="#8a7f6b" stop-opacity=".2"/>
   </radialGradient>
 </defs>
 
 <g filter="url(#pg6)">
   <rect width="1200" height="1600" fill="url(#bg6)"/>
   <g filter="url(#pb6)">
-    <ellipse cx="744" cy="704" rx="408.00000000000006" ry="672" fill="#bf8390" opacity=".16"/>
-    <ellipse cx="360" cy="1056" rx="360" ry="480" fill="#26141a" opacity=".5"/></g>
+    <ellipse cx="744" cy="672" rx="432" ry="704" fill="#ffffff" opacity=".5"/>
+    <ellipse cx="360" cy="1088" rx="384" ry="512" fill="#f2dfdc" opacity=".42"/></g>
   <rect width="1200" height="1600" fill="url(#key6)"/>
 </g>
 <rect width="1200" height="1600" fill="url(#vig6)"/>
