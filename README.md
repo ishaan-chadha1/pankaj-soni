@@ -6,8 +6,12 @@ interactive WebGL fragrance instrument.
 **PANKAJ SONI is a fictional house.** The name is used the way any couture label
 uses a founder's name: as a wordmark. Nothing here describes, depicts or relates
 to any real person of that name. Every product, price, note and line of copy is
-invented for this project, and every image is generated from primitives by
-`scripts/assets.mjs` — nothing is scraped, traced or borrowed from another brand.
+invented for this project.
+
+Imagery is of two kinds, and neither is scraped, traced or borrowed from another
+brand: the three campaign stills in `public/img/look/` were supplied for this
+project, and everything else is generated from primitives by
+`scripts/assets.mjs`.
 
 ---
 
@@ -73,7 +77,7 @@ app/
   layout.tsx           root layout: fonts, metadata, chrome
   page.tsx             home
   c/[category]/        6 category listings, with filter + sort + density
-  p/[slug]/            24 product pages
+  p/[slug]/            27 product pages
   bag/  checkout/      bag and a 4-step checkout
   world/               the maison story
   atelier/             the WebGL fragrance instrument
@@ -81,6 +85,7 @@ app/
   CartProvider.tsx     cart state, persisted to localStorage
   globals.css          design tokens + component classes
 lib/catalog.ts         the entire invented catalogue
+lib/looks.ts           campaign looks + hotspot coordinates
 scripts/assets.mjs     generates every image in public/img
 ```
 
