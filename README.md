@@ -84,6 +84,34 @@ lib/catalog.ts         the entire invented catalogue
 scripts/assets.mjs     generates every image in public/img
 ```
 
+## The campaign lookbook
+
+The home page is built around three campaign stills. Every garment in frame
+carries a marker; a hairline draws out from it and opens a card that links
+through to the listing, or adds straight to the bag.
+
+- **Hotspot coordinates are percentages of the image**, so the frame preserves
+  the source 3168:1344 aspect rather than cropping to fill. An `object-cover`
+  crop walks every marker off its garment the moment the viewport changes shape.
+- They were placed by **sampling pixel luminance**, not by eye — an eyeballed
+  pass put three of six markers on wood panelling and one in the gap between
+  the two shoes. Cream cloth reads 145+, black leather under 40.
+- **Leader length is measured, not authored.** `clampArms` in `LookBook.tsx`
+  resolves each arm to px after layout and shortens it until the label sits
+  inside the frame. Direction and tilt come from the marker's position, so a
+  marker near an edge points inward automatically.
+- Lines **draw on scroll-in, then retract** after a beat. Hover, focus or an
+  open card brings an individual one back. Six permanent labels compete with
+  the photograph; the settle gives the frame back.
+- On phones the frame **crops to 4:5** — a 2.36:1 frame at 375px is 142px tall
+  and the model ends up unreadable. Because the crop breaks marker alignment,
+  the markers come off entirely there and the product row under each frame is
+  the interface. That row is also the keyboard and screen-reader path on
+  desktop, where an 11px dot is a poor target.
+
+To move a marker, edit `lib/looks.ts` — `x`/`y` are percentages of the image,
+`len` is a percentage of frame width.
+
 ## Palettes
 
 Six of them, all light. The picker sits in the header (and at the foot of the

@@ -890,8 +890,9 @@ main {
 /* ── Shoppable lookbook ────────────────────────────────────────── */
 
 .ps-look {
-  /* the markers are positioned against this box */
   position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--look-aspect, 3168 / 1344);
 }
 
 .ps-hot {
@@ -901,7 +902,7 @@ main {
   transform: translate(-50%, -50%);
 }
 
-/* Arm: line + label share one rotation so the label lands at the line's end. */
+/* Arm: line + label share one rotation, so the label lands at the line's end. */
 .ps-hot-arm {
   position: absolute;
   left: 0;
@@ -912,12 +913,12 @@ main {
 
 .ps-hot-line {
   display: block;
+  width: var(--arm);
   height: 1px;
   background: var(--ps-accent);
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 0.75s var(--ease);
-  transition-delay: var(--hot-delay, 0ms);
+  transition: transform 0.7s var(--ease);
 }
 
 .ps-hot-label {
@@ -926,20 +927,46 @@ main {
   white-space: nowrap;
   font-size: 0.54rem;
   color: var(--ps-text);
-  background: color-mix(in srgb, var(--ps-bg) 82%, transparent);
+  background: color-mix(in srgb, var(--ps-bg) 88%, transparent);
   padding: 0.3em 0.6em;
   opacity: 0;
-  transition: opacity 0.5s var(--ease);
-  /* land just after the line finishes drawing */
-  transition-delay: calc(var(--hot-delay, 0ms) + 520ms);
+  transition: opacity 0.45s var(--ease);
 }
 
-/* Once drawn, the lines stay — this is a map of the look, not a hover trick. */
-.ps-look .ps-hot-line {
+/* Draw on scroll-in, staggered. */
+.ps-look[data-reveal="true"] .ps-hot-line {
   transform: scaleX(1);
+  transition-delay: var(--hot-delay, 0ms);
 }
-.ps-look .ps-hot-label {
+.ps-look[data-reveal="true"] .ps-hot-label {
   opacity: 1;
+  transition-delay: calc(var(--hot-delay, 0ms) + 480ms);
+}
+
+/* Then retract, so six labels stop competing with the photograph. */
+.ps-look[data-settled="true"] .ps-hot-line {
+  transform: scaleX(0);
+  transition-delay: 0ms;
+  transition-duration: 0.55s;
+}
+.ps-look[data-settled="true"] .ps-hot-label {
+  opacity: 0;
+  transition-delay: 0ms;
+  transition-duration: 0.35s;
+}
+
+/* Hover, focus or an open card always wins over the settled state. */
+.ps-hot:hover .ps-hot-line,
+.ps-hot:focus-within .ps-hot-line,
+.ps-hot[data-open="true"] .ps-hot-line {
+  transform: scaleX(1);
+  transition-delay: 0ms;
+}
+.ps-hot:hover .ps-hot-label,
+.ps-hot:focus-within .ps-hot-label,
+.ps-hot[data-open="true"] .ps-hot-label {
+  opacity: 1;
+  transition-delay: 0ms;
 }
 
 .ps-hot-dot {
@@ -954,7 +981,7 @@ main {
   cursor: pointer;
   transition: transform 0.45s var(--ease), background 0.45s var(--ease);
 }
-/* A soft ring that pulses out, so the markers read as live on a still frame. */
+/* A ring pulsing out, so the markers read as live on a still frame. */
 .ps-hot-dot::after {
   content: "";
   position: absolute;
@@ -962,48 +989,73 @@ main {
   border-radius: 50%;
   border: 1px solid var(--ps-accent);
   opacity: 0;
-  animation: ps-hot-pulse 2.8s var(--ease) infinite;
+  animation: ps-hot-pulse 3.2s var(--ease) infinite;
   animation-delay: var(--hot-delay, 0ms);
   pointer-events: none;
 }
 @keyframes ps-hot-pulse {
   0% { transform: scale(0.6); opacity: 0; }
-  35% { opacity: 0.7; }
+  35% { opacity: 0.6; }
   100% { transform: scale(1.5); opacity: 0; }
 }
 
 .ps-hot-dot:hover,
-.ps-hot-dot:focus-visible {
-  transform: scale(1.35);
-  background: var(--ps-accent);
-}
+.ps-hot-dot:focus-visible,
 .ps-hot[data-open="true"] .ps-hot-dot {
   transform: scale(1.35);
   background: var(--ps-accent);
 }
 .ps-hot[data-open="true"] .ps-hot-arm {
-  opacity: 0.35;
+  opacity: 0.4;
 }
 
 .ps-hot-card {
   position: absolute;
-  top: 50%;
   z-index: 5;
   width: 268px;
-  transform: translateY(-50%);
+  max-width: min(268px, 82vw);
   background: var(--ps-surface);
   border: 1px solid var(--ps-line);
   box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.3);
   padding: 0.9rem;
-  animation: ps-hot-card-in 0.45s var(--ease) both;
+  animation: ps-hot-fade 0.4s var(--ease) both;
 }
-@keyframes ps-hot-card-in {
+/* Anchored to whichever edge keeps the card inside the frame. */
+.ps-hot-card[data-v="center"] {
+  top: 50%;
+  transform: translateY(-50%);
+  animation-name: ps-hot-card-center;
+}
+.ps-hot-card[data-v="top"] {
+  top: -10px;
+}
+.ps-hot-card[data-v="bottom"] {
+  bottom: -10px;
+}
+@keyframes ps-hot-fade {
+  from { opacity: 0; }
+}
+@keyframes ps-hot-card-center {
   from { opacity: 0; transform: translateY(-50%) scale(0.97); }
 }
 
-/* Phones: the leader lines are too fine and the frame too small, so the
-   markers stay but the card becomes a sheet pinned to the bottom of the frame. */
+/* Phones: the leader lines are too fine at this size and the frame too small,
+   so the markers stay but the card becomes a sheet. The product row under each
+   frame is the real interface here. */
 @media (max-width: 767px) {
+  /* A 2.36:1 frame at phone width is 142px tall — the model ends up ~15px
+     wide and the photograph is worthless. Crop to a portrait aspect instead;
+     the models stand centre frame, so the default centre crop keeps them.
+     Because cover crops the width, the hotspot coordinates no longer line up
+     with the garments, so the markers come off entirely here and the product
+     row beneath each frame is the interface. */
+  .ps-look {
+    aspect-ratio: 4 / 5;
+  }
+  .ps-hot {
+    display: none;
+  }
+
   .ps-hot-arm {
     display: none;
   }

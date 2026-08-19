@@ -1,138 +1,270 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { LOOKS, LOOK_ASPECT, type Hotspot } from "@/lib/looks";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { LOOKS, LOOK_ASPECT, type Hotspot, type Look } from "@/lib/looks";
 import { bySlug, money } from "@/lib/catalog";
+import { useCart } from "../CartProvider";
 
 /**
- * The shoppable campaign.
+ * The shoppable campaign — three looks stacked, every garment marked.
  *
- * Each garment carries a marker; a hairline draws out from it into empty frame
- * — the same gesture the entry curtain makes — and opens a card that links
- * through to the listing.
+ * On scroll-in the leader lines draw once, then retract to quiet dots a couple
+ * of seconds later. The point is to teach where the markers are without leaving
+ * six labels permanently competing with the photograph; hovering or focusing a
+ * dot brings its line back.
  *
- * The frame keeps the source aspect ratio instead of cropping to fill. Hotspot
- * coordinates are percentages of the image, so an `object-cover` crop would
- * walk every marker off its garment as soon as the viewport changed shape.
+ * The frame keeps the source aspect rather than cropping to fill: hotspots are
+ * percentages of the image, so an object-cover crop would walk every marker off
+ * its garment the moment the viewport changed shape.
  */
 export default function LookBook() {
-  const [look, setLook] = useState(0);
+  // One card open across the whole page, keyed `${lookId}:${slug}`.
   const [open, setOpen] = useState<string | null>(null);
-  const frame = useRef<HTMLDivElement | null>(null);
-
-  const active = LOOKS[look];
-
-  // Changing look must drop any open card — the marker it belonged to is gone.
-  const chooseLook = useCallback((i: number) => {
-    setLook(i);
-    setOpen(null);
-  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(null);
     };
-    const onDown = (e: MouseEvent) => {
-      if (!frame.current?.contains(e.target as Node)) setOpen(null);
-    };
     window.addEventListener("keydown", onKey);
-    document.addEventListener("mousedown", onDown);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.removeEventListener("mousedown", onDown);
-    };
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   return (
-    <section className="relative">
-      <div className="mx-auto max-w-[1560px] px-5 pt-10 sm:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-5">
-          <div>
-            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-              The Campaign — Autumn
-            </p>
-            <h2 className="ps-display ps-h2 mt-4">{active.title}</h2>
-          </div>
-          <p className="max-w-[34ch] text-[.84rem] font-light" style={{ color: "var(--ps-muted)" }}>
-            Every piece in the frame is marked. Open one to see it.
-          </p>
-        </div>
-      </div>
-
-      {/* ── the frame ── */}
-      <div className="mx-auto mt-8 max-w-[1560px] px-5 sm:px-8">
-        <div
-          ref={frame}
-          className="ps-look relative w-full overflow-hidden"
-          style={{ aspectRatio: LOOK_ASPECT, background: "var(--ps-bg-alt)" }}
-        >
-          {LOOKS.map((l, i) => (
-            <img
-              key={l.id}
-              src={l.image}
-              alt={i === look ? l.alt : ""}
-              aria-hidden={i !== look}
-              loading={i === 0 ? "eager" : "lazy"}
-              decoding="async"
-              className="absolute inset-0 h-full w-full object-cover"
-              style={{
-                opacity: i === look ? 1 : 0,
-                transition: "opacity 1.1s var(--ease)",
-              }}
-            />
-          ))}
-
-          {/* markers */}
-          {active.hotspots.map((h, i) => (
-            <Marker
-              key={`${active.id}-${h.slug}`}
-              hot={h}
-              index={i}
-              open={open === h.slug}
-              onToggle={() => setOpen((cur) => (cur === h.slug ? null : h.slug))}
-            />
-          ))}
-        </div>
-
-        {/* ── look switcher ── */}
-        <div className="mt-6 flex items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            {LOOKS.map((l, i) => (
-              <button
-                key={l.id}
-                type="button"
-                onClick={() => chooseLook(i)}
-                aria-label={`${l.eyebrow} — ${l.title}`}
-                aria-current={i === look}
-                className="ps-tap group relative block h-[58px] w-[58px] overflow-hidden sm:h-[66px] sm:w-[66px]"
-                style={{
-                  outline: i === look ? "1px solid var(--ps-accent)" : "1px solid var(--ps-line)",
-                  outlineOffset: 3,
-                }}
-              >
-                <img
-                  src={l.thumb}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  className="h-full w-full object-cover transition-opacity duration-500"
-                  style={{ opacity: i === look ? 1 : 0.5 }}
-                />
-              </button>
-            ))}
-          </div>
-
-          <p className="ps-caps" style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}>
-            {active.eyebrow} — {active.hotspots.length} pieces
-          </p>
-        </div>
-      </div>
+    <section aria-label="Autumn campaign — shop the looks">
+      {LOOKS.map((look, i) => (
+        <LookFrame key={look.id} look={look} index={i} open={open} setOpen={setOpen} />
+      ))}
     </section>
   );
 }
 
 /* ────────────────────────────────────────────────────────────── */
+
+function LookFrame({
+  look,
+  index,
+  open,
+  setOpen,
+}: {
+  look: Look;
+  index: number;
+  open: string | null;
+  setOpen: (v: string | null) => void;
+}) {
+  const frame = useRef<HTMLDivElement | null>(null);
+  const [revealed, setRevealed] = useState(false);
+  const [settled, setSettled] = useState(false);
+
+  useEffect(() => {
+    const el = frame.current;
+    if (!el) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let settle: number | undefined;
+
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        setRevealed(true);
+        // Draw, hold, then retract — the photograph gets its frame back.
+        if (!reduce) settle = window.setTimeout(() => setSettled(true), 2600);
+      },
+      { rootMargin: "-12% 0px", threshold: 0.01 }
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      if (settle) window.clearTimeout(settle);
+    };
+  }, []);
+
+  // Clamp after layout, and again whenever the frame is resized: arm lengths
+  // are relative to frame width, so every breakpoint needs a fresh pass.
+  useLayoutEffect(() => {
+    const el = frame.current;
+    if (!el) return;
+    const run = () => clampArms(el);
+    run();
+    const ro = new ResizeObserver(run);
+    ro.observe(el);
+    // Webfonts change label width after first paint.
+    document.fonts?.ready.then(run).catch(() => {});
+    return () => ro.disconnect();
+  }, []);
+
+  // Clicking outside any marker in this frame closes its card.
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!frame.current?.contains(e.target as Node)) return;
+      if (!(e.target as HTMLElement).closest(".ps-hot")) setOpen(null);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [setOpen]);
+
+  const products = look.hotspots
+    .map((h) => bySlug(h.slug))
+    .filter((p): p is NonNullable<typeof p> => !!p);
+
+  return (
+    <article className="mx-auto mt-14 max-w-[1560px] px-5 first:mt-8 sm:px-8">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
+            {look.eyebrow}
+          </p>
+          <h3 className="ps-display mt-2.5 text-[1.9rem] leading-none sm:text-[2.6rem]">
+            {look.title}
+          </h3>
+        </div>
+        {index === 0 ? (
+          <p className="ps-caps" style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}>
+            Select a marker to shop the piece
+          </p>
+        ) : null}
+      </div>
+
+      <div
+        ref={frame}
+        className="ps-look relative w-full"
+        data-reveal={revealed}
+        data-settled={settled}
+        // The aspect travels as a custom property, not an inline aspect-ratio:
+        // an inline value outranks the media query that crops to portrait on
+        // phones, and the frame stayed 142px tall.
+        style={{
+          ["--look-aspect" as string]: LOOK_ASPECT,
+          background: "var(--ps-bg-alt)",
+        }}
+      >
+        <img
+          src={look.image}
+          alt={look.alt}
+          loading={index === 0 ? "eager" : "lazy"}
+          fetchPriority={index === 0 ? "high" : "auto"}
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+
+        {look.hotspots.map((h, i) => {
+          const key = `${look.id}:${h.slug}`;
+          return (
+            <Marker
+              key={key}
+              hot={h}
+              index={i}
+              open={open === key}
+              onToggle={() => setOpen(open === key ? null : key)}
+            />
+          );
+        })}
+      </div>
+
+      {/* The dots are an enhancement; this row is the real, reachable content —
+          it is the keyboard and screen-reader path, and the whole interface on
+          a phone where an 11px target is not a target. */}
+      <ul className="ps-norail mt-5 flex gap-3 overflow-x-auto pb-1">
+        {products.map((p) => (
+          <li key={p.slug} className="shrink-0">
+            <Link
+              href={`/p/${p.slug}`}
+              className="group flex w-[210px] items-center gap-3 p-2 transition-colors duration-500"
+              style={{ border: "1px solid var(--ps-line)" }}
+            >
+              <span className="ps-media h-[54px] w-[42px] shrink-0">
+                <img src={p.image} alt="" loading="lazy" decoding="async" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="ps-display block truncate text-[.94rem] leading-tight">
+                  {p.name}
+                </span>
+                <span className="text-[.72rem]" style={{ color: "var(--ps-muted)" }}>
+                  {money(p.price)}
+                </span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </article>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────── */
+
+/**
+ * Leader direction and tilt. Length is NOT decided here.
+ *
+ * An earlier version estimated label width from character count and clamped the
+ * line arithmetically. It was wrong by a consistent ~27% of frame width — the
+ * rotation and the label's own translate compound in a way a character estimate
+ * does not model — and eight of seventeen labels still hung outside the frame.
+ * `clampArms` below measures the rendered label instead.
+ */
+function leader(hot: Hotspot) {
+  const toRight = hot.x >= 50;
+  // Near the top or bottom the line has to tilt back toward the middle.
+  const tilt = hot.y < 22 ? 11 : hot.y > 82 ? -11 : hot.y < 50 ? -7 : 7;
+  return { angle: toRight ? tilt : 180 - tilt, toRight };
+}
+
+/**
+ * Shortens every leader until its label sits inside the frame.
+ *
+ * Runs after layout and on resize. The label travels along the arm, so pulling
+ * the arm in by the overflow (projected onto the arm's own axis) removes it;
+ * a second pass catches the rare case where shortening changes which edge is
+ * closest.
+ */
+function clampArms(frame: HTMLElement) {
+  const fr = frame.getBoundingClientRect();
+  if (!fr.width) return;
+  const PAD = 8;
+
+  // Seed every arm from the measured frame width. An earlier version expressed
+  // this in `cqw`; the unit did not resolve here, `width` fell back to auto and
+  // the leaders grew to nearly half the frame.
+  frame.querySelectorAll<HTMLElement>(".ps-hot").forEach((hot) => {
+    const pct = Number(hot.dataset.len ?? 13);
+    hot.style.setProperty("--arm", `${Math.round((fr.width * pct) / 100)}px`);
+  });
+
+  for (let pass = 0; pass < 2; pass++) {
+    let settled = true;
+
+    frame.querySelectorAll<HTMLElement>(".ps-hot").forEach((hot) => {
+      const line = hot.querySelector<HTMLElement>(".ps-hot-line");
+      const label = hot.querySelector<HTMLElement>(".ps-hot-label");
+      if (!line || !label) return;
+
+      const lb = label.getBoundingClientRect();
+      const over = Math.max(
+        fr.left + PAD - lb.left,
+        lb.right - (fr.right - PAD),
+        fr.top + PAD - lb.top,
+        lb.bottom - (fr.bottom - PAD),
+        0
+      );
+      if (over <= 0.5) return;
+
+      const angle = Number(hot.dataset.angle ?? 0);
+      // Project the overflow back onto the arm axis; guard the near-vertical case.
+      const axis = Math.max(0.25, Math.abs(Math.cos((angle * Math.PI) / 180)));
+      // offsetWidth, not getBoundingClientRect: the line rests at scaleX(0)
+      // until it is revealed, and the rect reports the transformed box — which
+      // reads 0 and collapses every arm to the floor.
+      const current = line.offsetWidth;
+      const next = Math.max(56, current - over / axis);
+
+      hot.style.setProperty("--arm", `${next}px`);
+      settled = false;
+    });
+
+    if (settled) break;
+  }
+}
 
 function Marker({
   hot,
@@ -146,11 +278,21 @@ function Marker({
   onToggle: () => void;
 }) {
   const product = bySlug(hot.slug);
+  const { add } = useCart();
+  const [added, setAdded] = useState(false);
+  const onAdd = useCallback(() => {
+    if (!product) return;
+    add(product.slug, product.variants[0].id, 1);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1600);
+  }, [add, product]);
+
   if (!product) return null;
 
-  const len = hot.len ?? 150;
-  // Cards open away from the body: markers on the right half open right.
-  const flip = hot.x > 50;
+  const { angle, toRight } = leader(hot);
+  // Base length as a % of frame width; clampArms resolves it to px after layout
+  // and pulls it in if the label would land outside.
+  const basePct = hot.len ?? 13;
 
   return (
     <div
@@ -158,19 +300,20 @@ function Marker({
       style={{
         left: `${hot.x}%`,
         top: `${hot.y}%`,
-        // stagger the lines in so they draw one after another
-        ["--hot-delay" as string]: `${600 + index * 130}ms`,
+        ["--hot-delay" as string]: `${420 + index * 120}ms`,
+        ["--arm" as string]: "0px",
       }}
       data-open={open}
+      data-angle={angle}
+      data-len={basePct}
     >
-      {/* leader line + end label, rotated together */}
-      <span className="ps-hot-arm" style={{ transform: `rotate(${hot.angle}deg)` }}>
-        <span className="ps-hot-line" style={{ width: len }} />
+      <span className="ps-hot-arm" style={{ transform: `rotate(${angle}deg)` }}>
+        <span className="ps-hot-line" />
         <span
           className="ps-hot-label ps-caps"
           style={{
-            left: len,
-            transform: `rotate(${-hot.angle}deg) translate(${flip ? "0" : "-100%"}, -50%)`,
+            left: "var(--arm)",
+            transform: `rotate(${-angle}deg) translate(${toRight ? "0" : "-100%"}, -50%)`,
           }}
         >
           {hot.label}
@@ -188,10 +331,11 @@ function Marker({
       {open ? (
         <div
           className="ps-hot-card"
-          style={{
-            left: flip ? "auto" : 28,
-            right: flip ? 28 : "auto",
-          }}
+          // Centring on the dot pushes the card outside the frame for markers
+          // near an edge — the glasses sit at 11% and hung above the top. Anchor
+          // to the near edge instead of centring when the dot is close to one.
+          data-v={hot.y < 32 ? "top" : hot.y > 68 ? "bottom" : "center"}
+          style={{ left: toRight ? "auto" : 26, right: toRight ? 26 : "auto" }}
         >
           <Link href={`/p/${product.slug}`} className="flex gap-4">
             <span className="ps-media h-[96px] w-[74px] shrink-0">
@@ -210,13 +354,21 @@ function Marker({
               <span className="mt-auto pt-2 text-[.8rem]">{money(product.price)}</span>
             </span>
           </Link>
-          <Link
-            href={`/p/${product.slug}`}
-            className="ps-caps ps-link ps-link-on mt-3 inline-block"
-            style={{ fontSize: ".54rem" }}
-          >
-            View product
-          </Link>
+
+          <div className="mt-3 flex items-center gap-3">
+            {/* Straight into the bag: a campaign that needs a page change to buy
+                from is a lookbook, not a storefront. */}
+            <button type="button" onClick={onAdd} className="ps-btn ps-btn-solid flex-1 !px-3 !py-2.5">
+              <span>{added ? "Added" : "Add to Bag"}</span>
+            </button>
+            <Link
+              href={`/p/${product.slug}`}
+              className="ps-caps ps-link ps-link-on shrink-0"
+              style={{ fontSize: ".54rem" }}
+            >
+              Details
+            </Link>
+          </div>
         </div>
       ) : null}
     </div>

@@ -42,7 +42,16 @@ export default function CheckoutView() {
   const total = subtotal + tax;
   const orderNo = "PS-" + String(Math.abs(subtotal * 7919 + count * 104729) % 900000 + 100000);
 
-  if (!ready) return <div className="min-h-[60svh]" />;
+  // The heading still ships in the pre-hydration state: the cart is read from
+  // localStorage after mount, so returning an empty div here left /checkout
+  // served with no <h1> and an empty document outline.
+  if (!ready) {
+    return (
+      <div className="mx-auto min-h-[60svh] max-w-[1300px] px-5 pt-12 sm:px-8">
+        <h1 className="ps-display text-[2.4rem] sm:text-[3.2rem]">Checkout</h1>
+      </div>
+    );
+  }
 
   if (lines.length === 0 && step !== 3) {
     return (

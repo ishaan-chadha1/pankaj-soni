@@ -18,7 +18,8 @@ export type Hotspot = {
   x: number;
   y: number;
   angle: number;
-  /** Leader line length in px at desktop. */
+  /** Leader length as a % of frame width. Resolved to px after layout, then
+   *  shortened if the label would fall outside the frame. */
   len?: number;
 };
 
@@ -41,11 +42,11 @@ export const LOOKS: Look[] = [
     eyebrow: "Look I",
     title: "The Long Afternoon",
     hotspots: [
-      { slug: "oracle", label: "Oracle", x: 49, y: 11.5, angle: -152, len: 150 },
-      { slug: "evening-shirt", label: "The Shirt", x: 50, y: 30, angle: -16, len: 172 },
-      { slug: "pleated-trouser", label: "Pleated Trouser", x: 53.5, y: 58, angle: 14, len: 176 },
-      { slug: "weekend-holdall", label: "Weekend Holdall", x: 44.5, y: 68, angle: 188, len: 158 },
-      { slug: "noir-chelsea-boot", label: "Noir Chelsea", x: 48.5, y: 94, angle: 186, len: 150 },
+      { slug: "oracle", label: "Oracle", x: 49, y: 11.5, angle: -152, len: 11 },
+      { slug: "evening-shirt", label: "The Shirt", x: 50, y: 30, angle: -16, len: 12 },
+      { slug: "pleated-trouser", label: "Pleated Trouser", x: 53.5, y: 58, angle: 14, len: 12.5 },
+      { slug: "weekend-holdall", label: "Weekend Holdall", x: 44.5, y: 68, angle: 188, len: 11.5 },
+      { slug: "noir-chelsea-boot", label: "Noir Chelsea", x: 48.5, y: 94, angle: 186, len: 11 },
     ],
   },
   {
@@ -56,12 +57,12 @@ export const LOOKS: Look[] = [
     eyebrow: "Look II",
     title: "Hand in Pocket",
     hotspots: [
-      { slug: "monolith", label: "Monolith", x: 49, y: 11, angle: -152, len: 150 },
-      { slug: "evening-shirt", label: "The Shirt", x: 50, y: 30, angle: -16, len: 172 },
-      { slug: "woven-belt", label: "Woven Belt", x: 51, y: 43, angle: 187, len: 156 },
-      { slug: "pleated-trouser", label: "Pleated Trouser", x: 54, y: 58, angle: 13, len: 176 },
-      { slug: "weekend-holdall", label: "Weekend Holdall", x: 44.5, y: 68, angle: 188, len: 158 },
-      { slug: "noir-chelsea-boot", label: "Noir Chelsea", x: 48.5, y: 94, angle: 186, len: 150 },
+      { slug: "monolith", label: "Monolith", x: 49, y: 11, angle: -152, len: 11 },
+      { slug: "evening-shirt", label: "The Shirt", x: 50, y: 30, angle: -16, len: 12 },
+      { slug: "woven-belt", label: "Woven Belt", x: 51, y: 43, angle: 187, len: 11 },
+      { slug: "pleated-trouser", label: "Pleated Trouser", x: 54, y: 58, angle: 13, len: 12.5 },
+      { slug: "weekend-holdall", label: "Weekend Holdall", x: 44.5, y: 68, angle: 188, len: 11.5 },
+      { slug: "noir-chelsea-boot", label: "Noir Chelsea", x: 48.5, y: 94, angle: 186, len: 11 },
     ],
   },
   {
@@ -72,12 +73,12 @@ export const LOOKS: Look[] = [
     eyebrow: "Look III",
     title: "Before the Car",
     hotspots: [
-      { slug: "monolith", label: "Monolith", x: 48, y: 11, angle: -152, len: 152 },
-      { slug: "evening-shirt", label: "The Shirt", x: 50, y: 30, angle: -16, len: 172 },
-      { slug: "woven-belt", label: "Woven Belt", x: 53, y: 43, angle: 12, len: 158 },
-      { slug: "pleated-trouser", label: "Pleated Trouser", x: 54, y: 58, angle: 13, len: 176 },
-      { slug: "weekend-holdall", label: "Weekend Holdall", x: 46.5, y: 68, angle: 189, len: 156 },
-      { slug: "noir-chelsea-boot", label: "Noir Chelsea", x: 49, y: 94, angle: 186, len: 150 },
+      { slug: "monolith", label: "Monolith", x: 48, y: 11, angle: -152, len: 11 },
+      { slug: "evening-shirt", label: "The Shirt", x: 50, y: 30, angle: -16, len: 12 },
+      { slug: "woven-belt", label: "Woven Belt", x: 53, y: 43, angle: 12, len: 11.5 },
+      { slug: "pleated-trouser", label: "Pleated Trouser", x: 54, y: 58, angle: 13, len: 12.5 },
+      { slug: "weekend-holdall", label: "Weekend Holdall", x: 46.5, y: 68, angle: 189, len: 11 },
+      { slug: "noir-chelsea-boot", label: "Noir Chelsea", x: 49, y: 94, angle: 186, len: 11 },
     ],
   },
 ];
