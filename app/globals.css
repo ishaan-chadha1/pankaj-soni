@@ -812,3 +812,225 @@ main {
   transform: none;
   pointer-events: auto;
 }
+
+/* ── Motifs ────────────────────────────────────────────────────── */
+
+/* The entry curtain's two gestures, shared with the rest of the site:
+   a hairline that draws, and a panel that lifts. */
+
+.ps-fill {
+  position: relative;
+  height: 1px;
+  width: 100%;
+  background: var(--ps-line);
+  overflow: hidden;
+}
+.ps-fill-bar {
+  display: block;
+  height: 100%;
+  width: 0;
+  transition-property: width;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.15, 1);
+}
+
+.ps-curtain {
+  position: relative;
+  overflow: hidden;
+}
+/* Overlay rather than a clip on the child, so layout never depends on the
+   animation having run. */
+.ps-curtain-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--ps-bg);
+  transform: translateY(0);
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+  pointer-events: none;
+}
+.ps-curtain-panel[data-open="true"] {
+  transform: translateY(-101%);
+}
+
+.ps-rising span[aria-hidden] > span {
+  display: inline-block;
+  white-space: pre;
+  transform: translateY(105%);
+  opacity: 0;
+  transition: transform 0.9s var(--ease), opacity 0.6s ease;
+}
+.ps-rising[data-shown="true"] span[aria-hidden] > span {
+  transform: none;
+  opacity: 1;
+}
+/* The letters need a box to rise out of. */
+.ps-rising > span[aria-hidden] {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+}
+
+@media (prefers-reduced-motion: reduce), (scripting: none) {
+  .ps-fill-bar {
+    width: 100% !important;
+    transition: none !important;
+  }
+  .ps-curtain-panel {
+    transform: translateY(-101%) !important;
+    transition: none !important;
+  }
+  .ps-rising span[aria-hidden] > span {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+}
+
+/* ── Shoppable lookbook ────────────────────────────────────────── */
+
+.ps-look {
+  /* the markers are positioned against this box */
+  position: relative;
+}
+
+.ps-hot {
+  position: absolute;
+  z-index: 3;
+  /* the coordinate is the centre of the dot, not its corner */
+  transform: translate(-50%, -50%);
+}
+
+/* Arm: line + label share one rotation so the label lands at the line's end. */
+.ps-hot-arm {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+.ps-hot-line {
+  display: block;
+  height: 1px;
+  background: var(--ps-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.75s var(--ease);
+  transition-delay: var(--hot-delay, 0ms);
+}
+
+.ps-hot-label {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  font-size: 0.54rem;
+  color: var(--ps-text);
+  background: color-mix(in srgb, var(--ps-bg) 82%, transparent);
+  padding: 0.3em 0.6em;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  /* land just after the line finishes drawing */
+  transition-delay: calc(var(--hot-delay, 0ms) + 520ms);
+}
+
+/* Once drawn, the lines stay — this is a map of the look, not a hover trick. */
+.ps-look .ps-hot-line {
+  transform: scaleX(1);
+}
+.ps-look .ps-hot-label {
+  opacity: 1;
+}
+
+.ps-hot-dot {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--ps-bg);
+  border: 1px solid var(--ps-accent);
+  cursor: pointer;
+  transition: transform 0.45s var(--ease), background 0.45s var(--ease);
+}
+/* A soft ring that pulses out, so the markers read as live on a still frame. */
+.ps-hot-dot::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1px solid var(--ps-accent);
+  opacity: 0;
+  animation: ps-hot-pulse 2.8s var(--ease) infinite;
+  animation-delay: var(--hot-delay, 0ms);
+  pointer-events: none;
+}
+@keyframes ps-hot-pulse {
+  0% { transform: scale(0.6); opacity: 0; }
+  35% { opacity: 0.7; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.ps-hot-dot:hover,
+.ps-hot-dot:focus-visible {
+  transform: scale(1.35);
+  background: var(--ps-accent);
+}
+.ps-hot[data-open="true"] .ps-hot-dot {
+  transform: scale(1.35);
+  background: var(--ps-accent);
+}
+.ps-hot[data-open="true"] .ps-hot-arm {
+  opacity: 0.35;
+}
+
+.ps-hot-card {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 268px;
+  transform: translateY(-50%);
+  background: var(--ps-surface);
+  border: 1px solid var(--ps-line);
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.3);
+  padding: 0.9rem;
+  animation: ps-hot-card-in 0.45s var(--ease) both;
+}
+@keyframes ps-hot-card-in {
+  from { opacity: 0; transform: translateY(-50%) scale(0.97); }
+}
+
+/* Phones: the leader lines are too fine and the frame too small, so the
+   markers stay but the card becomes a sheet pinned to the bottom of the frame. */
+@media (max-width: 767px) {
+  .ps-hot-arm {
+    display: none;
+  }
+  .ps-hot-card {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    top: auto;
+    width: auto;
+    transform: none;
+    animation-name: ps-hot-sheet-in;
+  }
+  @keyframes ps-hot-sheet-in {
+    from { opacity: 0; transform: translateY(14px); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-hot-line,
+  .ps-hot-label {
+    transition: none !important;
+  }
+  .ps-hot-dot::after {
+    animation: none;
+  }
+  .ps-hot-card {
+    animation: none;
+  }
+}

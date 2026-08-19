@@ -558,6 +558,73 @@ export const PRODUCTS: Product[] = [
     details: ["Polished calf leather", "Blake-stitched leather sole", "Made in Italy"],
   },
 
+  {
+    slug: "pleated-trouser",
+    name: "Pleated Trouser",
+    line: "Tailoring",
+    category: "men",
+    kicker: "Wool-linen · Double pleat",
+    price: 890,
+    image: "/img/look/look-02.jpg",
+    hover: "/img/p-cat-men.svg",
+    featured: true,
+    story:
+      "A double-pleated trouser in a wool-linen cloth heavy enough to hold its line and open enough to wear in August. Cut high on the waist and left long over the shoe.",
+    variants: [
+      { id: "46", label: "IT 46", price: 890 },
+      { id: "48", label: "IT 48", price: 890 },
+      { id: "50", label: "IT 50", price: 890 },
+      { id: "52", label: "IT 52", price: 890 },
+    ],
+    details: [
+      "Wool-linen, double pleat, high rise",
+      "Side adjusters — made to be worn without a belt",
+      "Unfinished hem, tailored in boutique",
+      "Made in Italy",
+    ],
+  },
+  {
+    slug: "weekend-holdall",
+    name: "Weekend Holdall",
+    line: "Leather Goods",
+    category: "men",
+    kicker: "Box calf · Brass hardware",
+    price: 2400,
+    image: "/img/look/look-03.jpg",
+    hover: "/img/p-cat-gifts.svg",
+    badge: "New",
+    story:
+      "Box calf over a soft frame, so it slumps when empty and squares up when full. Two nights, one suit, and nothing you would be embarrassed to set down in a good hotel.",
+    variants: [
+      { id: "black", label: "Black", price: 2400, swatch: "#141414" },
+      { id: "chestnut", label: "Chestnut", price: 2400, swatch: "#6b4423" },
+    ],
+    details: [
+      "Box calf leather over a soft frame",
+      "Solid brass hardware, suede-lined interior",
+      "Detachable shoulder strap",
+      "Made in Italy",
+    ],
+  },
+  {
+    slug: "woven-belt",
+    name: "Woven Belt",
+    line: "Leather Goods",
+    category: "men",
+    kicker: "Braided calf · Brass pin",
+    price: 340,
+    image: "/img/look/look-01.jpg",
+    hover: "/img/p-cat-men.svg",
+    story:
+      "Braided calf with no punched holes — the pin goes wherever it needs to, which is the whole argument for a woven belt.",
+    variants: [
+      { id: "85", label: "85 cm", price: 340 },
+      { id: "90", label: "90 cm", price: 340 },
+      { id: "95", label: "95 cm", price: 340 },
+    ],
+    details: ["Braided calf leather", "Solid brass pin buckle", "Made in Italy"],
+  },
+
   /* ─────────────  GIFTS  ───────────── */
   {
     slug: "private-atelier-coffret",

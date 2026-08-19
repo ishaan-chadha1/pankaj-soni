@@ -5,6 +5,7 @@ import { CATEGORIES, byCategory, category, type Category } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../../components/Reveal";
 import { JsonLd, breadcrumbLd, itemListLd } from "@/lib/seo";
 import SplitText from "../../components/SplitText";
+import { Curtain } from "../../components/Motif";
 import CategoryGrid from "./CategoryGrid";
 
 export function generateStaticParams() {
@@ -97,9 +98,9 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
             {CATEGORIES.filter((x) => x.slug !== c.slug).map((x, i) => (
               <Reveal key={x.slug} delay={i * 80}>
                 <Link href={`/c/${x.slug}`} className="group block">
-                  <div className="ps-media ps-zoom aspect-[4/3]">
+                  <Curtain className="ps-media ps-zoom ps-tint aspect-[4/3]" delay={i * 90}>
                     <img src={x.image} alt="" loading="lazy" decoding="async" />
-                  </div>
+                  </Curtain>
                   <p className="ps-display mt-4 text-[1.25rem]">{x.label}</p>
                 </Link>
               </Reveal>

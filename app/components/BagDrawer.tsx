@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { money } from "@/lib/catalog";
 import { useCart } from "../CartProvider";
+import { FillRule } from "./Motif";
 
 export default function BagDrawer() {
   const { lines, subtotal, count, setQty, remove, open, setOpen } = useCart();
@@ -55,12 +56,9 @@ export default function BagDrawer() {
             <p className="ps-caps mb-2.5" style={{ fontSize: ".55rem", color: "var(--ps-muted)" }}>
               {toFree > 0 ? `${money(toFree)} from complimentary express` : "Complimentary express unlocked"}
             </p>
-            <div className="h-px w-full" style={{ background: "var(--ps-line)" }}>
-              <div
-                className="h-px transition-all duration-1000"
-                style={{ width: `${pct}%`, background: "var(--ps-accent)" }}
-              />
-            </div>
+            {/* Same hairline the entry curtain draws — here it tracks the
+                delivery threshold rather than a load. */}
+            <FillRule progress={pct / 100} duration={1000} />
           </div>
         ) : null}
 

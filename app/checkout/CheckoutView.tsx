@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { money } from "@/lib/catalog";
 import { useCart } from "../CartProvider";
+import { FillRule } from "../components/Motif";
 
 type Step = 0 | 1 | 2 | 3;
 
@@ -84,6 +85,12 @@ export default function CheckoutView() {
           </li>
         ))}
       </ol>
+
+      {/* Same hairline the entry curtain draws, tracking progress through the
+          four steps rather than a load. */}
+      <div className="mt-5">
+        <FillRule progress={step / (STEPS.length - 1)} duration={900} />
+      </div>
 
       <div className="mt-12 grid gap-14 lg:grid-cols-[1.4fr_1fr] lg:gap-20">
         <div>

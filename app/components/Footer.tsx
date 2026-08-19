@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RisingWord } from "./Motif";
 
 const COLS = [
   {
@@ -139,7 +140,7 @@ export default function Footer() {
             textIndent: "0.14em",
           }}
         >
-          Pankaj Soni
+          <RisingWord text="Pankaj Soni" step={70} />
         </p>
       </div>
 

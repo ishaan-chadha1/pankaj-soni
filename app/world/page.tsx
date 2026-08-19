@@ -3,6 +3,7 @@ import Link from "next/link";
 import { EDITORIAL } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../components/Reveal";
 import { HeroPlate, Parallax } from "../components/Parallax";
+import { Curtain, FillRule } from "../components/Motif";
 
 export const metadata: Metadata = {
   title: "The Maison",
@@ -100,9 +101,9 @@ export default function WorldPage() {
             }`}
           >
             <Parallax speed={0.12}>
-              <div className="ps-media ps-zoom aspect-[4/5]">
+              <Curtain className="ps-media ps-zoom ps-tint aspect-[4/5]">
                 <img src={c.image} alt="" loading="lazy" decoding="async" />
-              </div>
+              </Curtain>
             </Parallax>
 
             <div>
@@ -132,7 +133,8 @@ export default function WorldPage() {
       ))}
 
       {/* services */}
-      <section style={{ borderTop: "1px solid var(--ps-line)" }}>
+      <section>
+        <FillRule accent={false} duration={1600} />
         <div className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
           <MaskLines
             as="h2"

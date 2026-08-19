@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { CATEGORIES, EDITORIAL, PRODUCTS, bySlug, featured, money } from "@/lib/catalog";
 import { MaskLines, Reveal } from "./components/Reveal";
-import { HeroPlate, Parallax } from "./components/Parallax";
+import { Parallax } from "./components/Parallax";
 import ProductCard from "./components/ProductCard";
 import HorizontalRail from "./components/HorizontalRail";
 import Pinned from "./components/Pinned";
+import { Curtain, FillRule } from "./components/Motif";
+import LookBook from "./components/LookBook";
 
 const MARQUEE = [
   "Private Atelier",
@@ -53,53 +55,48 @@ export default function PsHome() {
   return (
     <>
       {/* ───────────────────────── HERO ───────────────────────── */}
-      <section className="relative flex min-h-[94svh] items-end overflow-hidden">
-        <HeroPlate src="/img/p-hero-01.svg" alt="" />
+      {/* Compact by design: the campaign frame below is the real hero, and a
+          full-height type block would push it under the fold. */}
+      <section className="mx-auto max-w-[1560px] px-5 pb-4 pt-14 sm:px-8 lg:pt-20">
+        <Reveal>
+          <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
+            Autumn Collection — Private Atelier
+          </p>
+        </Reveal>
 
-        <div className="relative z-[2] mx-auto w-full max-w-[1560px] px-5 pb-20 sm:px-8 lg:pb-28">
-          <Reveal>
-            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-              Autumn Collection — Private Atelier
+        <MaskLines
+          as="h1"
+          className="ps-display ps-h1 mt-6"
+          delay={180}
+          lines={[
+            "Dressed for",
+            <span key="hours">
+              the <span className="ps-display-i" style={{ color: "var(--ps-accent)" }}>hours</span> that follow.
+            </span>,
+          ]}
+        />
+
+        <div className="mt-9 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+          <Reveal delay={420}>
+            <p className="max-w-[44ch] text-[.95rem] font-light" style={{ color: "var(--ps-muted)" }}>
+              Eight compositions built on leather, oud and incense — matured eleven
+              weeks before a single flacon is filled.
             </p>
           </Reveal>
 
-          <MaskLines
-            as="h1"
-            className="ps-display ps-h1 mt-7"
-            delay={180}
-            lines={[
-              "Dressed for",
-              <span key="hours">
-                the <span className="ps-display-i" style={{ color: "var(--ps-accent)" }}>hours</span> that
-              </span>,
-              "follow.",
-            ]}
-          />
-
-          <div className="mt-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-            <Reveal delay={520}>
-              <p className="max-w-[42ch] text-[.95rem] font-light" style={{ color: "var(--ps-muted)" }}>
-                Eight compositions built on leather, oud and incense — matured eleven
-                weeks before a single flacon is filled.
-              </p>
-            </Reveal>
-
-            <Reveal delay={640} className="flex flex-wrap gap-4">
-              <Link href="/c/fragrance" className="ps-btn ps-btn-solid">
-                <span>Shop Fragrance</span>
-              </Link>
-              <Link href="/atelier" className="ps-btn">
-                <span>The Olfactory Engine</span>
-              </Link>
-            </Reveal>
-          </div>
+          <Reveal delay={520} className="flex flex-wrap gap-4">
+            <Link href="/c/men" className="ps-btn ps-btn-solid">
+              <span>Shop the Look</span>
+            </Link>
+            <Link href="/atelier" className="ps-btn">
+              <span>The Olfactory Engine</span>
+            </Link>
+          </Reveal>
         </div>
-
-        <div
-          className="absolute bottom-0 left-1/2 z-[2] hidden h-16 w-px -translate-x-1/2 lg:block"
-          style={{ background: "linear-gradient(180deg, transparent, var(--ps-line-strong))" }}
-        />
       </section>
+
+      {/* The shoppable campaign — every garment in frame links to its listing. */}
+      <LookBook />
 
       {/* ───────────────────────── MARQUEE ───────────────────────── */}
       <div className="overflow-hidden py-5" style={{ borderBottom: "1px solid var(--ps-line)" }}>
@@ -138,7 +135,10 @@ export default function PsHome() {
           {triptych.map((c, i) => (
             <Reveal key={c.slug} delay={i * 130}>
               <Link href={`/c/${c.slug}`} className="group block">
-                <div className="ps-media ps-zoom ps-tint aspect-[3/4.1]">
+                <Curtain
+                  className="ps-media ps-zoom ps-tint aspect-[3/4.1]"
+                  delay={i * 110}
+                >
                   <img src={c.image} alt="" loading="lazy" decoding="async" />
                   <div
                     className="absolute inset-x-0 bottom-0 p-7"
@@ -154,7 +154,7 @@ export default function PsHome() {
                       Discover
                     </span>
                   </div>
-                </div>
+                </Curtain>
               </Link>
             </Reveal>
           ))}
@@ -377,7 +377,9 @@ export default function PsHome() {
       </section>
 
       {/* ───────────────────────── SERVICES ───────────────────────── */}
-      <section style={{ borderTop: "1px solid var(--ps-line)" }}>
+      <section>
+        {/* the divider draws itself as it comes into view */}
+        <FillRule accent={false} duration={1600} />
         <div className="mx-auto grid max-w-[1560px] gap-y-12 px-5 py-20 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:gap-x-10">
           {SERVICES.map((s, i) => (
             <Reveal key={s.t} delay={i * 90} className="lg:px-2">
