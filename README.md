@@ -95,9 +95,10 @@ The home page is built around three campaign stills. Every garment in frame
 carries a marker; a hairline draws out from it and opens a card that links
 through to the listing, or adds straight to the bag.
 
-- **Hotspot coordinates are percentages of the image**, so the frame preserves
-  the source 3168:1344 aspect rather than cropping to fill. An `object-cover`
-  crop walks every marker off its garment the moment the viewport changes shape.
+- **Hotspot coordinates are percentages of the source image.** On wide screens
+  the frame keeps the source 3168:1344 aspect so they map straight through;
+  where it crops, `makeCropMap` converts them. Either way a coordinate always
+  points at the same thread of cloth.
 - They were placed by **sampling pixel luminance**, not by eye — an eyeballed
   pass put three of six markers on wood panelling and one in the gap between
   the two shoes. Cream cloth reads 145+, black leather under 40.
@@ -108,11 +109,19 @@ through to the listing, or adds straight to the bag.
 - Lines **draw on scroll-in, then retract** after a beat. Hover, focus or an
   open card brings an individual one back. Six permanent labels compete with
   the photograph; the settle gives the frame back.
-- On phones the frame **crops to 4:5** — a 2.36:1 frame at 375px is 142px tall
-  and the model ends up unreadable. Because the crop breaks marker alignment,
-  the markers come off entirely there and the product row under each frame is
-  the interface. That row is also the keyboard and screen-reader path on
-  desktop, where an 11px dot is a poor target.
+- On phones the frame **crops to 4:5** (16:10 on tablets) — a 2.36:1 frame at
+  375px is 142px tall and the model ends up unreadable. The markers survive the
+  crop: `makeCropMap` undoes the `object-fit: cover` transform, so a coordinate
+  on the source still lands on the garment at any frame aspect, and a marker
+  cropped out of view is dropped rather than left floating at an edge.
+- On a narrow frame the markers become **26px numbered dots** with a 48px tap
+  area and no leader lines, and the card becomes a sheet pinned to the bottom of
+  the viewport. The sheet is **portalled to `<body>`**: `position: fixed`
+  resolves against the nearest transformed ancestor, and `<main>` carries a
+  transform from the page-entry animation, which threw the sheet off-screen.
+- The numbered product row under each frame matches the dot numbers. It is the
+  keyboard and screen-reader path on desktop, where an 11px dot is a poor
+  target, and a second way in on a phone.
 
 To move a marker, edit `lib/looks.ts` — `x`/`y` are percentages of the image,
 `len` is a percentage of frame width.

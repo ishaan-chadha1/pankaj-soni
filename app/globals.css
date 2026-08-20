@@ -895,11 +895,15 @@ main {
   aspect-ratio: var(--look-aspect, 3168 / 1344);
 }
 
+/*
+ * The anchor sits exactly on the coordinate and is deliberately NOT transformed:
+ * a transform makes an element the containing block for its fixed-position
+ * descendants, which threw the mobile sheet to -1237px instead of pinning it to
+ * the viewport. The dot centres itself instead.
+ */
 .ps-hot {
   position: absolute;
   z-index: 3;
-  /* the coordinate is the centre of the dot, not its corner */
-  transform: translate(-50%, -50%);
 }
 
 /* Arm: line + label share one rotation, so the label lands at the line's end. */
@@ -970,7 +974,11 @@ main {
 }
 
 .ps-hot-dot {
-  position: relative;
+  position: absolute;
+  left: 0;
+  top: 0;
+  /* centre on the anchor point, rather than transforming the anchor itself */
+  transform: translate(-50%, -50%);
   z-index: 2;
   display: block;
   width: 11px;
@@ -1002,7 +1010,7 @@ main {
 .ps-hot-dot:hover,
 .ps-hot-dot:focus-visible,
 .ps-hot[data-open="true"] .ps-hot-dot {
-  transform: scale(1.35);
+  transform: translate(-50%, -50%) scale(1.35);
   background: var(--ps-accent);
 }
 .ps-hot[data-open="true"] .ps-hot-arm {
@@ -1039,39 +1047,105 @@ main {
   from { opacity: 0; transform: translateY(-50%) scale(0.97); }
 }
 
-/* Phones: the leader lines are too fine at this size and the frame too small,
-   so the markers stay but the card becomes a sheet. The product row under each
-   frame is the real interface here. */
+/* A 2.36:1 frame is 142px tall on a phone — the model ends up about 15px wide
+   and the photograph is worthless. Crop to portrait instead. The markers are
+   remapped through the crop in JS (makeCropMap), so they stay on their garments
+   rather than having to be switched off. */
 @media (max-width: 767px) {
-  /* A 2.36:1 frame at phone width is 142px tall — the model ends up ~15px
-     wide and the photograph is worthless. Crop to a portrait aspect instead;
-     the models stand centre frame, so the default centre crop keeps them.
-     Because cover crops the width, the hotspot coordinates no longer line up
-     with the garments, so the markers come off entirely here and the product
-     row beneath each frame is the interface. */
   .ps-look {
     aspect-ratio: 4 / 5;
   }
-  .ps-hot {
-    display: none;
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .ps-look {
+    aspect-ratio: 16 / 10;
   }
+}
 
-  .ps-hot-arm {
-    display: none;
+/* The dot's number. Only shown once the leader lines are gone, where nothing
+   else would name the marker. */
+.ps-hot-num {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.56rem;
+  line-height: 1;
+  font-weight: 400;
+  color: var(--ps-bg);
+  pointer-events: none;
+}
+
+/* Narrow frame: the crop is portrait, there is no empty frame to draw a leader
+   into, and the marker has to be thumb-sized. Driven by the measured aspect
+   rather than a media query, so a narrow frame on a wide screen behaves too. */
+.ps-hot[data-narrow="true"] .ps-hot-arm {
+  display: none;
+}
+.ps-hot[data-narrow="true"] .ps-hot-dot {
+  width: 26px;
+  height: 26px;
+  background: var(--ps-accent);
+  border-color: var(--ps-accent);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+}
+.ps-hot[data-narrow="true"] .ps-hot-num {
+  display: flex;
+}
+.ps-hot[data-narrow="true"] .ps-hot-dot::after {
+  inset: -9px;
+}
+/* Thumb target well beyond the visible dot. */
+.ps-hot[data-narrow="true"] .ps-hot-dot::before {
+  content: "";
+  position: absolute;
+  inset: -11px;
+  border-radius: 50%;
+}
+.ps-hot[data-narrow="true"][data-open="true"] .ps-hot-dot {
+  transform: translate(-50%, -50%) scale(1.18);
+}
+
+/* Narrow frame: the card becomes a sheet pinned to the bottom of the viewport
+   rather than a callout that would not fit beside the dot. */
+.ps-hot-card[data-narrow="true"] {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  top: auto;
+  width: auto;
+  max-width: none;
+  transform: none;
+  z-index: 120;
+  animation-name: ps-hot-sheet-in;
+  box-shadow: 0 -10px 50px -12px rgba(0, 0, 0, 0.34);
+}
+.ps-hot-card[data-narrow="true"][data-v] {
+  top: auto;
+  bottom: 12px;
+  transform: none;
+}
+@keyframes ps-hot-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
   }
-  .ps-hot-card {
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    top: auto;
-    width: auto;
-    transform: none;
-    animation-name: ps-hot-sheet-in;
-  }
-  @keyframes ps-hot-sheet-in {
-    from { opacity: 0; transform: translateY(14px); }
-  }
+}
+
+/* Index badge on the product row, matching the dot numbers. */
+.ps-look-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  font-size: 0.52rem;
+  background: var(--ps-accent);
+  color: var(--ps-bg);
+  flex-shrink: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

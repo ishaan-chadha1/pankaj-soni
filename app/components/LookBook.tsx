@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { LOOKS, LOOK_ASPECT, type Hotspot, type Look } from "@/lib/looks";
 import { bySlug, money } from "@/lib/catalog";
 import { useCart } from "../CartProvider";
@@ -39,6 +40,38 @@ export default function LookBook() {
   );
 }
 
+
+/**
+ * Maps a point on the SOURCE image to a point on the rendered frame.
+ *
+ * The frame uses `object-fit: cover`, and on phones it crops to a portrait
+ * aspect so the model is actually legible. Cover scales the image to the larger
+ * of the two ratios and centres the overflow, so a raw percentage stops
+ * pointing at the garment the moment the frame's aspect differs from the
+ * source's. This undoes that: it is what lets the markers survive any crop
+ * instead of having to be switched off.
+ */
+function makeCropMap(frameW: number, frameH: number, srcW: number, srcH: number) {
+  const scale = Math.max(frameW / srcW, frameH / srcH);
+  const renderedW = srcW * scale;
+  const renderedH = srcH * scale;
+  const offX = (renderedW - frameW) / 2;
+  const offY = (renderedH - frameH) / 2;
+
+  return (xPct: number, yPct: number) => {
+    const px = (xPct / 100) * renderedW - offX;
+    const py = (yPct / 100) * renderedH - offY;
+    return {
+      left: (px / frameW) * 100,
+      top: (py / frameH) * 100,
+      // A marker cropped out of view must not be left floating at the edge.
+      visible: px >= 0 && px <= frameW && py >= 0 && py <= frameH,
+    };
+  };
+}
+
+const [SRC_W, SRC_H] = LOOK_ASPECT.split("/").map((n) => Number(n.trim()));
+
 /* ────────────────────────────────────────────────────────────── */
 
 function LookFrame({
@@ -55,6 +88,26 @@ function LookFrame({
   const frame = useRef<HTMLDivElement | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [settled, setSettled] = useState(false);
+  const [box, setBox] = useState({ w: 0, h: 0 });
+
+  // Remeasure on every resize: the crop, and therefore every marker position,
+  // depends on the frame's current aspect.
+  useLayoutEffect(() => {
+    const el = frame.current;
+    if (!el) return;
+    const read = () => {
+      const r = el.getBoundingClientRect();
+      setBox({ w: r.width, h: r.height });
+    };
+    read();
+    const ro = new ResizeObserver(read);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const map = makeCropMap(box.w || 1, box.h || 1, SRC_W, SRC_H);
+  // Below this the frame is portrait and there is no room for leader lines.
+  const narrow = box.w > 0 && box.w / box.h < 1.4;
 
   useEffect(() => {
     const el = frame.current;
@@ -155,6 +208,8 @@ function LookFrame({
               key={key}
               hot={h}
               index={i}
+              pos={map(h.x, h.y)}
+              narrow={narrow}
               open={open === key}
               onToggle={() => setOpen(open === key ? null : key)}
             />
@@ -166,7 +221,7 @@ function LookFrame({
           it is the keyboard and screen-reader path, and the whole interface on
           a phone where an 11px target is not a target. */}
       <ul className="ps-norail mt-5 flex gap-3 overflow-x-auto pb-1">
-        {products.map((p) => (
+        {products.map((p, i) => (
           <li key={p.slug} className="shrink-0">
             <Link
               href={`/p/${p.slug}`}
@@ -177,10 +232,16 @@ function LookFrame({
                 <img src={p.image} alt="" loading="lazy" decoding="async" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="ps-display block truncate text-[.94rem] leading-tight">
-                  {p.name}
+                <span className="flex items-center gap-2">
+                  {/* matches the numbered dot on the frame */}
+                  <span className="ps-look-num" aria-hidden>
+                    {i + 1}
+                  </span>
+                  <span className="ps-display block truncate text-[.94rem] leading-tight">
+                    {p.name}
+                  </span>
                 </span>
-                <span className="text-[.72rem]" style={{ color: "var(--ps-muted)" }}>
+                <span className="mt-1 block text-[.72rem]" style={{ color: "var(--ps-muted)" }}>
                   {money(p.price)}
                 </span>
               </span>
@@ -269,11 +330,15 @@ function clampArms(frame: HTMLElement) {
 function Marker({
   hot,
   index,
+  pos,
+  narrow,
   open,
   onToggle,
 }: {
   hot: Hotspot;
   index: number;
+  pos: { left: number; top: number; visible: boolean };
+  narrow: boolean;
   open: boolean;
   onToggle: () => void;
 }) {
@@ -287,25 +352,94 @@ function Marker({
     window.setTimeout(() => setAdded(false), 1600);
   }, [add, product]);
 
-  if (!product) return null;
+  if (!product || !pos.visible) return null;
 
   const { angle, toRight } = leader(hot);
   // Base length as a % of frame width; clampArms resolves it to px after layout
   // and pulls it in if the label would land outside.
   const basePct = hot.len ?? 13;
 
+
+  /**
+   * On a narrow frame the card is a viewport-pinned sheet, and it is portalled
+   * to <body>. `position: fixed` resolves against the nearest transformed
+   * ancestor, and <main> carries a transform from the page-entry animation —
+   * which threw the sheet thousands of pixels down the document. Portalling
+   * takes it out of that subtree entirely, so no ancestor's styles can move it.
+   */
+  const renderCard = () => {
+    const card = (
+      <div
+        className="ps-hot-card"
+        // Centring on the dot pushes the card outside the frame for markers
+        // near an edge — the glasses sit at 11% and hung above the top. Anchor
+        // to the near edge instead of centring when the dot is close to one.
+        data-v={hot.y < 32 ? "top" : hot.y > 68 ? "bottom" : "center"}
+        // The flag rides on the card, not the marker: once portalled the card
+        // is no longer a descendant of .ps-hot, so a descendant selector would
+        // never match.
+        data-narrow={narrow}
+        style={narrow ? undefined : { left: toRight ? "auto" : 26, right: toRight ? 26 : "auto" }}
+      >
+        <Link href={`/p/${product.slug}`} className="flex gap-4">
+          <span className="ps-media h-[96px] w-[74px] shrink-0">
+            <img src={product.image} alt="" loading="lazy" decoding="async" />
+          </span>
+          <span className="flex min-w-0 flex-1 flex-col">
+            <span className="ps-caps" style={{ fontSize: ".5rem", color: "var(--ps-accent)" }}>
+              {product.line}
+            </span>
+            <span className="ps-display mt-1 block text-[1.05rem] leading-tight">
+              {product.name}
+            </span>
+            <span className="mt-1 text-[.72rem]" style={{ color: "var(--ps-muted)" }}>
+              {product.kicker}
+            </span>
+            <span className="mt-auto pt-2 text-[.8rem]">{money(product.price)}</span>
+          </span>
+        </Link>
+
+        <div className="mt-3 flex items-center gap-3">
+          {/* Straight into the bag: a campaign that needs a page change to buy
+              from is a lookbook, not a storefront. */}
+          {/* Taller on the sheet: 44px is the floor for a thumb, and the compact
+              desktop padding came in at 39. Set here rather than in CSS because
+              the utility class carries !important. */}
+          <button
+            type="button"
+            onClick={onAdd}
+            className={`ps-btn ps-btn-solid flex-1 !px-3 ${narrow ? "!py-4" : "!py-2.5"}`}
+          >
+            <span>{added ? "Added" : "Add to Bag"}</span>
+          </button>
+          <Link
+            href={`/p/${product.slug}`}
+            className="ps-caps ps-link ps-link-on shrink-0"
+            style={{ fontSize: ".54rem" }}
+          >
+            Details
+          </Link>
+        </div>
+      </div>
+    );
+    return narrow && typeof document !== "undefined"
+      ? createPortal(card, document.body)
+      : card;
+  };
+
   return (
     <div
       className="ps-hot"
       style={{
-        left: `${hot.x}%`,
-        top: `${hot.y}%`,
+        left: `${pos.left}%`,
+        top: `${pos.top}%`,
         ["--hot-delay" as string]: `${420 + index * 120}ms`,
         ["--arm" as string]: "0px",
       }}
       data-open={open}
       data-angle={angle}
       data-len={basePct}
+      data-narrow={narrow}
     >
       <span className="ps-hot-arm" style={{ transform: `rotate(${angle}deg)` }}>
         <span className="ps-hot-line" />
@@ -326,51 +460,13 @@ function Marker({
         aria-expanded={open}
         aria-label={`${product.name}, ${money(product.price)} — open details`}
         className="ps-hot-dot"
-      />
+      >
+        {/* With the leader lines gone there is nothing naming the marker, so
+            it carries a number that matches the row beneath the frame. */}
+        <span className="ps-hot-num">{index + 1}</span>
+      </button>
 
-      {open ? (
-        <div
-          className="ps-hot-card"
-          // Centring on the dot pushes the card outside the frame for markers
-          // near an edge — the glasses sit at 11% and hung above the top. Anchor
-          // to the near edge instead of centring when the dot is close to one.
-          data-v={hot.y < 32 ? "top" : hot.y > 68 ? "bottom" : "center"}
-          style={{ left: toRight ? "auto" : 26, right: toRight ? 26 : "auto" }}
-        >
-          <Link href={`/p/${product.slug}`} className="flex gap-4">
-            <span className="ps-media h-[96px] w-[74px] shrink-0">
-              <img src={product.image} alt="" loading="lazy" decoding="async" />
-            </span>
-            <span className="flex min-w-0 flex-1 flex-col">
-              <span className="ps-caps" style={{ fontSize: ".5rem", color: "var(--ps-accent)" }}>
-                {product.line}
-              </span>
-              <span className="ps-display mt-1 block text-[1.05rem] leading-tight">
-                {product.name}
-              </span>
-              <span className="mt-1 text-[.72rem]" style={{ color: "var(--ps-muted)" }}>
-                {product.kicker}
-              </span>
-              <span className="mt-auto pt-2 text-[.8rem]">{money(product.price)}</span>
-            </span>
-          </Link>
-
-          <div className="mt-3 flex items-center gap-3">
-            {/* Straight into the bag: a campaign that needs a page change to buy
-                from is a lookbook, not a storefront. */}
-            <button type="button" onClick={onAdd} className="ps-btn ps-btn-solid flex-1 !px-3 !py-2.5">
-              <span>{added ? "Added" : "Add to Bag"}</span>
-            </button>
-            <Link
-              href={`/p/${product.slug}`}
-              className="ps-caps ps-link ps-link-on shrink-0"
-              style={{ fontSize: ".54rem" }}
-            >
-              Details
-            </Link>
-          </div>
-        </div>
-      ) : null}
+      {open ? renderCard() : null}
     </div>
   );
 }
