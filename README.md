@@ -114,14 +114,16 @@ through to the listing, or adds straight to the bag.
   crop: `makeCropMap` undoes the `object-fit: cover` transform, so a coordinate
   on the source still lands on the garment at any frame aspect, and a marker
   cropped out of view is dropped rather than left floating at an edge.
-- On a narrow frame the markers become **26px numbered dots** with a 48px tap
-  area and no leader lines, and the card becomes a sheet pinned to the bottom of
-  the viewport. The sheet is **portalled to `<body>`**: `position: fixed`
-  resolves against the nearest transformed ancestor, and `<main>` carries a
-  transform from the page-entry animation, which threw the sheet off-screen.
-- The numbered product row under each frame matches the dot numbers. It is the
-  keyboard and screen-reader path on desktop, where an 11px dot is a poor
-  target, and a second way in on a phone.
+- On a narrow frame the leader lines go and the marker becomes a **15px pearl**
+  — paper-filled with a hairline of accent — that fills solid when open. The
+  touch target is carried by a `::before`, so the mark stays 15px while the
+  thumb gets 45px.
+- The card becomes a sheet pinned to the bottom of the viewport, **portalled to
+  `<body>`**: `position: fixed` resolves against the nearest transformed
+  ancestor, and `<main>` carries a transform from the page-entry animation,
+  which threw the sheet off-screen.
+- The product row under each frame is the keyboard and screen-reader path on
+  desktop, where an 11px dot is a poor target, and a second way in on a phone.
 
 To move a marker, edit `lib/looks.ts` — `x`/`y` are percentages of the image,
 `len` is a percentage of frame width.

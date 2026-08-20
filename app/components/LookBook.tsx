@@ -221,7 +221,7 @@ function LookFrame({
           it is the keyboard and screen-reader path, and the whole interface on
           a phone where an 11px target is not a target. */}
       <ul className="ps-norail mt-5 flex gap-3 overflow-x-auto pb-1">
-        {products.map((p, i) => (
+        {products.map((p) => (
           <li key={p.slug} className="shrink-0">
             <Link
               href={`/p/${p.slug}`}
@@ -232,14 +232,8 @@ function LookFrame({
                 <img src={p.image} alt="" loading="lazy" decoding="async" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="flex items-center gap-2">
-                  {/* matches the numbered dot on the frame */}
-                  <span className="ps-look-num" aria-hidden>
-                    {i + 1}
-                  </span>
-                  <span className="ps-display block truncate text-[.94rem] leading-tight">
-                    {p.name}
-                  </span>
+                <span className="ps-display block truncate text-[.94rem] leading-tight">
+                  {p.name}
                 </span>
                 <span className="mt-1 block text-[.72rem]" style={{ color: "var(--ps-muted)" }}>
                   {money(p.price)}
@@ -460,11 +454,7 @@ function Marker({
         aria-expanded={open}
         aria-label={`${product.name}, ${money(product.price)} — open details`}
         className="ps-hot-dot"
-      >
-        {/* With the leader lines gone there is nothing naming the marker, so
-            it carries a number that matches the row beneath the frame. */}
-        <span className="ps-hot-num">{index + 1}</span>
-      </button>
+      />
 
       {open ? renderCard() : null}
     </div>

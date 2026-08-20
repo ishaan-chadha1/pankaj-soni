@@ -1062,49 +1062,39 @@ main {
   }
 }
 
-/* The dot's number. Only shown once the leader lines are gone, where nothing
-   else would name the marker. */
-.ps-hot-num {
-  position: absolute;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.56rem;
-  line-height: 1;
-  font-weight: 400;
-  color: var(--ps-bg);
-  pointer-events: none;
-}
-
 /* Narrow frame: the crop is portrait, there is no empty frame to draw a leader
    into, and the marker has to be thumb-sized. Driven by the measured aspect
    rather than a media query, so a narrow frame on a wide screen behaves too. */
 .ps-hot[data-narrow="true"] .ps-hot-arm {
   display: none;
 }
+/* A pearl, not a badge: paper-filled with a hairline of accent around it, so it
+   reads as a piece of jewellery resting on the photograph rather than a numbered
+   sticker stamped over it. The touch target is carried by ::before, so the mark
+   stays small while the thumb target does not. */
 .ps-hot[data-narrow="true"] .ps-hot-dot {
-  width: 26px;
-  height: 26px;
-  background: var(--ps-accent);
-  border-color: var(--ps-accent);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
-}
-.ps-hot[data-narrow="true"] .ps-hot-num {
-  display: flex;
+  width: 15px;
+  height: 15px;
+  background: var(--ps-bg);
+  border: 1.5px solid var(--ps-accent);
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.26);
 }
 .ps-hot[data-narrow="true"] .ps-hot-dot::after {
-  inset: -9px;
+  inset: -8px;
+  opacity: 0;
 }
-/* Thumb target well beyond the visible dot. */
+/* Thumb target well beyond the visible dot: 15px of jewellery, 45px of target.
+   Shrinking the mark without growing this took the tap area down to 37px. */
 .ps-hot[data-narrow="true"] .ps-hot-dot::before {
   content: "";
   position: absolute;
-  inset: -11px;
+  inset: -15px;
   border-radius: 50%;
 }
 .ps-hot[data-narrow="true"][data-open="true"] .ps-hot-dot {
-  transform: translate(-50%, -50%) scale(1.18);
+  background: var(--ps-accent);
+  border-color: var(--ps-accent);
+  transform: translate(-50%, -50%) scale(1.2);
 }
 
 /* Narrow frame: the card becomes a sheet pinned to the bottom of the viewport
@@ -1132,20 +1122,6 @@ main {
     opacity: 0;
     transform: translateY(16px);
   }
-}
-
-/* Index badge on the product row, matching the dot numbers. */
-.ps-look-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 17px;
-  height: 17px;
-  border-radius: 50%;
-  font-size: 0.52rem;
-  background: var(--ps-accent);
-  color: var(--ps-bg);
-  flex-shrink: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
