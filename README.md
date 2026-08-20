@@ -114,10 +114,17 @@ through to the listing, or adds straight to the bag.
   crop: `makeCropMap` undoes the `object-fit: cover` transform, so a coordinate
   on the source still lands on the garment at any frame aspect, and a marker
   cropped out of view is dropped rather than left floating at an edge.
-- On a narrow frame the leader lines go and the marker becomes a **15px pearl**
-  — paper-filled with a hairline of accent — that fills solid when open. The
-  touch target is carried by a `::before`, so the mark stays 15px while the
-  thumb gets 45px.
+- Nothing is printed on the frame. Labels are screen-reader only: set on the
+  photograph they landed wherever the leader happened to end — over the framed
+  picture, across the lamp — and a row of pale chips reads as a diagram rather
+  than a campaign. The name lives in the card the marker opens.
+- The marker is an **open ring with a pinprick centre**, struck in ivory. A
+  filled disc sat on the model's face as a blob; a ring reads as a precise mark
+  and lets the photograph through it. Ivory rather than the theme accent because
+  the marks sit on fixed warm photography, where gold went muddy against the
+  walnut.
+- On a narrow frame the leaders go and the ring grows to 21px. The touch target
+  is carried by a `::before`, so the mark stays 21px while the thumb gets 45px.
 - The card becomes a sheet pinned to the bottom of the viewport, **portalled to
   `<body>`**: `position: fixed` resolves against the nearest transformed
   ancestor, and `<main>` carries a transform from the page-entry animation,
