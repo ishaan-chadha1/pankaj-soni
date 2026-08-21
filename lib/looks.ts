@@ -30,6 +30,11 @@ export type Look = {
   alt: string;
   eyebrow: string;
   title: string;
+  /** Frame aspect. Varied per look so three stacked landscapes do not read as
+   *  three identical bands. Markers are remapped through whatever crop results. */
+  aspect?: string;
+  /** Ken-burns drift in px, signed. Alternated so the three do not move as one. */
+  drift?: number;
   hotspots: Hotspot[];
 };
 
@@ -41,6 +46,8 @@ export const LOOKS: Look[] = [
     alt: "A model in a cream linen shirt and pleated trousers holding a black leather holdall, in a walnut-panelled room.",
     eyebrow: "Look I",
     title: "The Long Afternoon",
+    aspect: "3168 / 1344",
+    drift: -38,
     hotspots: [
       { slug: "oracle", label: "Oracle", x: 49, y: 11.5, angle: -152, len: 11 },
       { slug: "evening-shirt", label: "The Shirt", x: 50, y: 30, angle: -16, len: 12 },
@@ -56,6 +63,9 @@ export const LOOKS: Look[] = [
     alt: "A model in a cream linen shirt, leather belt and pleated trousers holding a black holdall, in a walnut-panelled room.",
     eyebrow: "Look II",
     title: "Hand in Pocket",
+    // Tighter, so the middle band breaks the rhythm of the other two.
+    aspect: "2 / 1",
+    drift: 30,
     hotspots: [
       { slug: "monolith", label: "Monolith", x: 49, y: 11, angle: -152, len: 11 },
       { slug: "evening-shirt", label: "The Shirt", x: 50, y: 30, angle: -16, len: 12 },
@@ -72,6 +82,8 @@ export const LOOKS: Look[] = [
     alt: "A model in a cream shirt and pleated trousers with a black holdall, standing in a walnut-panelled room.",
     eyebrow: "Look III",
     title: "Before the Car",
+    aspect: "3168 / 1344",
+    drift: -34,
     hotspots: [
       { slug: "monolith", label: "Monolith", x: 48, y: 11, angle: -152, len: 11 },
       { slug: "evening-shirt", label: "The Shirt", x: 50, y: 30, angle: -16, len: 12 },

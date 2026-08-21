@@ -31,6 +31,40 @@ export default function LookBook() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  /*
+   * Ken-burns, driven continuously rather than triggered.
+   *
+   * One rAF loop writes a --p per frame (-1 above the fold, +1 below), and CSS
+   * multiplies it by that look's drift. A single shared loop rather than one
+   * per frame: three independent scroll listeners on the same page is three
+   * layout reads a frame for no benefit.
+   */
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const tick = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      document.querySelectorAll<HTMLElement>(".ps-look").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) return;
+        const p = (r.top + r.height / 2 - vh / 2) / vh;
+        el.style.setProperty("--p", Math.max(-1.2, Math.min(1.2, p)).toFixed(3));
+      });
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    tick();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   return (
     <section aria-label="Autumn campaign — shop the looks">
       {LOOKS.map((look, i) => (
@@ -188,7 +222,8 @@ function LookFrame({
         // an inline value outranks the media query that crops to portrait on
         // phones, and the frame stayed 142px tall.
         style={{
-          ["--look-aspect" as string]: LOOK_ASPECT,
+          ["--look-aspect" as string]: look.aspect ?? LOOK_ASPECT,
+          ["--drift" as string]: `${look.drift ?? -34}px`,
           background: "var(--ps-bg-alt)",
         }}
       >

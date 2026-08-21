@@ -106,6 +106,33 @@ through to the listing, or adds straight to the bag.
   resolves each arm to px after layout and shortens it until the label sits
   inside the frame. Direction and tilt come from the marker's position, so a
   marker near an edge points inward automatically.
+### How the banners move
+
+Four things, all on a flat still — there are no depth layers to parallax, so
+nothing pretends there are.
+
+- **A slow raking light.** A soft warm band drifts across each frame on a 17s
+  loop, blended with `screen` so it lifts the highlights instead of fogging the
+  image. This is what stops a still photograph reading as dead.
+- **Ken-burns, scroll-linked not triggered.** One shared rAF loop writes a `--p`
+  per frame (-1 above the fold, +1 below) and CSS multiplies it by that look's
+  drift. One loop for all three: three scroll listeners on one page is three
+  layout reads a frame for no benefit.
+- **A cinematic entry.** The frame opens from a hairline at its own centre line
+  on `clip-path`, while the image settles from 1.15 to 1.06.
+  - The image relies on the **individual** `scale` and `translate` properties
+    rather than the `transform` shorthand. That is the whole reason two motions
+    can share it: `scale` settles once under its own transition while
+    `translate` tracks scroll continuously. Written as one `transform` they
+    would overwrite each other.
+- **Film grain that drifts** in discrete steps rather than sliding. A smooth
+  translate reads as paper moving; discrete jumps read as film.
+
+Each look carries its own `aspect` and `drift`, alternating, so three stacked
+landscapes do not read as three identical bands — Look II is deliberately
+tighter at 2:1. Changing an aspect changes the crop, and the markers follow it
+automatically through `makeCropMap`.
+
 - Lines **draw on scroll-in, then retract** after a beat. Hover, focus or an
   open card brings an individual one back. Six permanent labels compete with
   the photograph; the settle gives the frame back.
