@@ -106,6 +106,32 @@ through to the listing, or adds straight to the bag.
   resolves each arm to px after layout and shortens it until the label sits
   inside the frame. Direction and tilt come from the marker's position, so a
   marker near an edge points inward automatically.
+- Lines **draw on scroll-in, then retract** after a beat. Hover, focus or an
+  open card brings an individual one back. Six permanent labels compete with
+  the photograph; the settle gives the frame back.
+- On phones the frame **crops to 4:5** (16:10 on tablets) — a 2.36:1 frame at
+  375px is 142px tall and the model ends up unreadable. The markers survive the
+  crop: `makeCropMap` undoes the `object-fit: cover` transform, so a coordinate
+  on the source still lands on the garment at any frame aspect, and a marker
+  cropped out of view is dropped rather than left floating at an edge.
+- Nothing is printed on the frame. Labels are screen-reader only: set on the
+  photograph they landed wherever the leader happened to end — over the framed
+  picture, across the lamp — and a row of pale chips reads as a diagram rather
+  than a campaign. The name lives in the card the marker opens.
+- The marker is an **open ring with a pinprick centre**, struck in ivory. A
+  filled disc sat on the model's face as a blob; a ring reads as a precise mark
+  and lets the photograph through it. Ivory rather than the theme accent because
+  the marks sit on fixed warm photography, where gold went muddy against the
+  walnut.
+- On a narrow frame the leaders go and the ring grows to 21px. The touch target
+  is carried by a `::before`, so the mark stays 21px while the thumb gets 45px.
+- The card becomes a sheet pinned to the bottom of the viewport, **portalled to
+  `<body>`**: `position: fixed` resolves against the nearest transformed
+  ancestor, and `<main>` carries a transform from the page-entry animation,
+  which threw the sheet off-screen.
+- The product row under each frame is the keyboard and screen-reader path on
+  desktop, where an 11px dot is a poor target, and a second way in on a phone.
+
 ### How the banners move
 
 Four things, all on a flat still — there are no depth layers to parallax, so
@@ -132,32 +158,6 @@ Each look carries its own `aspect` and `drift`, alternating, so three stacked
 landscapes do not read as three identical bands — Look II is deliberately
 tighter at 2:1. Changing an aspect changes the crop, and the markers follow it
 automatically through `makeCropMap`.
-
-- Lines **draw on scroll-in, then retract** after a beat. Hover, focus or an
-  open card brings an individual one back. Six permanent labels compete with
-  the photograph; the settle gives the frame back.
-- On phones the frame **crops to 4:5** (16:10 on tablets) — a 2.36:1 frame at
-  375px is 142px tall and the model ends up unreadable. The markers survive the
-  crop: `makeCropMap` undoes the `object-fit: cover` transform, so a coordinate
-  on the source still lands on the garment at any frame aspect, and a marker
-  cropped out of view is dropped rather than left floating at an edge.
-- Nothing is printed on the frame. Labels are screen-reader only: set on the
-  photograph they landed wherever the leader happened to end — over the framed
-  picture, across the lamp — and a row of pale chips reads as a diagram rather
-  than a campaign. The name lives in the card the marker opens.
-- The marker is an **open ring with a pinprick centre**, struck in ivory. A
-  filled disc sat on the model's face as a blob; a ring reads as a precise mark
-  and lets the photograph through it. Ivory rather than the theme accent because
-  the marks sit on fixed warm photography, where gold went muddy against the
-  walnut.
-- On a narrow frame the leaders go and the ring grows to 21px. The touch target
-  is carried by a `::before`, so the mark stays 21px while the thumb gets 45px.
-- The card becomes a sheet pinned to the bottom of the viewport, **portalled to
-  `<body>`**: `position: fixed` resolves against the nearest transformed
-  ancestor, and `<main>` carries a transform from the page-entry animation,
-  which threw the sheet off-screen.
-- The product row under each frame is the keyboard and screen-reader path on
-  desktop, where an 11px dot is a poor target, and a second way in on a phone.
 
 To move a marker, edit `lib/looks.ts` — `x`/`y` are percentages of the image,
 `len` is a percentage of frame width.
