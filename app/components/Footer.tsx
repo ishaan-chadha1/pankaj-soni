@@ -7,7 +7,7 @@ const COLS = [
     links: [
       { label: "Our Story", href: "/world" },
       { label: "The Atelier", href: "/world" },
-      { label: "The Olfactory Engine", href: "/atelier" },
+      { label: "The Cloth Room", href: "/atelier" },
       { label: "Sustainability", href: "/world" },
       { label: "Careers", href: "/world" },
     ],
@@ -15,8 +15,8 @@ const COLS = [
   {
     title: "Shop",
     links: [
-      { label: "Fragrance", href: "/c/fragrance" },
-      { label: "Beauty", href: "/c/beauty" },
+      { label: "Women", href: "/c/women" },
+      { label: "Men", href: "/c/men" },
       { label: "Eyewear", href: "/c/eyewear" },
       { label: "Women", href: "/c/women" },
       { label: "Men", href: "/c/men" },
@@ -63,8 +63,8 @@ export default function Footer() {
 
           <div className="lg:pt-14">
             <p className="max-w-[46ch] text-[.9rem] font-light" style={{ color: "var(--ps-muted)" }}>
-              New compositions, limited flacons and appointment-only evenings — sent
-              rarely, and never to a list we did not build ourselves.
+              New cloth, capped runs and appointment-only evenings — sent rarely,
+              and never to a list we did not build ourselves.
             </p>
             <form className="mt-8 flex items-end gap-4">
               <input

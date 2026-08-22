@@ -17,76 +17,90 @@ type MenuDef = {
 
 const MENU: MenuDef[] = [
   {
-    label: "Fragrance",
-    href: "/c/fragrance",
+    label: "Women",
+    href: "/c/women",
     cols: [
       {
-        title: "Private Atelier",
+        title: "Ready-to-Wear",
         links: [
-          { label: "Noir Impérial", href: "/p/noir-imperial" },
-          { label: "Oud Silence", href: "/p/oud-silence" },
-          { label: "Velvet Saffron", href: "/p/velvet-saffron" },
-          { label: "Rose Privé", href: "/p/rose-prive" },
-          { label: "White Oud", href: "/p/white-oud" },
+          { label: "Atelier Tuxedo Dress", href: "/p/atelier-tuxedo-dress" },
+          { label: "Liquid Column Gown", href: "/p/liquid-column-gown" },
+          { label: "Bias Slip Skirt", href: "/p/silk-slip-skirt" },
+          { label: "The Poplin Shirt", href: "/p/poplin-shirt" },
         ],
       },
       {
-        title: "By Family",
+        title: "Tailoring & Knitwear",
         links: [
-          { label: "Leather & Incense", href: "/c/fragrance" },
-          { label: "Oud & Resins", href: "/c/fragrance" },
-          { label: "Amber & Spice", href: "/c/fragrance" },
-          { label: "Wood & Moss", href: "/c/fragrance" },
-        ],
-      },
-      {
-        title: "The Maison",
-        links: [
-          { label: "Discovery Coffret", href: "/p/private-atelier-coffret" },
-          { label: "Candles", href: "/p/noir-candle" },
-          { label: "Refill Service", href: "/world" },
-          { label: "The Olfactory Engine", href: "/atelier" },
-        ],
-      },
-    ],
-    feature: {
-      image: "/img/p-ed-01.svg",
-      eyebrow: "New Composition",
-      title: "Velvet Saffron",
-      href: "/p/velvet-saffron",
-    },
-  },
-  {
-    label: "Beauty",
-    href: "/c/beauty",
-    cols: [
-      {
-        title: "Lip",
-        links: [
-          { label: "Rouge Couture", href: "/p/rouge-couture-noir" },
-          { label: "All Lip", href: "/c/beauty" },
-        ],
-      },
-      {
-        title: "Eye & Cheek",
-        links: [
-          { label: "Noir Kohl", href: "/p/noir-kohl" },
-          { label: "Velours Cheek", href: "/p/velours-cheek" },
-        ],
-      },
-      {
-        title: "Skin",
-        links: [
-          { label: "Peau Serum", href: "/p/peau-serum" },
-          { label: "All Skin", href: "/c/beauty" },
+          { label: "Wide-Leg Trouser", href: "/p/wide-leg-trouser" },
+          { label: "Wrap Cardigan", href: "/p/cashmere-wrap-cardigan" },
+          { label: "Fine Roll Neck", href: "/p/merino-roll-neck" },
+          { label: "All Women", href: "/c/women" },
         ],
       },
     ],
     feature: {
       image: "/img/p-ed-03.svg",
-      eyebrow: "Colour Study",
-      title: "Against the Neutral",
+      eyebrow: "Ready-to-Wear",
+      title: "An unbroken line",
+      href: "/c/women",
+    },
+  },
+  {
+    label: "Men",
+    href: "/c/men",
+    cols: [
+      {
+        title: "Tailoring",
+        links: [
+          { label: "Shawl Collar Dinner Jacket", href: "/p/shawl-collar-dinner-jacket" },
+          { label: "Single-Breasted Suit", href: "/p/single-breasted-suit" },
+          { label: "Pleated Trouser", href: "/p/pleated-trouser" },
+        ],
+      },
+      {
+        title: "Shirting & Knitwear",
+        links: [
+          { label: "Pleated Evening Shirt", href: "/p/evening-shirt" },
+          { label: "Oxford Shirt", href: "/p/oxford-shirt" },
+          { label: "Cashmere Crewneck", href: "/p/cashmere-crewneck" },
+          { label: "Noir Chelsea Boot", href: "/p/noir-chelsea-boot" },
+        ],
+      },
+    ],
+    feature: {
+      image: "/img/look/look-02.jpg",
+      eyebrow: "Tailoring",
+      title: "The Shoulder",
       href: "/world",
+    },
+  },
+  {
+    label: "Outerwear",
+    href: "/c/outerwear",
+    cols: [
+      {
+        title: "Coats",
+        links: [
+          { label: "Double-Face Overcoat", href: "/p/double-face-overcoat" },
+          { label: "Unstructured Topcoat", href: "/p/unstructured-topcoat" },
+          { label: "Belted Trench", href: "/p/belted-trench" },
+        ],
+      },
+      {
+        title: "Shorter",
+        links: [
+          { label: "Shearling Blouson", href: "/p/shearling-blouson" },
+          { label: "All Outerwear", href: "/c/outerwear" },
+          { label: "The Cloth Room", href: "/atelier" },
+        ],
+      },
+    ],
+    feature: {
+      image: "/img/p-cat-outerwear.svg",
+      eyebrow: "Outerwear",
+      title: "Forty hours a coat",
+      href: "/c/outerwear",
     },
   },
   {
@@ -118,49 +132,24 @@ const MENU: MenuDef[] = [
     },
   },
   {
-    label: "Women",
-    href: "/c/women",
+    label: "Leather",
+    href: "/c/leather",
     cols: [
-      {
-        title: "Ready-to-Wear",
-        links: [
-          { label: "Atelier Tuxedo Dress", href: "/p/atelier-tuxedo-dress" },
-          { label: "Liquid Column Gown", href: "/p/liquid-column-gown" },
-        ],
-      },
       {
         title: "Leather Goods",
-        links: [{ label: "Opera Clutch", href: "/p/opera-clutch" }],
-      },
-    ],
-    feature: {
-      image: "/img/p-cat-women.svg",
-      eyebrow: "Ready-to-Wear",
-      title: "An unbroken line",
-      href: "/c/women",
-    },
-  },
-  {
-    label: "Men",
-    href: "/c/men",
-    cols: [
-      {
-        title: "Tailoring",
         links: [
-          { label: "Shawl Collar Dinner Jacket", href: "/p/shawl-collar-dinner-jacket" },
-          { label: "Pleated Evening Shirt", href: "/p/evening-shirt" },
+          { label: "Weekend Holdall", href: "/p/weekend-holdall" },
+          { label: "Opera Clutch", href: "/p/opera-clutch" },
+          { label: "Document Case", href: "/p/document-case" },
+          { label: "Woven Belt", href: "/p/woven-belt" },
         ],
       },
-      {
-        title: "Footwear",
-        links: [{ label: "Noir Chelsea Boot", href: "/p/noir-chelsea-boot" }],
-      },
     ],
     feature: {
-      image: "/img/p-cat-men.svg",
-      eyebrow: "Tailoring",
-      title: "The Shoulder",
-      href: "/world",
+      image: "/img/look/look-03.jpg",
+      eyebrow: "Leather Goods",
+      title: "Box calf, brass, nothing to prove",
+      href: "/c/leather",
     },
   },
   {
@@ -170,8 +159,9 @@ const MENU: MenuDef[] = [
       {
         title: "Gifting",
         links: [
-          { label: "Private Atelier Coffret", href: "/p/private-atelier-coffret" },
-          { label: "Noir Impérial Candle", href: "/p/noir-candle" },
+          { label: "Cashmere Scarf", href: "/p/cashmere-scarf" },
+          { label: "Cashmere-Lined Gloves", href: "/p/leather-gloves" },
+          { label: "Grenadine Tie", href: "/p/silk-tie" },
         ],
       },
     ],
@@ -276,7 +266,7 @@ export default function Header() {
           fontSize: ".56rem",
         }}
       >
-        <span>Complimentary shipping and returns — engraving on all flacons</span>
+        <span>Complimentary shipping and returns — alterations for the life of the piece</span>
       </div>
 
       <header
@@ -443,7 +433,7 @@ export default function Header() {
           </div>
           <input
             className="ps-field ps-display mt-8 text-[2rem] sm:text-[2.8rem]"
-            placeholder="Fragrance, tailoring, eyewear…"
+            placeholder="Tailoring, outerwear, eyewear…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             autoComplete="off"
@@ -506,7 +496,7 @@ export default function Header() {
             </Link>
           ))}
           <Link href="/atelier" className="ps-display block py-4 text-[2rem]" style={{ color: "var(--ps-accent)" }}>
-            The Olfactory Engine
+            The Cloth Room
           </Link>
           <Link href="/world" className="ps-caps mt-6 block py-2" style={{ color: "var(--ps-muted)" }}>
             The Maison

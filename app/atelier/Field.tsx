@@ -89,12 +89,12 @@ const fragment = /* glsl */ `
 
     float f = fbm(uv * 1.45 + uTurb * r);
 
-    // the cursor displaces the field like a hand through smoke
+    // the cursor displaces the field like a hand across cloth
     float md = length(uv - mouse);
     f += 0.15 * exp(-md * 2.7) * sin(uTime * 0.75 - md * 7.0);
 
     // Light-first composition: rather than painting smoke onto black, this
-    // TINTS paper. Each accord pulls the sheet a limited distance from white,
+    // TINTS paper. Each material pulls the sheet a limited distance from white,
     // which is what keeps the field luminous instead of muddy.
     vec3 paper = vec3(0.980, 0.969, 0.949);
 

@@ -187,36 +187,36 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
       </section>
 
       {/* ── notes pyramid ── */}
-      {product.notes ? (
+      {product.spec ? (
         <section style={{ background: "var(--ps-bg-alt)", borderTop: "1px solid var(--ps-line)" }}>
           <div className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
             <div className="mb-14 text-center">
               <Reveal>
                 <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-                  The Composition
+                  How it is made
                 </p>
               </Reveal>
               <MaskLines
             as="h2"
                 className="ps-display mt-5 text-[2.2rem] sm:text-[3rem]"
                 delay={80}
-                lines={["Read from the top down"]}
+                lines={["Cloth, cut and finish"]}
               />
             </div>
 
             <div className="mx-auto grid max-w-[1100px] gap-10 md:grid-cols-3">
-              {(["head", "heart", "base"] as const).map((k, i) => (
+              {(["cloth", "cut", "finish"] as const).map((k, i) => (
                 <Reveal key={k} delay={stagger(i)}>
                   <div className="text-center">
                     <p className="ps-display text-[2.6rem] leading-none" style={{ color: "var(--ps-faint)" }}>
                       0{i + 1}
                     </p>
                     <p className="ps-caps mt-4" style={{ color: "var(--ps-accent)" }}>
-                      {k === "head" ? "Top Notes" : k === "heart" ? "Heart" : "Base"}
+                      {k === "cloth" ? "Cloth" : k === "cut" ? "Cut" : "Finish"}
                     </p>
                     <hr className="ps-rule mx-auto my-6 w-16" />
                     <ul className="space-y-2 text-[.9rem] font-light" style={{ color: "var(--ps-muted)" }}>
-                      {product.notes![k].map((n) => (
+                      {product.spec![k].map((n: string) => (
                         <li key={n}>{n}</li>
                       ))}
                     </ul>

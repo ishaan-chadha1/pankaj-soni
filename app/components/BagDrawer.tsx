@@ -67,10 +67,10 @@ export default function BagDrawer() {
             <div className="flex h-full flex-col items-center justify-center text-center">
               <p className="ps-display text-[1.7rem]">Your bag is empty</p>
               <p className="mt-3 max-w-[26ch] text-[.84rem]" style={{ color: "var(--ps-muted)" }}>
-                Begin with the Private Atelier — eight compositions, one signature.
+                Begin with the outerwear — the pieces the house is best known for.
               </p>
-              <Link href="/c/fragrance" onClick={() => setOpen(false)} className="ps-btn mt-8">
-                <span>Discover Fragrance</span>
+              <Link href="/c/outerwear" onClick={() => setOpen(false)} className="ps-btn mt-8">
+                <span>Discover Outerwear</span>
               </Link>
             </div>
           ) : (

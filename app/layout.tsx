@@ -43,23 +43,23 @@ const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://pankajsoni.example").
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
-    default: "PANKAJ SONI — Fragrance, Beauty, Eyewear & Tailoring",
+    default: "PANKAJ SONI — Tailoring, Outerwear, Eyewear & Leather",
     template: "%s | PANKAJ SONI",
   },
   description:
-    "The house of PANKAJ SONI. Private Atelier fragrance, colour, eyewear and evening tailoring — made in small numbers, shipped worldwide.",
+    "The house of PANKAJ SONI. Tailoring, outerwear, knitwear, eyewear and leather — cut in small numbers, shipped worldwide.",
   openGraph: {
     type: "website",
     siteName: "PANKAJ SONI",
-    title: "PANKAJ SONI — Fragrance, Beauty, Eyewear & Tailoring",
+    title: "PANKAJ SONI — Tailoring, Outerwear, Eyewear & Leather",
     description:
-      "Private Atelier fragrance, colour, eyewear and evening tailoring — made in small numbers.",
+      "Tailoring, outerwear, knitwear, eyewear and leather — cut in small numbers.",
     images: [{ url: "/img/og.png", width: 1200, height: 630, alt: "PANKAJ SONI" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "PANKAJ SONI",
-    description: "Private Atelier fragrance, colour, eyewear and evening tailoring.",
+    description: "Tailoring, outerwear, knitwear, eyewear and leather.",
     images: ["/img/og.png"],
   },
   alternates: { canonical: "/" },

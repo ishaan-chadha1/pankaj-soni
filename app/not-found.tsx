@@ -32,8 +32,8 @@ export default function NotFound() {
           <Link href="/" className="ps-btn ps-btn-solid">
             <span>Return to the Maison</span>
           </Link>
-          <Link href="/c/fragrance" className="ps-btn">
-            <span>Shop Fragrance</span>
+          <Link href="/c/outerwear" className="ps-btn">
+            <span>Shop Outerwear</span>
           </Link>
         </div>
       </div>

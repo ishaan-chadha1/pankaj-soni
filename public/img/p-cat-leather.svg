@@ -11,13 +11,13 @@
 </filter>
   <filter id="pb8" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="88"/></filter>
   <linearGradient id="bg8" x1="0" y1="0" x2=".55" y2="1">
-    <stop offset="0" stop-color="#fdf8f8"/>
-    <stop offset="1" stop-color="#f2dcdd"/>
+    <stop offset="0" stop-color="#fdf9f4"/>
+    <stop offset="1" stop-color="#e8d9c4"/>
   </linearGradient>
   <radialGradient id="key8" cx=".6" cy=".28" r=".72">
     <stop offset="0" stop-color="#ffffff" stop-opacity=".92"/>
     <stop offset=".5" stop-color="#ffffff" stop-opacity=".24"/>
-    <stop offset="1" stop-color="#c58592" stop-opacity=".1"/>
+    <stop offset="1" stop-color="#a67c4e" stop-opacity=".1"/>
   </radialGradient>
   <!-- a whisper of edge shading, so the plate has a body rather than reading flat -->
   <radialGradient id="vig8" cx=".5" cy=".48" r=".76">
@@ -30,7 +30,7 @@
   <rect width="1600" height="900" fill="url(#bg8)"/>
   <g filter="url(#pb8)">
     <ellipse cx="992" cy="378" rx="576" ry="396" fill="#ffffff" opacity=".5"/>
-    <ellipse cx="480" cy="612" rx="512" ry="288" fill="#f2dcdd" opacity=".42"/></g>
+    <ellipse cx="480" cy="612" rx="512" ry="288" fill="#e8d9c4" opacity=".42"/></g>
   <rect width="1600" height="900" fill="url(#key8)"/>
 </g>
 <rect width="1600" height="900" fill="url(#vig8)"/>

@@ -51,15 +51,15 @@ export default function BagView() {
         </p>
         <h1 className="ps-display mt-6 text-[2.6rem] sm:text-[3.6rem]">Nothing here yet</h1>
         <p className="mt-4 max-w-[38ch] text-[.92rem] font-light" style={{ color: "var(--ps-muted)" }}>
-          The Private Atelier coffret is where most clients begin — eight compositions,
-          redeemable against any full flacon.
+          The overcoat is where most clients begin — forty hours of hand-joining,
+          and the piece the house is best known for.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <Link href="/p/private-atelier-coffret" className="ps-btn ps-btn-solid">
-            <span>The Coffret</span>
+          <Link href="/p/double-face-overcoat" className="ps-btn ps-btn-solid">
+            <span>The Overcoat</span>
           </Link>
-          <Link href="/c/fragrance" className="ps-btn">
-            <span>All Fragrance</span>
+          <Link href="/c/outerwear" className="ps-btn">
+            <span>All Outerwear</span>
           </Link>
         </div>
       </div>
@@ -145,7 +145,7 @@ export default function BagView() {
           </ul>
 
           <div style={{ borderTop: "1px solid var(--ps-line)" }} className="pt-8">
-            <Link href="/c/fragrance" className="ps-caps ps-link ps-link-on">
+            <Link href="/c/women" className="ps-caps ps-link ps-link-on">
               Continue Shopping
             </Link>
           </div>
@@ -243,7 +243,7 @@ export default function BagView() {
           <div className="mt-6 space-y-3 px-2 text-[.76rem] font-light" style={{ color: "var(--ps-muted)" }}>
             <p>— Complimentary express delivery above {money(250)}</p>
             <p>— Complimentary returns within 30 days</p>
-            <p>— Engraving available on all Private Atelier flacons</p>
+            <p>— Complimentary alterations for the life of the piece</p>
           </div>
         </aside>
       </div>

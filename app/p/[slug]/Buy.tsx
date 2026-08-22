@@ -8,8 +8,11 @@ export default function Buy({ product }: { product: Product }) {
   const { add } = useCart();
   // Default to the 50 ml / mid size where there is one — the size a buyer
   // actually wants preselected, rather than the cheapest.
+  // Preselect a mid size rather than the smallest — the one a buyer is most
+  // likely to want, and the one that reads as the default in a size run.
   const initial =
-    product.variants.find((v) => v.id === "50")?.id ?? product.variants[0].id;
+    product.variants[Math.floor((product.variants.length - 1) / 2)]?.id ??
+    product.variants[0].id;
 
   const [variantId, setVariantId] = useState(initial);
   const [qty, setQty] = useState(1);
@@ -39,7 +42,7 @@ export default function Buy({ product }: { product: Product }) {
       {product.variants.length > 1 ? (
         <div className="mt-9">
           <p className="ps-caps mb-4" style={{ fontSize: ".56rem", color: "var(--ps-accent)" }}>
-            {shades ? "Shade" : product.category === "fragrance" ? "Size" : "Size"}
+            {shades ? "Colour" : "Size"}
           </p>
 
           {shades ? (

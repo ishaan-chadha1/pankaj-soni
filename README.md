@@ -1,7 +1,7 @@
 # PANKAJ SONI
 
-A luxury maison storefront — fragrance, beauty, eyewear and tailoring — with an
-interactive WebGL fragrance instrument.
+A luxury apparel maison — tailoring, outerwear, knitwear, eyewear and leather —
+with an interactive WebGL cloth instrument.
 
 **PANKAJ SONI is a fictional house.** The name is used the way any couture label
 uses a founder's name: as a wordmark. Nothing here describes, depicts or relates
@@ -76,11 +76,11 @@ npm run build:static
 app/
   layout.tsx           root layout: fonts, metadata, chrome
   page.tsx             home
-  c/[category]/        6 category listings, with filter + sort + density
-  p/[slug]/            27 product pages
+  c/[category]/        Women, Men, Outerwear, Eyewear, Leather, Gifts
+  p/[slug]/            29 product pages
   bag/  checkout/      bag and a 4-step checkout
   world/               the maison story
-  atelier/             the WebGL fragrance instrument
+  atelier/             the WebGL cloth instrument
   components/          header, footer, cart drawer, cursor, preloader…
   CartProvider.tsx     cart state, persisted to localStorage
   globals.css          design tokens + component classes
@@ -200,7 +200,7 @@ How it fits together:
 
 ## The imagery
 
-All 30 assets are generated. Rerun after editing the script:
+All 18 assets are generated. Rerun after editing the script:
 
 ```bash
 npm run assets
@@ -211,12 +211,9 @@ catalogue photography on paper and one asset set works under all six palettes.
 Plates are tied to the active accent in CSS with a `multiply` tint (`.ps-tint`)
 rather than by generating six variants of every file.
 
-- **Flacons** — SVG, drawn from primitives: layered glass gradients, a specular
-  column, a hot edge, and a five-stop metal ramp for the cap. Four silhouettes so
-  eight fragrances don't read as one bottle in eight colours. On a light ground
-  glass reads by its *edges*, so the gradients are built around bright rims and a
-  translucent core rather than a dark body.
-- **Eyewear / cosmetics** — same approach, different geometry.
+- **Eyewear** — SVG, drawn from primitives: layered lens gradients, a frame ramp
+  and specular streaks across the glass. On a light ground glass reads by its
+  *edges*, so the gradients are built around bright rims and a translucent core.
 - **Campaign plates** — pale washes with `feTurbulence` grain and a soft key
   light, kept low-contrast so display type sits over them without a heavy scrim.
 - **`og.png`** — encoded as a real PNG (raw scanlines → `zlib.deflate` → IHDR/IDAT/IEND),
@@ -225,11 +222,12 @@ rather than by generating six variants of every file.
 Everything is text-free by design: an SVG loaded through `<img>` cannot reach a
 webfont, so all typography lives in the HTML on top.
 
-## The Olfactory Engine (`/atelier`)
+## The Cloth Room (`/atelier`)
 
-Pick a top, a heart and a base; a fragment shader renders the composition live.
-Colour comes from the materials, turbulence from their volatility, and the field
-displaces under the cursor. It is domain-warped fbm with two warp passes — the
+Pick a fibre, a weave and a finish; a fragment shader renders the cloth live.
+Colour comes from the fibre, movement from how it drapes, light from how it is
+finished, and the field displaces under the cursor. A heavier cloth moves less
+and throws back more light. It is domain-warped fbm with two warp passes — the
 second bends the first, which is what produces long silk-like filaments instead
 of uniform cloud. Uniforms are lerped in `useFrame`, so changing a note morphs
 the field rather than cutting to it.

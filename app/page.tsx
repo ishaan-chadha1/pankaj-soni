@@ -8,10 +8,10 @@ import LookBook from "./components/LookBook";
 import { stagger } from "@/lib/motion";
 
 const MARQUEE = [
-  "Private Atelier",
+  "Cut in small numbers",
   "Made in small numbers",
-  "Composed in Grasse",
-  "Refillable flacons",
+  "Cut in Italy and Scotland",
+  "Cloth chosen first",
   "Engraving on request",
   "Appointment only",
 ];
@@ -19,16 +19,16 @@ const MARQUEE = [
 
 const SERVICES = [
   { t: "Complimentary Delivery", d: "Express worldwide on every order above $250, in signature lacquer." },
-  { t: "Engraving", d: "Up to sixteen characters, hand-set on any flacon in the Private Atelier." },
+  { t: "Alterations", d: "Complimentary for the life of any tailored piece bought from the maison." },
   { t: "The Refill Service", d: "Return any décanteur to a boutique and have it filled, not replaced." },
   { t: "Private Appointment", d: "An hour with a consultant, in the boutique or by video, at no charge." },
 ];
 
 export default function PsHome() {
-  const hero = bySlug("noir-imperial")!;
+  const hero = bySlug("double-face-overcoat")!;
   const rail = featured();
   const triptych = CATEGORIES.filter((c) =>
-    ["fragrance", "women", "eyewear"].includes(c.slug)
+    ["women", "men", "outerwear"].includes(c.slug)
   );
 
   return (
@@ -58,8 +58,8 @@ export default function PsHome() {
         <div className="mt-9 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <Reveal delay={420}>
             <p className="max-w-[44ch] text-[.95rem] font-light" style={{ color: "var(--ps-muted)" }}>
-              Eight compositions built on leather, oud and incense — matured eleven
-              weeks before a single flacon is filled.
+              Cloth chosen before the cut, and a shoulder that has not changed
+              since the house opened.
             </p>
           </Reveal>
 
@@ -68,7 +68,7 @@ export default function PsHome() {
               <span>Shop the Look</span>
             </Link>
             <Link href="/atelier" className="ps-btn">
-              <span>The Olfactory Engine</span>
+              <span>The Cloth Room</span>
             </Link>
           </Reveal>
         </div>
@@ -105,7 +105,7 @@ export default function PsHome() {
             lines={["The House"]}
           />
           <Reveal delay={120}>
-            <Link href="/c/fragrance" className="ps-caps ps-link ps-link-on">
+            <Link href="/c/women" className="ps-caps ps-link ps-link-on">
               View Everything
             </Link>
           </Reveal>
@@ -175,16 +175,16 @@ export default function PsHome() {
               </p>
             </Reveal>
 
-            {hero.notes ? (
+            {hero.spec ? (
               <Reveal delay={320}>
                 <dl className="mt-12 grid gap-8 sm:grid-cols-3">
-                  {(["head", "heart", "base"] as const).map((k) => (
+                  {(["cloth", "cut", "finish"] as const).map((k) => (
                     <div key={k} style={{ borderTop: "1px solid var(--ps-line)" }} className="pt-4">
                       <dt className="ps-caps mb-3" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
-                        {k === "head" ? "Top" : k === "heart" ? "Heart" : "Base"}
+                        {k === "cloth" ? "Cloth" : k === "cut" ? "Cut" : "Finish"}
                       </dt>
                       <dd className="space-y-1.5 text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>
-                        {hero.notes![k].map((n) => (
+                        {hero.spec![k].map((n: string) => (
                           <p key={n}>{n}</p>
                         ))}
                       </dd>

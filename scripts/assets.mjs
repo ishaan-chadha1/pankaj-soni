@@ -1,8 +1,8 @@
 /**
  * Generates every image the PANKAJ SONI store uses, as original SVG.
  *
- * Nothing here is scraped or traced from another brand — the flacons, lenses
- * and campaign plates are all drawn from primitives, which also means they stay
+ * Nothing here is scraped or traced from another brand — the lenses and
+ * campaign plates are all drawn from primitives, which also means they stay
  * a few KB each and never 404. Deliberately text-free: SVGs loaded through
  * <img> can't reach a webfont, so all typography lives in the HTML on top.
  *
@@ -65,130 +65,6 @@ const ground = (tone = "warm", glow = "#c9a961") => {
   </radialGradient>`;
 };
 
-/* ────────────────────────────  FLACONS  ──────────────────────────── */
-
-/**
- * A couture flacon shot on paper. `shape` swaps the silhouette so the eight
- * fragrances don't read as one bottle in eight colours.
- */
-function flacon({ liquid, liquidDeep, shape = "slab", metal = "gold", tone = "warm" }) {
-  const W = 900;
-  const H = 1200;
-
-  const metals = {
-    gold: ["#9a7c3e", "#e0c383", "#fdf6e4", "#c9a961", "#8a6d33"],
-    silver: ["#8f959c", "#d5dae0", "#ffffff", "#b4bac1", "#858b92"],
-    onyx: ["#4a4a4d", "#8d8d92", "#c9c9ce", "#6d6d72", "#3d3d40"],
-  };
-  const m = metals[metal] ?? metals.gold;
-
-  const S = {
-    slab: { top: 330, bw: 470, capW: 210, capH: 132, r: 10, neck: 66 },
-    tower: { top: 250, bw: 360, capW: 176, capH: 178, r: 6, neck: 82 },
-    orb: { top: 380, bw: 520, capW: 190, capH: 118, r: 190, neck: 58 },
-    facet: { top: 300, bw: 440, capW: 232, capH: 120, r: 4, neck: 72 },
-  }[shape];
-
-  const cx = W / 2;
-  const bodyX = cx - S.bw / 2;
-  const bodyH = H - 150 - S.top;
-  const capX = cx - S.capW / 2;
-  const neckY = S.top - S.neck;
-
-  return svg(
-    W,
-    H,
-    `
-<defs>
-  ${ground(tone, liquid)}
-  ${grain("fg", 0.26, 1.0)}
-  ${blur("bA", 30)}
-  ${blur("bB", 9)}
-  ${blur("bS", 22)}
-
-  <!-- Glass on a light ground reads by its EDGES: bright rims, a translucent
-       core, and a deeper shoulder where the wall thickens. -->
-  <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0"    stop-color="${liquidDeep}" stop-opacity=".72"/>
-    <stop offset=".07"  stop-color="#ffffff" stop-opacity=".82"/>
-    <stop offset=".22"  stop-color="${liquid}" stop-opacity=".78"/>
-    <stop offset=".5"   stop-color="${liquid}" stop-opacity=".92"/>
-    <stop offset=".78"  stop-color="${liquid}" stop-opacity=".76"/>
-    <stop offset=".93"  stop-color="#ffffff" stop-opacity=".78"/>
-    <stop offset="1"    stop-color="${liquidDeep}" stop-opacity=".70"/>
-  </linearGradient>
-
-  <linearGradient id="depth" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0"   stop-color="#ffffff" stop-opacity=".55"/>
-    <stop offset=".28" stop-color="#ffffff" stop-opacity=".06"/>
-    <stop offset=".84" stop-color="${liquidDeep}" stop-opacity=".22"/>
-    <stop offset="1"   stop-color="${liquidDeep}" stop-opacity=".40"/>
-  </linearGradient>
-
-  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0"   stop-color="${m[0]}"/>
-    <stop offset=".22" stop-color="${m[1]}"/>
-    <stop offset=".44" stop-color="${m[2]}"/>
-    <stop offset=".68" stop-color="${m[3]}"/>
-    <stop offset="1"   stop-color="${m[4]}"/>
-  </linearGradient>
-
-  <radialGradient id="shadow" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#6d6250" stop-opacity=".38"/>
-    <stop offset="1" stop-color="#6d6250" stop-opacity="0"/>
-  </radialGradient>
-</defs>
-
-<rect width="${W}" height="${H}" fill="url(#pg)"/>
-<rect width="${W}" height="${H}" fill="url(#key)"/>
-
-<!-- soft contact shadow, thrown slightly right as if lit from upper left -->
-<ellipse cx="${cx + 16}" cy="${H - 138}" rx="${S.bw * 0.6}" ry="30" fill="url(#shadow)" filter="url(#bS)"/>
-
-<g filter="url(#fg)">
-  <rect x="${cx - S.capW * 0.3}" y="${neckY}" width="${S.capW * 0.6}" height="${
-      S.neck + 24
-    }" fill="url(#glass)" opacity=".82"/>
-
-  <rect x="${bodyX}" y="${S.top}" width="${S.bw}" height="${bodyH}" rx="${S.r}" fill="url(#glass)"/>
-  <rect x="${bodyX}" y="${S.top}" width="${S.bw}" height="${bodyH}" rx="${S.r}" fill="url(#depth)"/>
-
-  <!-- fill line -->
-  <rect x="${bodyX + 8}" y="${S.top + bodyH * 0.19}" width="${S.bw - 16}" height="2.5"
-        fill="#ffffff" opacity=".55"/>
-
-  <!-- broad soft highlight down the left wall -->
-  <rect x="${bodyX + S.bw * 0.085}" y="${S.top + 30}" width="${S.bw * 0.085}" height="${
-      bodyH - 92
-    }" rx="${S.bw * 0.042}" fill="#fff" opacity=".62" filter="url(#bB)"/>
-  <!-- crisp hot rim on the right -->
-  <rect x="${bodyX + S.bw * 0.9}" y="${S.top + 46}" width="${S.bw * 0.02}" height="${
-      bodyH - 124
-    }" rx="4" fill="#fff" opacity=".85"/>
-
-  <!-- engraved plaque (blank; the name is set in HTML) -->
-  <rect x="${cx - S.bw * 0.3}" y="${S.top + bodyH * 0.52}" width="${S.bw * 0.6}" height="${
-      bodyH * 0.2
-    }" rx="2" fill="#ffffff" opacity=".2"/>
-  <rect x="${cx - S.bw * 0.3}" y="${S.top + bodyH * 0.52}" width="${S.bw * 0.6}" height="1"
-        fill="#ffffff" opacity=".7"/>
-
-  <rect x="${cx - S.capW * 0.34}" y="${neckY - 16}" width="${S.capW * 0.68}" height="22" rx="3" fill="url(#metal)"/>
-
-  <rect x="${capX}" y="${neckY - 16 - S.capH}" width="${S.capW}" height="${S.capH}" rx="${
-      shape === "orb" ? 14 : 3
-    }" fill="url(#metal)"/>
-  <rect x="${capX}" y="${neckY - 16 - S.capH}" width="${S.capW}" height="${
-      S.capH * 0.15
-    }" fill="#fff" opacity=".45"/>
-  <rect x="${capX}" y="${neckY - 25}" width="${S.capW}" height="9" fill="#7a6a4a" opacity=".22"/>
-</g>
-
-<ellipse cx="${cx}" cy="${S.top + 30}" rx="${S.bw * 0.46}" ry="52" fill="#fff" opacity=".38" filter="url(#bA)"/>
-`
-  );
-}
-
 /* ────────────────────────────  EYEWEAR  ──────────────────────────── */
 
 function eyewear({ lens, lensDeep, frame = "#2a2a2c", shape = "aviator", tone = "cool" }) {
@@ -247,55 +123,6 @@ function eyewear({ lens, lensDeep, frame = "#2a2a2c", shape = "aviator", tone = 
   <path d="M${L - 50} ${cy + 54} l104 -104" stroke="#fff" stroke-width="7"  opacity=".38" stroke-linecap="round" filter="url(#eb)"/>
   <path d="M${R - 96} ${cy + 34} l104 -104" stroke="#fff" stroke-width="18" opacity=".5" stroke-linecap="round" filter="url(#eb)"/>
   <path d="M${R - 50} ${cy + 54} l104 -104" stroke="#fff" stroke-width="7"  opacity=".38" stroke-linecap="round" filter="url(#eb)"/>
-</g>
-`
-  );
-}
-
-/* ────────────────────────────  COSMETICS  ──────────────────────────── */
-
-function lipstick({ bullet, bulletDeep, metal = "#c9a961", tone = "blush" }) {
-  const W = 900;
-  const H = 1200;
-  const cx = W / 2;
-  return svg(
-    W,
-    H,
-    `
-<defs>
-  ${ground(tone, bullet)}
-  ${grain("lg", 0.24, 0.95)}
-  ${blur("lb", 12)}
-  ${blur("ls", 20)}
-  <linearGradient id="case" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#8a6d33"/>
-    <stop offset=".2" stop-color="${metal}"/>
-    <stop offset=".44" stop-color="#fdf6e4"/>
-    <stop offset=".7" stop-color="${metal}"/>
-    <stop offset="1" stop-color="#8a6d33"/>
-  </linearGradient>
-  <linearGradient id="blt" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="${bulletDeep}"/>
-    <stop offset=".3" stop-color="${bullet}"/>
-    <stop offset=".55" stop-color="#fff" stop-opacity=".55"/>
-    <stop offset=".8" stop-color="${bullet}"/>
-    <stop offset="1" stop-color="${bulletDeep}"/>
-  </linearGradient>
-</defs>
-
-<rect width="${W}" height="${H}" fill="url(#pg)"/>
-<rect width="${W}" height="${H}" fill="url(#key)"/>
-<ellipse cx="${cx + 14}" cy="${H - 154}" rx="176" ry="24" fill="#6d6250" opacity=".3" filter="url(#ls)"/>
-
-<g filter="url(#lg)">
-  <path d="M${cx - 92} 470 h184 v-118 l-184 -96 z" fill="url(#blt)"/>
-  <path d="M${cx - 92} 352 l184 96" stroke="#fff" stroke-width="3" opacity=".5"/>
-
-  <rect x="${cx - 104}" y="470" width="208" height="470" rx="5" fill="url(#case)"/>
-  <rect x="${cx - 104}" y="470" width="208" height="24" fill="#7a6a4a" opacity=".2"/>
-  <rect x="${cx - 104}" y="690" width="208" height="15" fill="#7a6a4a" opacity=".24"/>
-  <rect x="${cx - 104}" y="705" width="208" height="4" fill="#fff" opacity=".55"/>
-  <rect x="${cx - 72}" y="512" width="15" height="392" fill="#fff" opacity=".55" filter="url(#lb)"/>
 </g>
 `
   );
@@ -380,20 +207,6 @@ const write = (name, content) => {
   return name;
 };
 
-/* Rich jewel liquids on pale paper — that contrast is what reads expensive
-   rather than washed out. */
-const fragrances = [
-  ["noir-imperial", { liquid: "#6b4a35", liquidDeep: "#3a2418", shape: "slab", metal: "gold", tone: "warm" }],
-  ["oud-silence", { liquid: "#7a5a3c", liquidDeep: "#3f2a18", shape: "tower", metal: "onyx", tone: "sand" }],
-  ["velvet-saffron", { liquid: "#d08040", liquidDeep: "#8a4a18", shape: "slab", metal: "gold", tone: "sand" }],
-  ["amber-meridian", { liquid: "#e0a548", liquidDeep: "#9a6a1e", shape: "orb", metal: "gold", tone: "warm" }],
-  ["tobacco-vesper", { liquid: "#a4682e", liquidDeep: "#5e3614", shape: "facet", metal: "gold", tone: "sand" }],
-  ["white-oud", { liquid: "#e8e0cf", liquidDeep: "#b3a68d", shape: "tower", metal: "silver", tone: "cool" }],
-  ["rose-prive", { liquid: "#c85874", liquidDeep: "#7d2440", shape: "orb", metal: "gold", tone: "blush" }],
-  ["cedar-absolute", { liquid: "#7d9068", liquidDeep: "#41533a", shape: "facet", metal: "silver", tone: "sage" }],
-];
-for (const [slug, cfg] of fragrances) write(`f-${slug}.svg`, flacon(cfg));
-
 const glasses = [
   ["monolith", { lens: "#5c5c62", lensDeep: "#2c2c30", shape: "square", frame: "#2a2a2c", tone: "cool" }],
   ["meridian", { lens: "#a07c46", lensDeep: "#5e4522", shape: "aviator", frame: "#a4884e", tone: "warm" }],
@@ -401,14 +214,6 @@ const glasses = [
   ["vesper", { lens: "#8a5a68", lensDeep: "#4a2632", shape: "cat", frame: "#2a2224", tone: "blush" }],
 ];
 for (const [slug, cfg] of glasses) write(`e-${slug}.svg`, eyewear(cfg));
-
-const lips = [
-  ["noir-rouge", { bullet: "#b82d3f", bulletDeep: "#6d1420" }],
-  ["bare-oud", { bullet: "#c98a7c", bulletDeep: "#8a5044" }],
-  ["oxblood", { bullet: "#8a2030", bulletDeep: "#4a0d16" }],
-  ["gilt-plum", { bullet: "#963a60", bulletDeep: "#521a30" }],
-];
-for (const [slug, cfg] of lips) write(`b-${slug}.svg`, lipstick(cfg));
 
 /* Pale washes. Wide ones are heroes, tall ones editorial columns. */
 const plates = [
@@ -418,8 +223,8 @@ const plates = [
   ["ed-01", { w: 1200, h: 1600, a: "#fdfaf4", b: "#ece0ca", hi: "#c9a961", seed: 4, mode: "drape" }],
   ["ed-02", { w: 1200, h: 1600, a: "#fbfcfd", b: "#e0e7ec", hi: "#94a8b6", seed: 5, mode: "shaft" }],
   ["ed-03", { w: 1200, h: 1600, a: "#fdf8f8", b: "#f2dfdc", hi: "#c08b96", seed: 6, mode: "orbit" }],
-  ["cat-fragrance", { w: 1600, h: 900, a: "#fdfaf4", b: "#ecdfc8", hi: "#c9a961", seed: 7, mode: "drape" }],
-  ["cat-beauty", { w: 1600, h: 900, a: "#fdf8f8", b: "#f2dcdd", hi: "#c58592", seed: 8, mode: "orbit" }],
+  ["cat-outerwear", { w: 1600, h: 900, a: "#fdfaf4", b: "#e6ddcc", hi: "#a8926e", seed: 7, mode: "drape" }],
+  ["cat-leather", { w: 1600, h: 900, a: "#fdf9f4", b: "#e8d9c4", hi: "#a67c4e", seed: 8, mode: "orbit" }],
   ["cat-eyewear", { w: 1600, h: 900, a: "#fbfcfd", b: "#dfe6eb", hi: "#94a5b2", seed: 9, mode: "shaft" }],
   ["cat-women", { w: 1600, h: 900, a: "#fdf9f8", b: "#eddfe4", hi: "#b894a4", seed: 10, mode: "drape" }],
   ["cat-men", { w: 1600, h: 900, a: "#fbfbfc", b: "#dfe1e6", hi: "#9298a6", seed: 11, mode: "shaft" }],
@@ -540,7 +345,5 @@ writeFileSync(
 );
 
 console.log(
-  `wrote ${
-    fragrances.length + glasses.length + lips.length + plates.length + 1
-  } light SVG assets + og.png to public/img/`
+  `wrote ${glasses.length + plates.length + 1} light SVG assets + og.png to public/img/`
 );

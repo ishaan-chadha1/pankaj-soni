@@ -27,8 +27,8 @@ const CHAPTERS = [
     n: "II",
     title: "Eleven Weeks",
     body: [
-      "A finished composition goes into steel and stays there for eleven weeks before a single flacon is filled. Nothing is added during that time. The materials simply stop arguing with each other.",
-      "It is the reason a Private Atelier fragrance smells the same in the eighth hour as it does in the first.",
+      "Cloth is bought a season before it is cut and left to rest on the roll. Nothing is done to it in that time. The fibres simply stop fighting the loom.",
+      "It is the reason a jacket cut in March still hangs true in November.",
     ],
     image: "/img/p-ed-01.svg",
   },
@@ -45,7 +45,7 @@ const CHAPTERS = [
 
 const SERVICES = [
   ["Private Appointment", "An hour with a consultant, in any boutique or by video, at no charge."],
-  ["Engraving", "Up to sixteen characters, hand-set on any Private Atelier flacon."],
+  ["Alterations", "Complimentary for the life of any tailored piece bought from the maison."],
   ["The Refill Service", "Return a décanteur to a boutique and have it filled rather than replaced."],
   ["Alterations", "Complimentary for the life of any tailored piece bought from the maison."],
 ];
@@ -220,7 +220,7 @@ export default function WorldPage() {
           </div>
           <Reveal delay={500}>
             <Link href="/atelier" className="ps-btn ps-btn-solid mt-14">
-              <span>Enter the Olfactory Engine</span>
+              <span>Enter the Cloth Room</span>
             </Link>
           </Reveal>
         </div>

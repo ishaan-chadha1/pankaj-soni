@@ -10,56 +10,55 @@ import type { FieldState } from "./Field";
 // WebGL has no server-rendered equivalent, so the canvas is client-only.
 const Field = dynamic(() => import("./Field"), { ssr: false });
 
-type Note = {
+type Material = {
   id: string;
   label: string;
   color: string;
-  /** How much this note agitates the field. */
-  turb: number;
-  /** How much light it pushes into the hot cores. */
-  density: number;
+  /** How restless the cloth is — how much the field moves. */
+  drape: number;
+  /** How much light the surface throws back. */
+  sheen: number;
   word: string;
 };
 
-/* Pigments, not inks. The shader tints a pale sheet, so these sit in the mid
-   range — a near-black base note would punch a hole in the field rather than
-   colour it. The swatch dots in the picker use the same values, which is why
-   they read as a chalk palette. */
-const TOP: Note[] = [
-  { id: "bergamot", label: "Bergamot", color: "#b9c96f", turb: 0.9, density: 0.7, word: "Bright" },
-  { id: "pepper", label: "Pink Pepper", color: "#d97f76", turb: 1.35, density: 0.9, word: "Sharp" },
-  { id: "saffron", label: "Saffron", color: "#e0a94e", turb: 1.1, density: 1.0, word: "Gilded" },
-  { id: "plum", label: "Black Plum", color: "#9c5a72", turb: 0.75, density: 0.8, word: "Dark" },
-  { id: "salt", label: "Sea Salt", color: "#a6bcc6", turb: 1.2, density: 0.55, word: "Cold" },
-  { id: "cardamom", label: "Cardamom", color: "#c0b184", turb: 1.0, density: 0.7, word: "Spiced" },
+/* Cloth colours, not dyes. The shader tints a pale sheet, so these sit in the
+   mid range — a near-black would punch a hole in the field rather than colour
+   it. The swatch beside each name uses the same value. */
+const FIBRE: Material[] = [
+  { id: "merino", label: "Merino", color: "#c9bda6", drape: 0.9, sheen: 0.55, word: "Fine" },
+  { id: "cashmere", label: "Cashmere", color: "#d8c9b4", drape: 0.55, sheen: 0.7, word: "Soft" },
+  { id: "linen", label: "Linen", color: "#cfc7ae", drape: 1.3, sheen: 0.4, word: "Dry" },
+  { id: "silk", label: "Silk", color: "#e2d6bb", drape: 1.1, sheen: 1.0, word: "Liquid" },
+  { id: "cotton", label: "Cotton", color: "#ddd6c6", drape: 0.95, sheen: 0.5, word: "Plain" },
+  { id: "mohair", label: "Mohair", color: "#c6b79b", drape: 1.2, sheen: 0.85, word: "Open" },
 ];
 
-const HEART: Note[] = [
-  { id: "rose", label: "Turkish Rose", color: "#cc6a80", turb: 0.85, density: 0.9, word: "Rose" },
-  { id: "orris", label: "Orris Butter", color: "#e2d9cb", turb: 0.55, density: 0.6, word: "Powder" },
-  { id: "jasmine", label: "Jasmine Sambac", color: "#ece5bc", turb: 0.9, density: 0.95, word: "Bloom" },
-  { id: "suede", label: "Suede", color: "#b8906e", turb: 0.5, density: 0.5, word: "Velvet" },
-  { id: "tobacco", label: "Tobacco Leaf", color: "#b07d4a", turb: 0.7, density: 0.65, word: "Vesper" },
-  { id: "cedar", label: "Smoked Cedar", color: "#8a9a74", turb: 0.65, density: 0.5, word: "Cedar" },
+const WEAVE: Material[] = [
+  { id: "twill", label: "Twill", color: "#b09a76", drape: 0.85, sheen: 0.6, word: "Twill" },
+  { id: "poplin", label: "Poplin", color: "#cdc3ad", drape: 0.6, sheen: 0.55, word: "Poplin" },
+  { id: "flannel", label: "Flannel", color: "#9aa0a4", drape: 0.5, sheen: 0.35, word: "Flannel" },
+  { id: "grenadine", label: "Grenadine", color: "#8c7f95", drape: 1.0, sheen: 0.7, word: "Grenadine" },
+  { id: "gabardine", label: "Gabardine", color: "#a89478", drape: 0.7, sheen: 0.65, word: "Gabardine" },
+  { id: "satin", label: "Satin", color: "#dcc9a8", drape: 1.15, sheen: 1.0, word: "Satin" },
 ];
 
-const BASE: Note[] = [
-  { id: "leather", label: "Tanned Leather", color: "#a17a5e", turb: 0.45, density: 0.55, word: "Impérial" },
-  { id: "oud", label: "Laotian Oud", color: "#8e7058", turb: 0.35, density: 0.45, word: "Silence" },
-  { id: "amber", label: "Amber", color: "#dcae62", turb: 0.6, density: 0.85, word: "Meridian" },
-  { id: "vetiver", label: "Vetiver Root", color: "#8b9670", turb: 0.55, density: 0.5, word: "Absolute" },
-  { id: "tonka", label: "Tonka Bean", color: "#bd9668", turb: 0.5, density: 0.75, word: "Privé" },
-  { id: "ambergris", label: "Ambergris", color: "#c2b89b", turb: 0.4, density: 0.6, word: "Nocturne" },
+const FINISH: Material[] = [
+  { id: "milled", label: "Milled", color: "#a4907a", drape: 0.5, sheen: 0.5, word: "Milled" },
+  { id: "brushed", label: "Brushed", color: "#b3a894", drape: 0.45, sheen: 0.4, word: "Brushed" },
+  { id: "washed", label: "Washed", color: "#b7b2a2", drape: 0.8, sheen: 0.35, word: "Washed" },
+  { id: "calendered", label: "Calendered", color: "#cfc2a4", drape: 0.6, sheen: 0.95, word: "Calendered" },
+  { id: "raw", label: "Raw", color: "#9d9583", drape: 1.0, sheen: 0.3, word: "Raw" },
+  { id: "pressed", label: "Pressed", color: "#c5b697", drape: 0.55, sheen: 0.75, word: "Pressed" },
 ];
 
-/** Which flacon the maison would actually pour a given base into. */
+/** Which piece the house would actually cut a given finish into. */
 const NEAREST: Record<string, string> = {
-  leather: "noir-imperial",
-  oud: "oud-silence",
-  amber: "amber-meridian",
-  vetiver: "cedar-absolute",
-  tonka: "tobacco-vesper",
-  ambergris: "white-oud",
+  milled: "double-face-overcoat",
+  brushed: "cashmere-crewneck",
+  washed: "poplin-shirt",
+  calendered: "liquid-column-gown",
+  raw: "shearling-blouson",
+  pressed: "single-breasted-suit",
 };
 
 /** One column of selectable materials. Module scope: defining it inside Engine
@@ -71,9 +70,9 @@ function Column({
   onChange,
 }: {
   title: string;
-  notes: Note[];
-  value: Note;
-  onChange: (n: Note) => void;
+  notes: Material[];
+  value: Material;
+  onChange: (n: Material) => void;
 }) {
   return (
     <div>
@@ -111,28 +110,30 @@ function Column({
 
 export default function Engine() {
   const { add } = useCart();
-  const [top, setTop] = useState(TOP[2]);
-  const [heart, setHeart] = useState(HEART[3]);
-  const [base, setBase] = useState(BASE[0]);
-  const [intensity, setIntensity] = useState(0.62);
+  const [fibre, setFibre] = useState(FIBRE[1]);
+  const [weave, setWeave] = useState(WEAVE[0]);
+  const [finish, setFinish] = useState(FINISH[0]);
+  const [weight, setWeight] = useState(0.55);
 
   const field: FieldState = useMemo(
     () => ({
-      a: base.color,
-      b: heart.color,
-      c: top.color,
-      turbulence: (top.turb + heart.turb + base.turb) / 3 + intensity * 1.6,
-      density: ((top.density + heart.density + base.density) / 3) * (0.55 + intensity),
+      a: finish.color,
+      b: weave.color,
+      c: fibre.color,
+      // A heavier cloth moves less and throws back more light.
+      turbulence: (fibre.drape + weave.drape + finish.drape) / 3 + (1 - weight) * 1.4,
+      density: ((fibre.sheen + weave.sheen + finish.sheen) / 3) * (0.55 + weight),
     }),
-    [top, heart, base, intensity]
+    [fibre, weave, finish, weight]
   );
 
-  const name = `${heart.word} ${base.word}`;
-  const nearest = bySlug(NEAREST[base.id] ?? "noir-imperial")!;
-  const strength = Math.round(18 + intensity * 14);
+  const name = `${finish.word} ${weave.word}`;
+  const nearest = bySlug(NEAREST[finish.id] ?? "double-face-overcoat")!;
+  // Cloth is sold by weight; 280–560g covers shirting through overcoating.
+  const grams = Math.round(280 + weight * 280);
 
   const commission = () => {
-    const v = nearest.variants.find((x) => x.id === "50") ?? nearest.variants[0];
+    const v = nearest.variants[Math.floor((nearest.variants.length - 1) / 2)] ?? nearest.variants[0];
     add(nearest.slug, v.id, 1);
   };
 
@@ -142,9 +143,9 @@ export default function Engine() {
       <div
         className="absolute inset-0"
         style={{
-          background: `radial-gradient(120% 90% at 62% 34%, ${top.color}30, transparent 60%),
-                       radial-gradient(90% 80% at 30% 70%, ${heart.color}38, transparent 62%),
-                       linear-gradient(160deg, ${base.color}44, var(--ps-bg) 74%)`,
+          background: `radial-gradient(120% 90% at 62% 34%, ${fibre.color}30, transparent 60%),
+                       radial-gradient(90% 80% at 30% 70%, ${weave.color}38, transparent 62%),
+                       linear-gradient(160deg, ${finish.color}44, var(--ps-bg) 74%)`,
           transition: "background 1.2s cubic-bezier(.16,1,.3,1)",
         }}
       />
@@ -164,7 +165,7 @@ export default function Engine() {
         {/* heading */}
         <div className="max-w-[700px]">
           <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-            The Olfactory Engine — Beta
+            The Cloth Room — Beta
           </p>
           <h1 className="ps-display mt-6 text-[2.6rem] leading-[0.98] sm:text-[4.2rem]">
             Build the thing you
@@ -172,9 +173,9 @@ export default function Engine() {
             <span className="ps-display-i">cannot describe.</span>
           </h1>
           <p className="mt-6 max-w-[50ch] text-[.92rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
-            Three choices — a top, a heart, a base. The field above is the composition
-            rendered in real time: colour from the materials, movement from their
-            volatility. Move your cursor through it.
+            Three choices — a fibre, a weave, a finish. The field above is the cloth
+            rendered in real time: colour from the fibre, movement from how it
+            drapes, light from how it is finished. Move your cursor through it.
           </p>
         </div>
 
@@ -188,48 +189,48 @@ export default function Engine() {
               border: "1px solid var(--ps-line)",
             }}
           >
-            <Column title="Top" notes={TOP} value={top} onChange={setTop} />
-            <Column title="Heart" notes={HEART} value={heart} onChange={setHeart} />
-            <Column title="Base" notes={BASE} value={base} onChange={setBase} />
+            <Column title="Fibre" notes={FIBRE} value={fibre} onChange={setFibre} />
+            <Column title="Weave" notes={WEAVE} value={weave} onChange={setWeave} />
+            <Column title="Finish" notes={FINISH} value={finish} onChange={setFinish} />
 
             {/* readout */}
             <div className="lg:border-l lg:pl-12" style={{ borderColor: "var(--ps-line)" }}>
               <p className="ps-caps mb-4" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
-                Your Composition
+                Your Cloth
               </p>
 
               <p className="ps-display text-[2.1rem] leading-none">{name}</p>
               <p className="mt-3 text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>
-                {top.label} · {heart.label} · {base.label}
+                {fibre.label} · {weave.label} · {finish.label}
               </p>
 
               <div className="mt-7">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="intensity" className="ps-caps" style={{ fontSize: ".54rem" }}>
-                    Concentration
+                  <label htmlFor="weight" className="ps-caps" style={{ fontSize: ".54rem" }}>
+                    Weight
                   </label>
                   <span className="ps-caps" style={{ fontSize: ".54rem", color: "var(--ps-accent)" }}>
-                    {strength}%
+                    {grams} g
                   </span>
                 </div>
                 <input
-                  id="intensity"
+                  id="weight"
                   type="range"
                   min={0}
                   max={1}
                   step={0.01}
-                  value={intensity}
-                  onChange={(e) => setIntensity(Number(e.target.value))}
+                  value={weight}
+                  onChange={(e) => setWeight(Number(e.target.value))}
                   className="mt-3 w-full accent-[var(--ps-accent)]"
                 />
                 <p className="mt-2 text-[.68rem]" style={{ color: "var(--ps-faint)" }}>
-                  {strength < 24 ? "Eau de Parfum" : strength < 29 ? "Extrait léger" : "Extrait de Parfum"}
+                  {grams < 340 ? "Shirting" : grams < 440 ? "Suiting" : "Overcoating"}
                 </p>
               </div>
 
               <div className="mt-8 pt-6" style={{ borderTop: "1px solid var(--ps-line)" }}>
                 <p className="text-[.74rem] font-light" style={{ color: "var(--ps-muted)" }}>
-                  Closest in the Private Atelier
+                  Closest in the collection
                 </p>
                 <div className="mt-3 flex items-center gap-4">
                   <Link href={`/p/${nearest.slug}`} className="ps-media h-16 w-14 shrink-0">
@@ -246,14 +247,14 @@ export default function Engine() {
                 </div>
 
                 <button type="button" onClick={commission} className="ps-btn ps-btn-solid mt-5 w-full !py-3">
-                  <span>Add 50 ml to Bag</span>
+                  <span>Add to Bag</span>
                 </button>
               </div>
             </div>
           </div>
 
           <p className="ps-caps mt-5 text-center" style={{ fontSize: ".52rem", color: "var(--ps-faint)" }}>
-            Rendered live in WebGL — colour and turbulence are driven by the materials you select
+            Rendered live in WebGL — drape and light are driven by the cloth you specify
           </p>
         </div>
       </div>

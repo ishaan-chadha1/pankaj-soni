@@ -32,7 +32,7 @@ export function organizationLd() {
     url: SITE,
     logo: abs("/img/og.png"),
     description:
-      "A maison of Private Atelier fragrance, colour, eyewear and evening tailoring.",
+      "A maison of tailoring, outerwear, knitwear, eyewear and leather.",
   };
 }
 

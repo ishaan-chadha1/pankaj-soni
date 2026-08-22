@@ -12,12 +12,12 @@
   <filter id="pb7" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="88"/></filter>
   <linearGradient id="bg7" x1="0" y1="0" x2=".55" y2="1">
     <stop offset="0" stop-color="#fdfaf4"/>
-    <stop offset="1" stop-color="#ecdfc8"/>
+    <stop offset="1" stop-color="#e6ddcc"/>
   </linearGradient>
   <radialGradient id="key7" cx=".6" cy=".28" r=".72">
     <stop offset="0" stop-color="#ffffff" stop-opacity=".92"/>
     <stop offset=".5" stop-color="#ffffff" stop-opacity=".24"/>
-    <stop offset="1" stop-color="#c9a961" stop-opacity=".1"/>
+    <stop offset="1" stop-color="#a8926e" stop-opacity=".1"/>
   </radialGradient>
   <!-- a whisper of edge shading, so the plate has a body rather than reading flat -->
   <radialGradient id="vig7" cx=".5" cy=".48" r=".76">
@@ -29,7 +29,7 @@
 <g filter="url(#pg7)">
   <rect width="1600" height="900" fill="url(#bg7)"/>
   <g filter="url(#pb7)">
-    <path d="M-160 855 C 288 468, 480 792, 832 414 S 1376 180, 1760.0000000000002 522 L 1760.0000000000002 990.0000000000001 L -160 990.0000000000001 Z" fill="#ecdfc8" opacity=".55"/>
+    <path d="M-160 855 C 288 468, 480 792, 832 414 S 1376 180, 1760.0000000000002 522 L 1760.0000000000002 990.0000000000001 L -160 990.0000000000001 Z" fill="#e6ddcc" opacity=".55"/>
     <path d="M-160 918 C 384 630, 704 900, 1056 594 S 1504 414, 1760.0000000000002 702 L 1760.0000000000002 1008.0000000000001 L -160 1008.0000000000001 Z" fill="#ffffff" opacity=".45"/></g>
   <rect width="1600" height="900" fill="url(#key7)"/>
 </g>
