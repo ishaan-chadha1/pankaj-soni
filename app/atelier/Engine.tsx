@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { bySlug, money } from "@/lib/catalog";
 import { useCart } from "../CartProvider";
 import type { FieldState } from "./Field";
@@ -10,254 +10,355 @@ import type { FieldState } from "./Field";
 // WebGL has no server-rendered equivalent, so the canvas is client-only.
 const Field = dynamic(() => import("./Field"), { ssr: false });
 
-type Material = {
+type Fibre = {
   id: string;
   label: string;
-  color: string;
-  /** How restless the cloth is — how much the field moves. */
-  drape: number;
-  /** How much light the surface throws back. */
+  note: string;
+  /** Yarn colour, and the slightly different tone the weft is dyed to. */
+  warp: string;
+  weft: string;
+  sheen: number;
+  nap: number;
+  word: string;
+};
+
+type Weave = {
+  id: string;
+  label: string;
+  note: string;
+  /** Index into the shader's interlacing patterns. */
+  pattern: number;
+  openness: number;
   sheen: number;
   word: string;
 };
 
-/* Cloth colours, not dyes. The shader tints a pale sheet, so these sit in the
-   mid range — a near-black would punch a hole in the field rather than colour
-   it. The swatch beside each name uses the same value. */
-const FIBRE: Material[] = [
-  { id: "merino", label: "Merino", color: "#c9bda6", drape: 0.9, sheen: 0.55, word: "Fine" },
-  { id: "cashmere", label: "Cashmere", color: "#d8c9b4", drape: 0.55, sheen: 0.7, word: "Soft" },
-  { id: "linen", label: "Linen", color: "#cfc7ae", drape: 1.3, sheen: 0.4, word: "Dry" },
-  { id: "silk", label: "Silk", color: "#e2d6bb", drape: 1.1, sheen: 1.0, word: "Liquid" },
-  { id: "cotton", label: "Cotton", color: "#ddd6c6", drape: 0.95, sheen: 0.5, word: "Plain" },
-  { id: "mohair", label: "Mohair", color: "#c6b79b", drape: 1.2, sheen: 0.85, word: "Open" },
-];
-
-const WEAVE: Material[] = [
-  { id: "twill", label: "Twill", color: "#b09a76", drape: 0.85, sheen: 0.6, word: "Twill" },
-  { id: "poplin", label: "Poplin", color: "#cdc3ad", drape: 0.6, sheen: 0.55, word: "Poplin" },
-  { id: "flannel", label: "Flannel", color: "#9aa0a4", drape: 0.5, sheen: 0.35, word: "Flannel" },
-  { id: "grenadine", label: "Grenadine", color: "#8c7f95", drape: 1.0, sheen: 0.7, word: "Grenadine" },
-  { id: "gabardine", label: "Gabardine", color: "#a89478", drape: 0.7, sheen: 0.65, word: "Gabardine" },
-  { id: "satin", label: "Satin", color: "#dcc9a8", drape: 1.15, sheen: 1.0, word: "Satin" },
-];
-
-const FINISH: Material[] = [
-  { id: "milled", label: "Milled", color: "#a4907a", drape: 0.5, sheen: 0.5, word: "Milled" },
-  { id: "brushed", label: "Brushed", color: "#b3a894", drape: 0.45, sheen: 0.4, word: "Brushed" },
-  { id: "washed", label: "Washed", color: "#b7b2a2", drape: 0.8, sheen: 0.35, word: "Washed" },
-  { id: "calendered", label: "Calendered", color: "#cfc2a4", drape: 0.6, sheen: 0.95, word: "Calendered" },
-  { id: "raw", label: "Raw", color: "#9d9583", drape: 1.0, sheen: 0.3, word: "Raw" },
-  { id: "pressed", label: "Pressed", color: "#c5b697", drape: 0.55, sheen: 0.75, word: "Pressed" },
-];
-
-/** Which piece the house would actually cut a given finish into. */
-const NEAREST: Record<string, string> = {
-  milled: "double-face-overcoat",
-  brushed: "cashmere-crewneck",
-  washed: "poplin-shirt",
-  calendered: "liquid-column-gown",
-  raw: "shearling-blouson",
-  pressed: "single-breasted-suit",
+type Finish = {
+  id: string;
+  label: string;
+  note: string;
+  nap: number;
+  sheen: number;
+  openness: number;
+  word: string;
 };
 
-/** One column of selectable materials. Module scope: defining it inside Engine
- *  would remount the whole column on every state change. */
-function Column({
+/* Warp and weft sit only a hair apart in tone. An earlier pass dyed them
+   further apart and the specimen read as a CHECK — colour drew the grid, and
+   the weave's own character disappeared under it. Cloth of one colour shows its
+   structure through light and shadow, so the shading has to carry it and the
+   dye has to get out of the way. */
+const FIBRES: Fibre[] = [
+  { id: "merino", label: "Merino", note: "Fine, springy, holds a crease", warp: "#bdb097", weft: "#b8ab92", sheen: 0.35, nap: 0.25, word: "Fine" },
+  { id: "cashmere", label: "Cashmere", note: "Soft hand, low lustre", warp: "#cdbda6", weft: "#c8b8a1", sheen: 0.28, nap: 0.55, word: "Soft" },
+  { id: "linen", label: "Linen", note: "Dry, slubbed, creases proudly", warp: "#c9c0a5", weft: "#c3ba9f", sheen: 0.2, nap: 0.08, word: "Dry" },
+  { id: "silk", label: "Silk", note: "Long filament, high lustre", warp: "#dacdae", weft: "#d4c7a8", sheen: 1.0, nap: 0.03, word: "Liquid" },
+  { id: "cotton", label: "Cotton", note: "Even, matte, hard-wearing", warp: "#d3ccbc", weft: "#cec7b7", sheen: 0.24, nap: 0.14, word: "Plain" },
+  { id: "mohair", label: "Mohair", note: "Wiry, open, catches light", warp: "#c2b090", weft: "#bcaa8b", sheen: 0.72, nap: 0.3, word: "Open" },
+];
+
+const WEAVES: Weave[] = [
+  { id: "poplin", label: "Poplin", note: "Plain weave — over one, under one", pattern: 0, openness: 0.1, sheen: 0.3, word: "Poplin" },
+  { id: "twill", label: "Twill", note: "Steps one thread a row — the diagonal", pattern: 1, openness: 0.14, sheen: 0.5, word: "Twill" },
+  { id: "satin", label: "Satin", note: "Binds once in five — long floats", pattern: 2, openness: 0.08, sheen: 1.0, word: "Satin" },
+  { id: "grenadine", label: "Grenadine", note: "Leno — paired warps, open set", pattern: 3, openness: 0.62, sheen: 0.4, word: "Grenadine" },
+  { id: "gabardine", label: "Gabardine", note: "Steep twill, tightly set", pattern: 4, openness: 0.05, sheen: 0.62, word: "Gabardine" },
+  { id: "flannel", label: "Flannel", note: "Plain ground, raised and napped", pattern: 5, openness: 0.12, sheen: 0.18, word: "Flannel" },
+];
+
+const FINISHES: Finish[] = [
+  { id: "milled", label: "Milled", note: "Shrunk in warm water, closed up", nap: 0.4, sheen: 0.3, openness: -0.06, word: "Milled" },
+  { id: "brushed", label: "Brushed", note: "Teasels lift the fibre", nap: 0.95, sheen: 0.15, openness: 0.0, word: "Brushed" },
+  { id: "washed", label: "Washed", note: "Softened, the hand relaxed", nap: 0.35, sheen: 0.2, openness: 0.06, word: "Washed" },
+  { id: "calendered", label: "Calendered", note: "Pressed under heated rollers", nap: 0.02, sheen: 0.95, openness: -0.04, word: "Calendered" },
+  { id: "raw", label: "Raw", note: "Off the loom, nothing done", nap: 0.12, sheen: 0.1, openness: 0.1, word: "Raw" },
+  { id: "pressed", label: "Pressed", note: "Flat, even, quietly lustrous", nap: 0.06, sheen: 0.6, openness: -0.02, word: "Pressed" },
+];
+
+/** Which piece the house would cut a given weave into. */
+const NEAREST: Record<string, string> = {
+  poplin: "poplin-shirt",
+  twill: "single-breasted-suit",
+  satin: "liquid-column-gown",
+  grenadine: "silk-tie",
+  gabardine: "belted-trench",
+  flannel: "unstructured-topcoat",
+};
+
+/* Magnification. Thread counts are what the shader draws across the frame, so a
+   lower number is a closer lens. */
+const LENSES = [
+  { id: "1", label: "×1", note: "As worn", threads: 92 },
+  { id: "4", label: "×4", note: "In the hand", threads: 32 },
+  { id: "12", label: "×12", note: "Under the glass", threads: 11 },
+];
+
+export default function Engine() {
+  const { add } = useCart();
+  const [fibre, setFibre] = useState(FIBRES[1]);
+  const [weave, setWeave] = useState(WEAVES[1]);
+  const [finish, setFinish] = useState(FINISHES[0]);
+  const [weight, setWeight] = useState(0.55);
+  const [lens, setLens] = useState(LENSES[1]);
+  const [added, setAdded] = useState(false);
+
+  const field: FieldState = useMemo(
+    () => ({
+      warp: fibre.warp,
+      weft: fibre.weft,
+      ground: "#efe9dd",
+      weave: weave.pattern,
+      threads: lens.threads,
+      // Napping is the finish's job; the fibre only decides how much there is
+      // to raise in the first place.
+      nap: Math.min(1, finish.nap * (0.5 + fibre.nap)),
+      // Sheen is the product of all three — a matte fibre cannot be made to
+      // shine by pressing it.
+      sheen: Math.min(1.2, fibre.sheen * weave.sheen * (0.5 + finish.sheen) * 2.1),
+      // A heavier cloth is set tighter, so it closes up.
+      openness: Math.max(0, weave.openness + finish.openness - weight * 0.08),
+    }),
+    [fibre, weave, finish, weight, lens]
+  );
+
+  const name = `${finish.word} ${weave.word}`;
+  const nearest = bySlug(NEAREST[weave.id] ?? "single-breasted-suit")!;
+  // Cloth is sold by weight; 260–580g covers shirting through overcoating.
+  const grams = Math.round(260 + weight * 320);
+  const useCase = grams < 330 ? "Shirting" : grams < 450 ? "Suiting" : "Overcoating";
+
+  const commission = useCallback(() => {
+    const v = nearest.variants[Math.floor((nearest.variants.length - 1) / 2)] ?? nearest.variants[0];
+    add(nearest.slug, v.id, 1);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1800);
+  }, [add, nearest]);
+
+  return (
+    <section className="mx-auto max-w-[1560px] px-5 pb-[var(--band-l)] pt-[var(--band-m)] sm:px-8">
+      <div className="max-w-[640px]">
+        <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
+          The Cloth Room
+        </p>
+        <h1 className="ps-display ps-h2 mt-5">
+          Specify the cloth
+          <br />
+          <span className="ps-display-i">before the cut.</span>
+        </h1>
+        <p
+          className="mt-5 max-w-[54ch] text-[.92rem] font-light leading-relaxed"
+          style={{ color: "var(--ps-muted)" }}
+        >
+          A fibre, a weave and a finish. The specimen is woven live — thread by
+          thread, not a picture of cloth — so the diagonal in a twill and the
+          floats in a satin are really there. Put it under the glass and look.
+        </p>
+      </div>
+
+      {/* console left, specimen right */}
+      <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-8">
+        {/* ── the specimen ── */}
+        <div className="order-1 lg:order-2">
+          <div
+            className="ps-loom relative w-full overflow-hidden"
+            style={{ aspectRatio: "4 / 3", border: "1px solid var(--ps-line)" }}
+          >
+            {/* Flat ground, and the fallback if WebGL is unavailable. */}
+            <div className="absolute inset-0" style={{ background: fibre.warp }} />
+            <Field state={field} />
+
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5"
+              style={{
+                background: "linear-gradient(0deg, rgba(255,255,255,.82), transparent)",
+              }}
+            >
+              <div>
+                <p className="ps-caps" style={{ fontSize: ".52rem", color: "var(--ps-muted)" }}>
+                  Specimen — {lens.note}
+                </p>
+                <p className="ps-display mt-1 text-[1.5rem] leading-none">{name}</p>
+              </div>
+              <p className="ps-caps" style={{ fontSize: ".52rem", color: "var(--ps-muted)" }}>
+                {grams} g · {useCase}
+              </p>
+            </div>
+          </div>
+
+          {/* magnification */}
+          <div className="mt-3 flex items-center gap-2">
+            <p className="ps-caps mr-1" style={{ fontSize: ".52rem", color: "var(--ps-faint)" }}>
+              Lens
+            </p>
+            {LENSES.map((l) => (
+              <button
+                key={l.id}
+                type="button"
+                onClick={() => setLens(l)}
+                aria-pressed={l.id === lens.id}
+                className="ps-chip !px-3 !py-1.5"
+                style={{ fontSize: ".58rem" }}
+              >
+                {l.label}
+              </button>
+            ))}
+            <p className="ps-caps ml-auto" style={{ fontSize: ".52rem", color: "var(--ps-faint)" }}>
+              Drag across the cloth
+            </p>
+          </div>
+
+          {/* the specification, read back */}
+          <div
+            className="mt-6 grid gap-x-8 gap-y-4 p-6 sm:grid-cols-2"
+            style={{ border: "1px solid var(--ps-line)", background: "var(--ps-surface)" }}
+          >
+            <Row k="Fibre" v={fibre.label} note={fibre.note} />
+            <Row k="Weave" v={weave.label} note={weave.note} />
+            <Row k="Finish" v={finish.label} note={finish.note} />
+            <Row k="Weight" v={`${grams} g / m²`} note={`Suited to ${useCase.toLowerCase()}`} />
+          </div>
+
+          {/* what the house would cut it into */}
+          <div
+            className="mt-3 flex flex-wrap items-center gap-5 p-5"
+            style={{ border: "1px solid var(--ps-line)" }}
+          >
+            <Link href={`/p/${nearest.slug}`} className="ps-media h-[92px] w-[72px] shrink-0">
+              <img src={nearest.image} alt="" loading="lazy" decoding="async" />
+            </Link>
+            <div className="min-w-0 flex-1">
+              <p className="ps-caps" style={{ fontSize: ".52rem", color: "var(--ps-accent)" }}>
+                Cut into
+              </p>
+              <Link href={`/p/${nearest.slug}`} className="ps-display mt-1 block text-[1.15rem]">
+                {nearest.name}
+              </Link>
+              <p className="mt-1 text-[.74rem]" style={{ color: "var(--ps-muted)" }}>
+                {nearest.kicker} · {money(nearest.price)}
+              </p>
+            </div>
+            <button type="button" onClick={commission} className="ps-btn ps-btn-solid shrink-0 !px-6 !py-3">
+              <span>{added ? "Added" : "Add to Bag"}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* ── the console ── */}
+        <div className="order-2 lg:order-1">
+          <div className="p-6" style={{ border: "1px solid var(--ps-line)", background: "var(--ps-surface)" }}>
+            <Bank title="Fibre" items={FIBRES} value={fibre.id} onPick={setFibre} swatch={(f) => f.warp} />
+            <Bank title="Weave" items={WEAVES} value={weave.id} onPick={setWeave} className="mt-7" />
+            <Bank title="Finish" items={FINISHES} value={finish.id} onPick={setFinish} className="mt-7" />
+
+            <div className="mt-8 pt-6" style={{ borderTop: "1px solid var(--ps-line)" }}>
+              <div className="flex items-center justify-between">
+                <label htmlFor="weight" className="ps-caps" style={{ fontSize: ".54rem" }}>
+                  Weight
+                </label>
+                <span className="ps-caps" style={{ fontSize: ".54rem", color: "var(--ps-accent)" }}>
+                  {grams} g
+                </span>
+              </div>
+              <input
+                id="weight"
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={weight}
+                onChange={(e) => setWeight(Number(e.target.value))}
+                className="mt-3 w-full accent-[var(--ps-accent)]"
+              />
+              <div className="mt-1.5 flex justify-between">
+                {["Shirting", "Suiting", "Overcoating"].map((t) => (
+                  <span
+                    key={t}
+                    className="ps-caps"
+                    style={{
+                      fontSize: ".5rem",
+                      color: t === useCase ? "var(--ps-accent)" : "var(--ps-faint)",
+                    }}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────── */
+
+function Row({ k, v, note }: { k: string; v: string; note: string }) {
+  return (
+    <div style={{ borderTop: "1px solid var(--ps-line)" }} className="pt-3">
+      <p className="ps-caps" style={{ fontSize: ".5rem", color: "var(--ps-faint)" }}>
+        {k}
+      </p>
+      <p className="ps-display mt-1 text-[1.1rem] leading-none">{v}</p>
+      <p className="mt-1.5 text-[.72rem] font-light" style={{ color: "var(--ps-muted)" }}>
+        {note}
+      </p>
+    </div>
+  );
+}
+
+/**
+ * One bank of the console. Module scope, not nested in Engine — defined inside
+ * it would remount every tile on each keystroke of the weight slider.
+ */
+function Bank<T extends { id: string; label: string; note: string }>({
   title,
-  notes,
+  items,
   value,
-  onChange,
+  onPick,
+  swatch,
+  className,
 }: {
   title: string;
-  notes: Material[];
-  value: Material;
-  onChange: (n: Material) => void;
+  items: T[];
+  value: string;
+  onPick: (t: T) => void;
+  swatch?: (t: T) => string;
+  className?: string;
 }) {
   return (
-    <div>
-      <p className="ps-caps mb-4" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
+    <div className={className}>
+      <p className="ps-caps mb-3" style={{ fontSize: ".54rem", color: "var(--ps-accent)" }}>
         {title}
       </p>
-      <div className="space-y-1.5">
-        {notes.map((n) => {
-          const on = n.id === value.id;
+      <div className="grid grid-cols-2 gap-1.5">
+        {items.map((t) => {
+          const on = t.id === value;
           return (
             <button
-              key={n.id}
+              key={t.id}
               type="button"
-              onClick={() => onChange(n)}
+              onClick={() => onPick(t)}
               aria-pressed={on}
-              className="group flex w-full items-center gap-3 py-1.5 text-left transition-opacity ps-t-base"
-              style={{ opacity: on ? 1 : 0.5 }}
+              title={t.note}
+              className="ps-t-fast flex items-center gap-2 px-2.5 py-2 text-left"
+              style={{
+                border: `1px solid ${on ? "var(--ps-text)" : "var(--ps-line)"}`,
+                background: on ? "var(--ps-text)" : "transparent",
+                color: on ? "var(--ps-bg)" : "var(--ps-text)",
+              }}
             >
-              <span
-                className="block h-2.5 w-2.5 shrink-0 rounded-full transition-transform ps-t-base"
-                style={{
-                  background: n.color,
-                  transform: on ? "scale(1.5)" : "scale(1)",
-                  boxShadow: on ? `0 0 14px ${n.color}` : "none",
-                }}
-              />
-              <span className="text-[.84rem] font-light">{n.label}</span>
+              {swatch ? (
+                <span
+                  className="block h-3.5 w-3.5 shrink-0"
+                  style={{ background: swatch(t), outline: "1px solid rgba(0,0,0,.12)" }}
+                />
+              ) : null}
+              <span className="truncate text-[.74rem]">{t.label}</span>
             </button>
           );
         })}
       </div>
     </div>
-  );
-}
-
-export default function Engine() {
-  const { add } = useCart();
-  const [fibre, setFibre] = useState(FIBRE[1]);
-  const [weave, setWeave] = useState(WEAVE[0]);
-  const [finish, setFinish] = useState(FINISH[0]);
-  const [weight, setWeight] = useState(0.55);
-
-  const field: FieldState = useMemo(
-    () => ({
-      a: finish.color,
-      b: weave.color,
-      c: fibre.color,
-      // A heavier cloth moves less and throws back more light.
-      turbulence: (fibre.drape + weave.drape + finish.drape) / 3 + (1 - weight) * 1.4,
-      density: ((fibre.sheen + weave.sheen + finish.sheen) / 3) * (0.55 + weight),
-    }),
-    [fibre, weave, finish, weight]
-  );
-
-  const name = `${finish.word} ${weave.word}`;
-  const nearest = bySlug(NEAREST[finish.id] ?? "double-face-overcoat")!;
-  // Cloth is sold by weight; 280–560g covers shirting through overcoating.
-  const grams = Math.round(280 + weight * 280);
-
-  const commission = () => {
-    const v = nearest.variants[Math.floor((nearest.variants.length - 1) / 2)] ?? nearest.variants[0];
-    add(nearest.slug, v.id, 1);
-  };
-
-  return (
-    <section className="relative min-h-[100svh] w-full overflow-hidden">
-      {/* CSS ground: also the fallback if WebGL is unavailable */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: `radial-gradient(120% 90% at 62% 34%, ${fibre.color}30, transparent 60%),
-                       radial-gradient(90% 80% at 30% 70%, ${weave.color}38, transparent 62%),
-                       linear-gradient(160deg, ${finish.color}44, var(--ps-bg) 74%)`,
-          transition: "background 1.2s cubic-bezier(.16,1,.3,1)",
-        }}
-      />
-
-      <Field state={field} />
-
-      {/* readability scrim */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.14) 30%, rgba(255,255,255,.42) 62%, var(--ps-bg) 100%)",
-        }}
-      />
-
-      <div className="relative z-[2] mx-auto flex min-h-[100svh] max-w-[1560px] flex-col px-5 pb-14 pt-16 sm:px-8">
-        {/* heading */}
-        <div className="max-w-[700px]">
-          <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-            The Cloth Room — Beta
-          </p>
-          <h1 className="ps-display mt-6 text-[2.6rem] leading-[0.98] sm:text-[4.2rem]">
-            Build the thing you
-            <br />
-            <span className="ps-display-i">cannot describe.</span>
-          </h1>
-          <p className="mt-6 max-w-[50ch] text-[.92rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
-            Three choices — a fibre, a weave, a finish. The field above is the cloth
-            rendered in real time: colour from the fibre, movement from how it
-            drapes, light from how it is finished. Move your cursor through it.
-          </p>
-        </div>
-
-        {/* console */}
-        <div className="mt-auto pt-16">
-          <div
-            className="grid gap-10 p-7 sm:p-9 lg:grid-cols-[1fr_1fr_1fr_1.15fr] lg:gap-12"
-            style={{
-              background: "rgba(255,255,255,.72)",
-              backdropFilter: "blur(22px) saturate(130%)",
-              border: "1px solid var(--ps-line)",
-            }}
-          >
-            <Column title="Fibre" notes={FIBRE} value={fibre} onChange={setFibre} />
-            <Column title="Weave" notes={WEAVE} value={weave} onChange={setWeave} />
-            <Column title="Finish" notes={FINISH} value={finish} onChange={setFinish} />
-
-            {/* readout */}
-            <div className="lg:border-l lg:pl-12" style={{ borderColor: "var(--ps-line)" }}>
-              <p className="ps-caps mb-4" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
-                Your Cloth
-              </p>
-
-              <p className="ps-display text-[2.1rem] leading-none">{name}</p>
-              <p className="mt-3 text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>
-                {fibre.label} · {weave.label} · {finish.label}
-              </p>
-
-              <div className="mt-7">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="weight" className="ps-caps" style={{ fontSize: ".54rem" }}>
-                    Weight
-                  </label>
-                  <span className="ps-caps" style={{ fontSize: ".54rem", color: "var(--ps-accent)" }}>
-                    {grams} g
-                  </span>
-                </div>
-                <input
-                  id="weight"
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  value={weight}
-                  onChange={(e) => setWeight(Number(e.target.value))}
-                  className="mt-3 w-full accent-[var(--ps-accent)]"
-                />
-                <p className="mt-2 text-[.68rem]" style={{ color: "var(--ps-faint)" }}>
-                  {grams < 340 ? "Shirting" : grams < 440 ? "Suiting" : "Overcoating"}
-                </p>
-              </div>
-
-              <div className="mt-8 pt-6" style={{ borderTop: "1px solid var(--ps-line)" }}>
-                <p className="text-[.74rem] font-light" style={{ color: "var(--ps-muted)" }}>
-                  Closest in the collection
-                </p>
-                <div className="mt-3 flex items-center gap-4">
-                  <Link href={`/p/${nearest.slug}`} className="ps-media h-16 w-14 shrink-0">
-                    <img src={nearest.image} alt={nearest.name} loading="lazy" decoding="async" />
-                  </Link>
-                  <div className="flex-1">
-                    <Link href={`/p/${nearest.slug}`} className="ps-display block text-[1.05rem]">
-                      {nearest.name}
-                    </Link>
-                    <p className="text-[.72rem]" style={{ color: "var(--ps-faint)" }}>
-                      From {money(nearest.variants[0].price)}
-                    </p>
-                  </div>
-                </div>
-
-                <button type="button" onClick={commission} className="ps-btn ps-btn-solid mt-5 w-full !py-3">
-                  <span>Add to Bag</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <p className="ps-caps mt-5 text-center" style={{ fontSize: ".52rem", color: "var(--ps-faint)" }}>
-            Rendered live in WebGL — drape and light are driven by the cloth you specify
-          </p>
-        </div>
-      </div>
-    </section>
   );
 }

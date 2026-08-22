@@ -17,9 +17,9 @@ const COLS = [
     links: [
       { label: "Women", href: "/c/women" },
       { label: "Men", href: "/c/men" },
+      { label: "Outerwear", href: "/c/outerwear" },
       { label: "Eyewear", href: "/c/eyewear" },
-      { label: "Women", href: "/c/women" },
-      { label: "Men", href: "/c/men" },
+      { label: "Leather Goods", href: "/c/leather" },
       { label: "Gifts", href: "/c/gifts" },
     ],
   },

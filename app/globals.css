@@ -1302,3 +1302,19 @@ main {
     animation: none;
   }
 }
+
+/* ── The loom ──────────────────────────────────────────────────── */
+
+/*
+ * R3F measures its container on mount and writes the canvas size from that. If
+ * that measure loses the race with layout, the canvas keeps its default 300x150
+ * attribute size and the specimen renders as a postage stamp in the corner of a
+ * 947x710 frame. Passing `style` to <Canvas> does not help — that prop lands on
+ * R3F's wrapper div, not the canvas — so the element is pinned here instead,
+ * which makes the result independent of when the measure lands.
+ */
+.ps-loom canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
