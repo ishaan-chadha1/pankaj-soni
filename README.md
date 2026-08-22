@@ -106,6 +106,13 @@ through to the listing, or adds straight to the bag.
   resolves each arm to px after layout and shortens it until the label sits
   inside the frame. Direction and tilt come from the marker's position, so a
   marker near an edge points inward automatically.
+- **The card hangs off the end of the leader**, so the line reads as pointing at
+  something rather than just decorating the dot. A pip marks where the two meet.
+  - Anything counter-rotating inside the arm needs `transform-origin: left
+    center`. The arm pivots about its left edge; a child that counter-rotates
+    about its own centre swings its whole width around and lands elsewhere — a
+    268px card came down ~280px from the line's end. This was also the constant
+    offset the labels suffered, which `clampArms` had been quietly absorbing.
 - Lines **draw on scroll-in, then retract** after a beat. Hover, focus or an
   open card brings an individual one back. Six permanent labels compete with
   the photograph; the settle gives the frame back.

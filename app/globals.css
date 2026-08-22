@@ -1035,8 +1035,29 @@ main {
  * reads as a diagram, not a campaign. The name belongs in the card, which is
  * what the marker opens.
  */
+/* Carries the card at the leader's end. The arm is pointer-transparent so the
+   line never eats a hover, so the card has to re-enable events for itself. */
+.ps-hot-anchor {
+  position: absolute;
+  top: 0;
+  pointer-events: auto;
+  z-index: 6;
+  /*
+   * Pivot about the point the leader stops, not the box's middle.
+   *
+   * The arm rotates about `left center`; a child that counter-rotates about its
+   * own centre swings its whole width around that centre and lands somewhere
+   * else entirely — a 268px card ended up ~280px from the line's end. This is
+   * the same defect that made the labels miss by a constant amount, which
+   * clampArms had been quietly correcting for.
+   */
+  transform-origin: left center;
+}
+
 .ps-hot-label {
   position: absolute;
+  /* Same pivot correction as the anchor above. */
+  transform-origin: left center;
   width: 1px;
   height: 1px;
   margin: -1px;
@@ -1104,14 +1125,16 @@ main {
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.6);
   opacity: 0;
-  animation: ps-hot-pulse 3.2s var(--ease) infinite;
+  animation: ps-hot-pulse 4.4s var(--ease) infinite;
   animation-delay: var(--hot-delay, 0ms);
   pointer-events: none;
 }
+/* Barely there. At full strength this read as a ripple sitting on the model's
+   face; it only needs to say "live", not draw attention to itself. */
 @keyframes ps-hot-pulse {
-  0% { transform: scale(0.6); opacity: 0; }
-  35% { opacity: 0.6; }
-  100% { transform: scale(1.5); opacity: 0; }
+  0% { transform: scale(0.85); opacity: 0; }
+  30% { opacity: 0.28; }
+  100% { transform: scale(1.22); opacity: 0; }
 }
 
 .ps-hot-dot:hover,
@@ -1121,38 +1144,63 @@ main {
   background: radial-gradient(circle, #fff 0 3px, rgba(255, 255, 255, 0.22) 3.2px);
   border-color: #fff;
 }
-.ps-hot[data-open="true"] .ps-hot-arm {
-  opacity: 0.4;
+/* One piece at a time: the others recede so the open leader is the only thing
+   competing with the photograph. */
+.ps-look[data-focus="true"] .ps-hot:not([data-open="true"]) {
+  opacity: 0.28;
+}
+.ps-look[data-focus="true"] .ps-hot:not([data-open="true"]) .ps-hot-dot::after {
+  animation: none;
+}
+.ps-hot {
+  transition: opacity 0.5s var(--ease);
 }
 
 .ps-hot-card {
-  position: absolute;
-  z-index: 5;
+  position: relative;
   width: 268px;
   max-width: min(268px, 82vw);
   background: var(--ps-surface);
   border: 1px solid var(--ps-line);
-  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 26px 64px -26px rgba(0, 0, 0, 0.38);
   padding: 0.9rem;
-  animation: ps-hot-fade 0.4s var(--ease) both;
+  /* Unfurls from the point the line stops, after the line has drawn. */
+  transform-origin: var(--card-origin, left center);
+  animation: ps-hot-unfurl 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
 }
-/* Anchored to whichever edge keeps the card inside the frame. */
-.ps-hot-card[data-v="center"] {
+/* A pip where the leader meets the card, so the two read as one object. */
+.ps-hot-card[data-side]::before {
+  content: "";
+  position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  animation-name: ps-hot-card-center;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.16);
 }
-.ps-hot-card[data-v="top"] {
-  top: -10px;
+.ps-hot-card[data-side="right"]::before {
+  left: -3px;
 }
-.ps-hot-card[data-v="bottom"] {
-  bottom: -10px;
+.ps-hot-card[data-side="left"]::before {
+  right: -3px;
 }
+/* The sheet has no leader to meet. */
+.ps-hot-card[data-narrow="true"]::before {
+  display: none;
+}
+@keyframes ps-hot-unfurl {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateX(var(--unfurl-from, -10px));
+  }
+}
+
 @keyframes ps-hot-fade {
-  from { opacity: 0; }
-}
-@keyframes ps-hot-card-center {
-  from { opacity: 0; transform: translateY(-50%) scale(0.97); }
+  from {
+    opacity: 0;
+  }
 }
 
 /* A 2.36:1 frame is 142px tall on a phone — the model ends up about 15px wide

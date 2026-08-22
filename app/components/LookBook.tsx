@@ -218,6 +218,8 @@ function LookFrame({
         className="ps-look relative w-full"
         data-reveal={revealed}
         data-settled={settled}
+        // Lets the other markers stand down while one card is open.
+        data-focus={look.hotspots.some((h) => open === `${look.id}:${h.slug}`)}
         // The aspect travels as a custom property, not an inline aspect-ratio:
         // an inline value outranks the media query that crops to portrait on
         // phones, and the frame stayed 142px tall.
@@ -244,6 +246,7 @@ function LookFrame({
               hot={h}
               index={i}
               pos={map(h.x, h.y)}
+              frameW={box.w}
               narrow={narrow}
               open={open === key}
               onToggle={() => setOpen(open === key ? null : key)}
@@ -360,6 +363,7 @@ function Marker({
   hot,
   index,
   pos,
+  frameW,
   narrow,
   open,
   onToggle,
@@ -367,6 +371,7 @@ function Marker({
   hot: Hotspot;
   index: number;
   pos: { left: number; top: number; visible: boolean };
+  frameW: number;
   narrow: boolean;
   open: boolean;
   onToggle: () => void;
@@ -381,34 +386,97 @@ function Marker({
     window.setTimeout(() => setAdded(false), 1600);
   }, [add, product]);
 
-  if (!product || !pos.visible) return null;
-
   const { angle, toRight } = leader(hot);
   // Base length as a % of frame width; clampArms resolves it to px after layout
   // and pulls it in if the label would land outside.
   const basePct = hot.len ?? 13;
 
-
-  /**
-   * On a narrow frame the card is a viewport-pinned sheet, and it is portalled
-   * to <body>. `position: fixed` resolves against the nearest transformed
-   * ancestor, and <main> carries a transform from the page-entry animation —
-   * which threw the sheet thousands of pixels down the document. Portalling
-   * takes it out of that subtree entirely, so no ancestor's styles can move it.
+  /*
+   * Which side of the line's end the card opens on.
+   *
+   * Decided from the MEASURED leader, not the authored length: clampArms
+   * shortens arms after layout, so a render-time estimate put cards where the
+   * line did not actually finish. Flipped rather than shifted when it will not
+   * fit — sliding the card sideways to rescue it left the connector pip 200px
+   * from the leader, pointing at nothing.
    */
-  const renderCard = () => {
-    const card = (
+  const [flip, setFlip] = useState(false);
+
+  // A fresh open re-decides the side. Adjusted during render rather than in an
+  // effect, which would cost a second pass every time a card is dismissed.
+  const [lastOpen, setLastOpen] = useState(open);
+  if (lastOpen !== open) {
+    setLastOpen(open);
+    if (!open) setFlip(false);
+  }
+
+  const cardOpensRight = flip ? !toRight : toRight;
+
+  /*
+   * Nudge the opened card back inside the frame.
+   *
+   * The nudge goes on the ANCHOR's transform, not a margin on the card. The
+   * anchor places itself with translate(-100%, -50%) — percentages of its own
+   * box — so a margin on the card resized that box and moved the goalposts with
+   * every correction. A translate appended after the counter-rotation cancels
+   * out against the arm's rotation, which makes it plain screen-space pixels.
+   */
+  const anchorRef = useRef<HTMLSpanElement | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const anchorBase = `rotate(${-angle}deg) translate(${cardOpensRight ? "0" : "-100%"}, -50%)`;
+
+  useLayoutEffect(() => {
+    const anchor = anchorRef.current;
+    const card = cardRef.current;
+    if (!open || narrow || !anchor || !card) return;
+
+    anchor.style.transform = anchorBase;
+    const frame = anchor.closest<HTMLElement>(".ps-look");
+    if (!frame) return;
+    const fr = frame.getBoundingClientRect();
+    const c = card.getBoundingClientRect();
+    const PAD = 12;
+
+    // Horizontal: flip to the other side of the line's end, keeping the pip on it.
+    const overflowsX = c.left < fr.left + PAD || c.right > fr.right - PAD;
+    if (overflowsX && !flip) {
+      setFlip(true);
+      return;
+    }
+
+    // Vertical: a straight nudge. There is no other side to flip to.
+    const dy =
+      c.top < fr.top + PAD
+        ? fr.top + PAD - c.top
+        : c.bottom > fr.bottom - PAD
+          ? fr.bottom - PAD - c.bottom
+          : 0;
+    if (dy) anchor.style.transform = `${anchorBase} translate(0px, ${Math.round(dy)}px)`;
+  }, [open, narrow, frameW, anchorBase, flip]);
+
+  // Every hook above runs unconditionally; only now is it safe to bail.
+  if (!product || !pos.visible) return null;
+
+
+  const cardBody = (
       <div
+        ref={cardRef}
         className="ps-hot-card"
-        // Centring on the dot pushes the card outside the frame for markers
-        // near an edge — the glasses sit at 11% and hung above the top. Anchor
-        // to the near edge instead of centring when the dot is close to one.
-        data-v={hot.y < 32 ? "top" : hot.y > 68 ? "bottom" : "center"}
         // The flag rides on the card, not the marker: once portalled the card
         // is no longer a descendant of .ps-hot, so a descendant selector would
         // never match.
         data-narrow={narrow}
-        style={narrow ? undefined : { left: toRight ? "auto" : 26, right: toRight ? 26 : "auto" }}
+        // Grow out of whichever edge meets the leader, and put the connecting
+        // pip on that same edge.
+        data-side={cardOpensRight ? "right" : "left"}
+        style={
+          narrow
+            ? undefined
+            : {
+                ["--card-origin" as string]: cardOpensRight ? "left center" : "right center",
+                ["--unfurl-from" as string]: cardOpensRight ? "-12px" : "12px",
+              }
+        }
       >
         <Link href={`/p/${product.slug}`} className="flex gap-4">
           <span className="ps-media h-[96px] w-[74px] shrink-0">
@@ -450,11 +518,18 @@ function Marker({
           </Link>
         </div>
       </div>
-    );
-    return narrow && typeof document !== "undefined"
-      ? createPortal(card, document.body)
-      : card;
-  };
+  );
+
+  /*
+   * Narrow frames pin the card to the viewport and portal it to <body>:
+   * `position: fixed` resolves against the nearest transformed ancestor, and
+   * <main> carries a transform from the page-entry animation, which threw the
+   * sheet thousands of pixels down the document.
+   */
+  const sheet =
+    narrow && typeof document !== "undefined"
+      ? createPortal(cardBody, document.body)
+      : null;
 
   return (
     <div
@@ -481,6 +556,19 @@ function Marker({
         >
           {hot.label}
         </span>
+
+        {/* Sits at the line's end and counter-rotates so the card itself stays
+            upright. Inside the arm is what keeps it pinned to the end however
+            long clampArms decides the leader should be. */}
+        {open && !narrow ? (
+          <span
+            ref={anchorRef}
+            className="ps-hot-anchor"
+            style={{ left: "var(--arm)", transform: anchorBase }}
+          >
+            {cardBody}
+          </span>
+        ) : null}
       </span>
 
       <button
@@ -491,7 +579,7 @@ function Marker({
         className="ps-hot-dot"
       />
 
-      {open ? renderCard() : null}
+      {open ? sheet : null}
     </div>
   );
 }
