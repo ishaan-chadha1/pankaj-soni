@@ -17,7 +17,7 @@ export default function BagDrawer() {
       <div
         aria-hidden
         onClick={() => setOpen(false)}
-        className="fixed inset-0 z-[80] transition-opacity duration-700"
+        className="fixed inset-0 z-[80] transition-opacity ps-t-slow"
         style={{
           background: "rgba(26,23,19,.42)",
           backdropFilter: "blur(3px)",

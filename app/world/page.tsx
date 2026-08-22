@@ -4,6 +4,7 @@ import { EDITORIAL } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../components/Reveal";
 import { HeroPlate, Parallax } from "../components/Parallax";
 import { Curtain, FillRule } from "../components/Motif";
+import { stagger } from "@/lib/motion";
 
 export const metadata: Metadata = {
   title: "The Maison",
@@ -143,7 +144,7 @@ export default function WorldPage() {
           />
           <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {SERVICES.map(([t, d], i) => (
-              <Reveal key={t} delay={i * 90}>
+              <Reveal key={t} delay={stagger(i)}>
                 <div className="pt-5" style={{ borderTop: "1px solid var(--ps-line)" }}>
                   <h3 className="ps-caps-lg">{t}</h3>
                   <p className="mt-3 text-[.84rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
@@ -162,7 +163,7 @@ export default function WorldPage() {
           <MaskLines as="h2" className="ps-display ps-h2 mb-14" lines={["From the Journal"]} />
           <div className="grid gap-10 md:grid-cols-3">
             {EDITORIAL.map((e, i) => (
-              <Reveal key={e.slug} delay={i * 110}>
+              <Reveal key={e.slug} delay={stagger(i)}>
                 <article className="group">
                   <div className="ps-media ps-zoom aspect-[4/3]">
                     <img src={e.image} alt="" loading="lazy" decoding="async" />
@@ -207,7 +208,7 @@ export default function WorldPage() {
               ["Milan", "Via Montenapoleone"],
               ["New York", "Madison Avenue"],
             ].map(([city, street], i) => (
-              <Reveal key={city} delay={i * 90}>
+              <Reveal key={city} delay={stagger(i)}>
                 <div className="pt-4" style={{ borderTop: "1px solid var(--ps-line-strong)" }}>
                   <p className="ps-display text-[1.5rem]">{city}</p>
                   <p className="mt-1.5 text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>

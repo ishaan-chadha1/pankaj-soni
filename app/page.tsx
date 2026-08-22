@@ -7,6 +7,7 @@ import HorizontalRail from "./components/HorizontalRail";
 import Pinned from "./components/Pinned";
 import { Curtain, FillRule } from "./components/Motif";
 import LookBook from "./components/LookBook";
+import { stagger } from "@/lib/motion";
 
 const MARQUEE = [
   "Private Atelier",
@@ -57,7 +58,7 @@ export default function PsHome() {
       {/* ───────────────────────── HERO ───────────────────────── */}
       {/* Compact by design: the campaign frame below is the real hero, and a
           full-height type block would push it under the fold. */}
-      <section className="mx-auto max-w-[1560px] px-5 pb-4 pt-14 sm:px-8 lg:pt-20">
+      <section className="mx-auto max-w-[1560px] px-5 pb-[var(--band-s)] pt-[var(--band-m)] sm:px-8">
         <Reveal>
           <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
             Autumn Collection — Private Atelier
@@ -117,8 +118,9 @@ export default function PsHome() {
       </div>
 
       {/* ───────────────────────── TRIPTYCH ───────────────────────── */}
-      <section className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8 lg:py-32">
-        <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
+      <section className="ps-alt ps-band-l">
+        <div className="mx-auto max-w-[1560px] px-5 sm:px-8">
+          <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
           <MaskLines
             as="h2"
             className="ps-display ps-h2"
@@ -133,11 +135,11 @@ export default function PsHome() {
 
         <div className="grid gap-5 md:grid-cols-3">
           {triptych.map((c, i) => (
-            <Reveal key={c.slug} delay={i * 130}>
+            <Reveal key={c.slug} delay={stagger(i)}>
               <Link href={`/c/${c.slug}`} className="group block">
                 <Curtain
                   className="ps-media ps-zoom ps-tint aspect-[3/4.1]"
-                  delay={i * 110}
+                  delay={stagger(i)}
                 >
                   <img src={c.image} alt="" loading="lazy" decoding="async" />
                   <div
@@ -158,12 +160,13 @@ export default function PsHome() {
               </Link>
             </Reveal>
           ))}
+          </div>
         </div>
       </section>
 
       {/* ───────────────────────── SIGNATURE ───────────────────────── */}
-      <section className="ps-alt relative overflow-hidden">
-        <div className="mx-auto grid max-w-[1560px] items-center gap-14 px-5 py-24 sm:px-8 lg:grid-cols-2 lg:gap-24 lg:py-36">
+      <section className="relative overflow-hidden">
+        <div className="ps-band-l mx-auto grid max-w-[1560px] items-center gap-14 px-5 sm:px-8 lg:grid-cols-2 lg:gap-24">
           <Parallax speed={0.14} className="relative">
             <div className="ps-media aspect-[4/5]">
               <img src={hero.image} alt={hero.name} loading="lazy" decoding="async" className="object-contain p-10" />
@@ -226,7 +229,7 @@ export default function PsHome() {
       </section>
 
       {/* ───────────────────────── RAIL ───────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="ps-alt ps-band-l">
         <div className="mx-auto mb-14 flex max-w-[1560px] flex-wrap items-end justify-between gap-6 px-5 sm:px-8">
           <MaskLines
             as="h2"
@@ -254,8 +257,8 @@ export default function PsHome() {
       </HorizontalRail>
 
       {/* ───────────────────────── PINNED EDITORIAL ───────────────────────── */}
-      <section className="ps-alt">
-        <div className="mx-auto max-w-[1560px] px-5 pt-24 sm:px-8 lg:pt-32">
+      <section>
+        <div className="mx-auto max-w-[1560px] px-5 pt-[var(--band-l)] sm:px-8">
           <Reveal>
             <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
               The Atelier
@@ -277,7 +280,7 @@ export default function PsHome() {
         {/* The frame holds while these three beats advance against it. */}
         <Pinned beats={BEATS} />
 
-        <div className="mx-auto max-w-[1560px] px-5 pb-24 sm:px-8 lg:pb-32">
+        <div className="mx-auto max-w-[1560px] px-5 pb-[var(--band-l)] sm:px-8">
           <Reveal>
             <div className="grid grid-cols-3 gap-8">
               {[
@@ -343,7 +346,8 @@ export default function PsHome() {
       </section>
 
       {/* ───────────────────────── JOURNAL ───────────────────────── */}
-      <section className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8 lg:py-32">
+      <section className="ps-alt ps-band-l">
+        <div className="mx-auto max-w-[1560px] px-5 sm:px-8">
         <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
           <MaskLines as="h2" className="ps-display ps-h2" lines={["Journal"]} />
           <Reveal delay={120}>
@@ -355,7 +359,7 @@ export default function PsHome() {
 
         <div className="grid gap-10 md:grid-cols-3">
           {EDITORIAL.map((e, i) => (
-            <Reveal key={e.slug} delay={i * 120}>
+            <Reveal key={e.slug} delay={stagger(i)}>
               <Link href="/world" className="group block">
                 <div className="ps-media ps-zoom ps-tint aspect-[4/3]">
                   <img src={e.image} alt="" loading="lazy" decoding="async" />
@@ -373,6 +377,7 @@ export default function PsHome() {
               </Link>
             </Reveal>
           ))}
+          </div>
         </div>
       </section>
 
@@ -380,9 +385,9 @@ export default function PsHome() {
       <section>
         {/* the divider draws itself as it comes into view */}
         <FillRule accent={false} duration={1600} />
-        <div className="mx-auto grid max-w-[1560px] gap-y-12 px-5 py-20 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:gap-x-10">
+        <div className="ps-band-l mx-auto grid max-w-[1560px] gap-y-12 px-5 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:gap-x-10">
           {SERVICES.map((s, i) => (
-            <Reveal key={s.t} delay={i * 90} className="lg:px-2">
+            <Reveal key={s.t} delay={stagger(i)} className="lg:px-2">
               <p className="ps-display text-[1.15rem]" style={{ color: "var(--ps-accent)" }}>
                 0{i + 1}
               </p>

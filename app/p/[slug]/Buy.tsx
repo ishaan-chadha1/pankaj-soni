@@ -54,7 +54,7 @@ export default function Buy({ product }: { product: Product }) {
                   className="group flex flex-col items-center gap-2"
                 >
                   <span
-                    className="block h-11 w-11 rounded-full transition-transform duration-500"
+                    className="block h-11 w-11 rounded-full transition-transform ps-t-base"
                     style={{
                       background: v.swatch,
                       outline: v.id === variantId ? "1px solid var(--ps-accent)" : "1px solid var(--ps-line)",

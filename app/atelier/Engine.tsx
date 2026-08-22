@@ -89,11 +89,11 @@ function Column({
               type="button"
               onClick={() => onChange(n)}
               aria-pressed={on}
-              className="group flex w-full items-center gap-3 py-1.5 text-left transition-opacity duration-500"
+              className="group flex w-full items-center gap-3 py-1.5 text-left transition-opacity ps-t-base"
               style={{ opacity: on ? 1 : 0.5 }}
             >
               <span
-                className="block h-2.5 w-2.5 shrink-0 rounded-full transition-transform duration-500"
+                className="block h-2.5 w-2.5 shrink-0 rounded-full transition-transform ps-t-base"
                 style={{
                   background: n.color,
                   transform: on ? "scale(1.5)" : "scale(1)",

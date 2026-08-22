@@ -263,7 +263,7 @@ function LookFrame({
           <li key={p.slug} className="shrink-0">
             <Link
               href={`/p/${p.slug}`}
-              className="group flex w-[210px] items-center gap-3 p-2 transition-colors duration-500"
+              className="group flex w-[210px] items-center gap-3 p-2 transition-colors ps-t-base"
               style={{ border: "1px solid var(--ps-line)" }}
             >
               <span className="ps-media h-[54px] w-[42px] shrink-0">

@@ -51,7 +51,17 @@ export function Reveal({
       ref={ref}
       data-shown={shown}
       className={`ps-rise ${className ?? ""}`}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+      /* --rd carries the same stagger to the scroll-driven path, where a
+         transition-delay means nothing: the offset shifts each item's scroll
+         range instead, so a row still resolves as a phrase. */
+      style={
+        delay
+          ? {
+              transitionDelay: `${delay}ms`,
+              ["--rd" as string]: `${Math.min(delay / 45, 13)}%`,
+            }
+          : undefined
+      }
     >
       {children}
     </div>

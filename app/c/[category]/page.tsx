@@ -7,6 +7,7 @@ import { JsonLd, breadcrumbLd, itemListLd } from "@/lib/seo";
 import SplitText from "../../components/SplitText";
 import { Curtain } from "../../components/Motif";
 import CategoryGrid from "./CategoryGrid";
+import { stagger } from "@/lib/motion";
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ category: c.slug }));
@@ -96,9 +97,9 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
           </p>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {CATEGORIES.filter((x) => x.slug !== c.slug).map((x, i) => (
-              <Reveal key={x.slug} delay={i * 80}>
+              <Reveal key={x.slug} delay={stagger(i)}>
                 <Link href={`/c/${x.slug}`} className="group block">
-                  <Curtain className="ps-media ps-zoom ps-tint aspect-[4/3]" delay={i * 90}>
+                  <Curtain className="ps-media ps-zoom ps-tint aspect-[4/3]" delay={stagger(i)}>
                     <img src={x.image} alt="" loading="lazy" decoding="async" />
                   </Curtain>
                   <p className="ps-display mt-4 text-[1.25rem]">{x.label}</p>

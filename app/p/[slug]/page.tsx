@@ -8,6 +8,7 @@ import ProductCard from "../../components/ProductCard";
 import { JsonLd, breadcrumbLd, productLd } from "@/lib/seo";
 import SplitText from "../../components/SplitText";
 import Buy from "./Buy";
+import { stagger } from "@/lib/motion";
 
 export function generateStaticParams() {
   return PRODUCTS.map((p) => ({ slug: p.slug }));
@@ -167,7 +168,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
                 <summary className="ps-caps flex cursor-pointer list-none items-center justify-between py-5">
                   {a.title}
                   <span
-                    className="text-[1rem] transition-transform duration-500 group-open:rotate-45"
+                    className="text-[1rem] transition-transform ps-t-base group-open:rotate-45"
                     style={{ color: "var(--ps-accent)" }}
                   >
                     +
@@ -205,7 +206,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
 
             <div className="mx-auto grid max-w-[1100px] gap-10 md:grid-cols-3">
               {(["head", "heart", "base"] as const).map((k, i) => (
-                <Reveal key={k} delay={i * 130}>
+                <Reveal key={k} delay={stagger(i)}>
                   <div className="text-center">
                     <p className="ps-display text-[2.6rem] leading-none" style={{ color: "var(--ps-faint)" }}>
                       0{i + 1}
@@ -246,7 +247,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
 
         <div className="grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4">
           {alsoLike.map((p, i) => (
-            <Reveal key={p.slug} delay={i * 80}>
+            <Reveal key={p.slug} delay={stagger(i)}>
               <ProductCard product={p} index={i} />
             </Reveal>
           ))}

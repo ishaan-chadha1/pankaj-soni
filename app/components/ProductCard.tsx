@@ -73,7 +73,7 @@ export default function ProductCard({
 
         {/* Quick-add slides up from the bottom edge of the plate. */}
         <div
-          className="absolute inset-x-0 bottom-0 z-[2] translate-y-full opacity-0 transition-all duration-700 group-hover:translate-y-0 group-hover:opacity-100"
+          className="absolute inset-x-0 bottom-0 z-[2] translate-y-full opacity-0 transition-all ps-t-slow group-hover:translate-y-0 group-hover:opacity-100"
           style={{ transitionTimingFunction: "cubic-bezier(.16,1,.3,1)" }}
         >
           {oneVariant ? (

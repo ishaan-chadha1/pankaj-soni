@@ -164,7 +164,7 @@ export default function CheckoutView() {
                     type="button"
                     onClick={() => setShip(d.id)}
                     aria-pressed={ship === d.id}
-                    className="flex w-full items-center justify-between p-5 text-left transition-colors duration-500"
+                    className="flex w-full items-center justify-between p-5 text-left transition-colors ps-t-base"
                     style={{
                       border: `1px solid ${ship === d.id ? "var(--ps-accent)" : "var(--ps-line)"}`,
                       background: ship === d.id ? "rgba(201,169,97,.06)" : "transparent",

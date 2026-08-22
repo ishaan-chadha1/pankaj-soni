@@ -47,7 +47,7 @@ export default function ThemeSwitcher({ compact = false }: { compact?: boolean }
               aria-label={`${t.name} palette`}
               aria-pressed={t.id === theme}
               title={t.name}
-              className="flex h-9 w-9 overflow-hidden rounded-full transition-transform duration-500"
+              className="flex h-9 w-9 overflow-hidden rounded-full transition-transform ps-t-base"
               style={{
                 outline: t.id === theme ? "1px solid var(--ps-accent)" : "1px solid var(--ps-line)",
                 outlineOffset: 3,
@@ -72,7 +72,7 @@ export default function ThemeSwitcher({ compact = false }: { compact?: boolean }
         aria-expanded={open}
         aria-haspopup="true"
         aria-label={`Palette: ${active.name}. Change palette`}
-        className="flex items-center gap-2.5 transition-opacity duration-500 hover:opacity-70"
+        className="flex items-center gap-2.5 transition-opacity ps-t-base hover:opacity-70"
       >
         <span
           className="flex h-[18px] w-[18px] overflow-hidden rounded-full"
@@ -114,7 +114,7 @@ export default function ThemeSwitcher({ compact = false }: { compact?: boolean }
               setOpen(false);
             }}
             aria-pressed={t.id === theme}
-            className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors duration-300"
+            className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors ps-t-fast"
             style={{ background: t.id === theme ? "var(--ps-accent-soft)" : "transparent" }}
           >
             <span

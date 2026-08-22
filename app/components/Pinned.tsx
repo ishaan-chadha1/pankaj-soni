@@ -120,7 +120,7 @@ export default function Pinned({ beats }: { beats: Beat[] }) {
                 {beats.map((b, i) => (
                   <span
                     key={b.n}
-                    className="block h-px w-10 transition-colors duration-500"
+                    className="block h-px w-10 transition-colors ps-t-base"
                     style={{
                       background: i === active ? "var(--ps-accent)" : "var(--ps-line)",
                     }}

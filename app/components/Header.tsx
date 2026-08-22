@@ -280,7 +280,7 @@ export default function Header() {
       </div>
 
       <header
-        className="sticky top-0 z-50 transition-all duration-700"
+        className="sticky top-0 z-50 transition-all ps-t-slow"
         style={{
           background: opaque ? "color-mix(in srgb, var(--ps-bg) 88%, transparent)" : "transparent",
           backdropFilter: opaque ? "blur(16px) saturate(140%)" : "none",
@@ -335,14 +335,14 @@ export default function Header() {
               type="button"
               aria-label="Search"
               onClick={() => setSearch(true)}
-              className="ps-tap opacity-80 transition-opacity duration-500 hover:opacity-100"
+              className="ps-tap opacity-80 transition-opacity ps-t-base hover:opacity-100"
             >
               {Ico.search}
             </button>
             <Link
               href="/world"
               aria-label="Account"
-              className="ps-tap hidden opacity-80 transition-opacity duration-500 hover:opacity-100 sm:block"
+              className="ps-tap hidden opacity-80 transition-opacity ps-t-base hover:opacity-100 sm:block"
             >
               {Ico.user}
             </Link>
@@ -350,7 +350,7 @@ export default function Header() {
               type="button"
               aria-label={`Bag, ${count} items`}
               onClick={() => setBag(true)}
-              className="ps-tap relative opacity-80 transition-opacity duration-500 hover:opacity-100"
+              className="ps-tap relative opacity-80 transition-opacity ps-t-base hover:opacity-100"
             >
               {Ico.bag}
               {ready && count > 0 ? (
@@ -424,7 +424,7 @@ export default function Header() {
 
       {/* search overlay */}
       <div
-        className="fixed inset-0 z-[70] transition-opacity duration-700"
+        className="fixed inset-0 z-[70] transition-opacity ps-t-slow"
         style={{
           background: "var(--ps-surface)",
           backdropFilter: "blur(18px)",
@@ -454,7 +454,7 @@ export default function Header() {
                 key={p.slug}
                 href={`/p/${p.slug}`}
                 onClick={() => setSearch(false)}
-                className="group flex items-center gap-5 py-3 transition-colors duration-500"
+                className="group flex items-center gap-5 py-3 transition-colors ps-t-base"
                 style={{ borderBottom: "1px solid var(--ps-line)" }}
               >
                 <span className="ps-media h-16 w-14 shrink-0">
