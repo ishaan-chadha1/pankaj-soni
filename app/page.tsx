@@ -3,8 +3,6 @@ import { CATEGORIES, EDITORIAL, PRODUCTS, bySlug, featured, money } from "@/lib/
 import { MaskLines, Reveal } from "./components/Reveal";
 import { Parallax } from "./components/Parallax";
 import ProductCard from "./components/ProductCard";
-import HorizontalRail from "./components/HorizontalRail";
-import Pinned from "./components/Pinned";
 import { Curtain, FillRule } from "./components/Motif";
 import LookBook from "./components/LookBook";
 import { stagger } from "@/lib/motion";
@@ -18,26 +16,6 @@ const MARQUEE = [
   "Appointment only",
 ];
 
-const BEATS = [
-  {
-    n: "I",
-    title: "The Shoulder",
-    body: "Every jacket is drafted from one shoulder — extended by a centimetre, softly padded, cut high in the armhole so the body stays still while the arm moves. The least visible decision in the collection, and the only one never up for discussion.",
-    image: "/img/p-ed-02.svg",
-  },
-  {
-    n: "II",
-    title: "Eleven Weeks",
-    body: "A finished composition goes into steel and stays there for eleven weeks before a single flacon is filled. Nothing is added in that time. The materials simply stop arguing with each other.",
-    image: "/img/p-ed-01.svg",
-  },
-  {
-    n: "III",
-    title: "Fewer Things",
-    body: "Editions are capped at nine hundred, and ready-to-wear is cut in a single run. We are asked constantly to make more and have declined every time — scarcity is what happens when the finishing is done by the same eleven people.",
-    image: "/img/p-ed-03.svg",
-  },
-];
 
 const SERVICES = [
   { t: "Complimentary Delivery", d: "Express worldwide on every order above $250, in signature lacquer." },
@@ -229,79 +207,27 @@ export default function PsHome() {
       </section>
 
       {/* ───────────────────────── RAIL ───────────────────────── */}
+      {/* Was a scroll-driven horizontal rail: it spent 2.5 screens of vertical
+          scroll to move eight cards sideways, and the lookbook above already
+          does "shop the pieces" better. Same products, a fifth of the height. */}
       <section className="ps-alt ps-band-l">
-        <div className="mx-auto mb-14 flex max-w-[1560px] flex-wrap items-end justify-between gap-6 px-5 sm:px-8">
-          <MaskLines
-            as="h2"
-            className="ps-display ps-h2"
-            lines={["Selected by the maison"]}
-          />
-          <Reveal delay={120}>
-            <p className="max-w-[34ch] text-[.85rem] font-light" style={{ color: "var(--ps-muted)" }}>
-              The pieces our consultants reach for first.
-            </p>
-          </Reveal>
-        </div>
-
-      </section>
-
-      {/* Vertical scroll drives this sideways on desktop; a plain swipe rail
-          below lg. Sits outside the section above so the pinned frame has the
-          full viewport to work with. */}
-      <HorizontalRail>
-        {rail.map((p, i) => (
-          <div key={p.slug} className="w-[74vw] sm:w-[38vw] lg:w-[23vw] xl:w-[19vw]">
-            <ProductCard product={p} index={i} />
+        <div className="mx-auto max-w-[1560px] px-5 sm:px-8">
+          <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
+            <MaskLines as="h2" className="ps-display ps-h2" lines={["Selected by the maison"]} />
+            <Reveal delay={120}>
+              <p className="max-w-[34ch] text-[.85rem] font-light" style={{ color: "var(--ps-muted)" }}>
+                The pieces our consultants reach for first.
+              </p>
+            </Reveal>
           </div>
-        ))}
-      </HorizontalRail>
 
-      {/* ───────────────────────── PINNED EDITORIAL ───────────────────────── */}
-      <section>
-        <div className="mx-auto max-w-[1560px] px-5 pt-[var(--band-l)] sm:px-8">
-          <Reveal>
-            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-              The Atelier
-            </p>
-          </Reveal>
-          <MaskLines
-            as="h2"
-            className="ps-display ps-h2 mt-6"
-            delay={80}
-            lines={[
-              "Nothing leaves the atelier",
-              <span key="unfinished" className="ps-display-i">
-                unfinished.
-              </span>,
-            ]}
-          />
-        </div>
-
-        {/* The frame holds while these three beats advance against it. */}
-        <Pinned beats={BEATS} />
-
-        <div className="mx-auto max-w-[1560px] px-5 pb-[var(--band-l)] sm:px-8">
-          <Reveal>
-            <div className="grid grid-cols-3 gap-8">
-              {[
-                ["1998", "Maison founded"],
-                ["11", "Weeks of maturation"],
-                ["900", "Flacons per edition"],
-              ].map(([n, l]) => (
-                <div key={l} style={{ borderTop: "1px solid var(--ps-line)" }} className="pt-4">
-                  <p className="ps-display text-[2.2rem] leading-none">{n}</p>
-                  <p className="ps-caps mt-2" style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}>
-                    {l}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-          <Reveal delay={160}>
-            <Link href="/world" className="ps-btn mt-12">
-              <span>Inside the Maison</span>
-            </Link>
-          </Reveal>
+          <div className="grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4">
+            {rail.slice(0, 4).map((p, i) => (
+              <Reveal key={p.slug} delay={stagger(i)}>
+                <ProductCard product={p} index={i} />
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
