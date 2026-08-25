@@ -203,6 +203,10 @@ function LookFrame({
     const el = frame.current;
     if (!v || !el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Set the PROPERTY, not just the attribute. React renders muted as an
+    // attribute, and browsers gate autoplay on the property — a clip that is
+    // muted in the markup but not in the DOM is refused permission to play.
+    v.muted = true;
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) v.play().catch(() => {});
