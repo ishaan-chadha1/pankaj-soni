@@ -51,6 +51,12 @@ time, so it has to be set before the bundle is made, not after:
 export NEXT_PUBLIC_SITE_URL=https://your-domain.com
 ```
 
+`vercel.json` sets a week of caching on `/video/*` and `/img/*`. Vercel's
+default for files in `public/` is `max-age=0, must-revalidate`, which made the
+2.3MB campaign clip revalidate on every single page load. `stale-while-
+revalidate` means a replaced asset still reaches people within a day without
+anyone ever waiting on a fresh fetch.
+
 **Vercel** — zero config, detects Next automatically:
 
 ```bash
