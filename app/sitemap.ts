@@ -1,10 +1,6 @@
 import type { MetadataRoute } from "next";
+import { SITE } from "@/lib/site";
 import { CATEGORIES, PRODUCTS } from "@/lib/catalog";
-
-const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://pankajsoni.example").replace(
-  /\/$/,
-  ""
-);
 
 export const dynamic = "force-static";
 

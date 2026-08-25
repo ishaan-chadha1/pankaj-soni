@@ -40,7 +40,12 @@ npm run serve:static
 
 ## Deploy
 
-Set your real domain first so canonical, sitemap and OG URLs are absolute:
+Live at **https://pankaj-soni-beige.vercel.app** — that origin is the built-in
+default in `lib/site.ts`, so canonical tags, OG image URLs, `sitemap.xml` and
+`robots.txt` all come out absolute and correct with no environment set up.
+
+Override it only when the site moves to its own domain. It is read at BUILD
+time, so it has to be set before the bundle is made, not after:
 
 ```bash
 export NEXT_PUBLIC_SITE_URL=https://your-domain.com

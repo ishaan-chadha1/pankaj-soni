@@ -1,9 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://pankajsoni.example").replace(
-  /\/$/,
-  ""
-);
+import { SITE } from "@/lib/site";
 
 export const dynamic = "force-static";
 

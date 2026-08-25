@@ -11,6 +11,7 @@ import ScrollProgress from "./components/ScrollProgress";
 import ThemeScript from "./components/ThemeScript";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { JsonLd, organizationLd, websiteLd } from "@/lib/seo";
+import { SITE } from "@/lib/site";
 
 /* A didone for display, a geometric grotesque for everything else — the
    standard couture pairing. Both variable, so no weight list is needed. */
@@ -32,13 +33,6 @@ export const viewport: Viewport = {
   themeColor: "#faf7f1",
   colorScheme: "light",
 };
-
-/* Set NEXT_PUBLIC_SITE_URL at build time so canonical and OG URLs are absolute
-   on the real domain. */
-const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://pankajsoni.example").replace(
-  /\/$/,
-  ""
-);
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),

@@ -1,11 +1,9 @@
 import type { Product } from "./catalog";
 
-/** Absolute origin. Set NEXT_PUBLIC_SITE_URL at build time for the real domain. */
-export const SITE = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://pankajsoni.example"
-).replace(/\/$/, "");
-
-export const abs = (path: string) => `${SITE}${path.startsWith("/") ? path : `/${path}`}`;
+// Declared in ./site; imported for use below and re-exported so the existing
+// importers of this module keep working.
+import { SITE, abs } from "./site";
+export { SITE, abs };
 
 /**
  * JSON-LD builders.
