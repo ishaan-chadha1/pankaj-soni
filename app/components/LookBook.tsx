@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { LOOKS, LOOK_ASPECT, type Hotspot, type Look } from "@/lib/looks";
+import { LOOKS, LOOK_ASPECT, swayFactor, type Hotspot, type Look } from "@/lib/looks";
 import { bySlug, money } from "@/lib/catalog";
 import { useCart } from "../CartProvider";
 
@@ -104,8 +104,6 @@ function makeCropMap(frameW: number, frameH: number, srcW: number, srcH: number)
   };
 }
 
-const [SRC_W, SRC_H] = LOOK_ASPECT.split("/").map((n) => Number(n.trim()));
-
 /* ────────────────────────────────────────────────────────────── */
 
 function LookFrame({
@@ -120,6 +118,7 @@ function LookFrame({
   setOpen: (v: string | null) => void;
 }) {
   const frame = useRef<HTMLDivElement | null>(null);
+  const video = useRef<HTMLVideoElement | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [settled, setSettled] = useState(false);
   const [box, setBox] = useState({ w: 0, h: 0 });
@@ -139,7 +138,10 @@ function LookFrame({
     return () => ro.disconnect();
   }, []);
 
-  const map = makeCropMap(box.w || 1, box.h || 1, SRC_W, SRC_H);
+  // Per look, not global: the video plate is 16:9 while the stills are 2.36:1,
+  // and the crop map has to undo the right one or the markers walk.
+  const [srcW, srcH] = (look.srcAspect ?? LOOK_ASPECT).split("/").map((n) => Number(n.trim()));
+  const map = makeCropMap(box.w || 1, box.h || 1, srcW, srcH);
   // Below this the frame is portrait and there is no room for leader lines.
   const narrow = box.w > 0 && box.w / box.h < 1.4;
 
@@ -191,6 +193,61 @@ function LookFrame({
     return () => document.removeEventListener("mousedown", onDown);
   }, [setOpen]);
 
+  /*
+   * Play only while the frame is on screen, and never under reduced motion.
+   * autoPlay is deliberately not used: it would decode all the way down the
+   * page, and it gives no way to honour the motion preference.
+   */
+  useEffect(() => {
+    const v = video.current;
+    const el = frame.current;
+    if (!v || !el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      },
+      { threshold: 0.12 }
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      v.pause();
+    };
+  }, []);
+
+  /*
+   * Drive the markers off the clip's own clock.
+   *
+   * One number per frame — the subject's horizontal displacement at this
+   * instant — written to the frame as --sway-x/y. Each marker multiplies it by
+   * its own height factor in CSS, so this stays a single write no matter how
+   * many markers the look carries. The table was measured at 1280px wide, so it
+   * is rescaled to whatever the frame is actually rendering at.
+   */
+  useEffect(() => {
+    const v = video.current;
+    const el = frame.current;
+    const table = look.sway;
+    if (!v || !el || !table?.length) return;
+    let raf = requestAnimationFrame(function tick() {
+      raf = requestAnimationFrame(tick);
+      if (v.paused || v.readyState < 2) return;
+      const t = v.currentTime;
+      let i = 0;
+      while (i < table.length - 1 && table[i + 1][0] <= t) i++;
+      const a = table[i];
+      const b = table[Math.min(i + 1, table.length - 1)];
+      const span = b[0] - a[0];
+      const f = span > 0 ? (t - a[0]) / span : 0;
+      const k = el.clientWidth / 1280;
+      el.style.setProperty("--sway-x", `${((a[1] + (b[1] - a[1]) * f) * k).toFixed(2)}px`);
+      el.style.setProperty("--sway-y", `${((a[2] + (b[2] - a[2]) * f) * k).toFixed(2)}px`);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [look.sway]);
+
   const products = look.hotspots
     .map((h) => bySlug(h.slug))
     .filter((p): p is NonNullable<typeof p> => !!p);
@@ -229,30 +286,61 @@ function LookFrame({
           background: "var(--ps-bg-alt)",
         }}
       >
-        <img
-          src={look.image}
-          alt={look.alt}
-          loading={index === 0 ? "eager" : "lazy"}
-          fetchPriority={index === 0 ? "high" : "auto"}
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        {look.video ? (
+          <video
+            ref={video}
+            src={look.video}
+            poster={look.poster}
+            muted
+            loop
+            playsInline
+            /* Nothing is fetched until the observer calls play(). The poster
+               is 81KB and paints immediately, so preloading 2.3MB buys a few
+               hundred ms at the cost of the entire clip on every phone that
+               never scrolls to it. */
+            preload="none"
+            aria-label={look.alt}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <img
+            src={look.image}
+            alt={look.alt}
+            loading={index === 0 ? "eager" : "lazy"}
+            fetchPriority={index === 0 ? "high" : "auto"}
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        )}
 
-        {look.hotspots.map((h, i) => {
-          const key = `${look.id}:${h.slug}`;
-          return (
-            <Marker
-              key={key}
-              hot={h}
-              index={i}
-              pos={map(h.x, h.y)}
-              frameW={box.w}
-              narrow={narrow}
-              open={open === key}
-              onToggle={() => setOpen(open === key ? null : key)}
-            />
-          );
-        })}
+        {/*
+          * The markers ride in a box that carries the SAME scale and translate
+          * as the plate behind them.
+          *
+          * They used to sit outside it, which meant the image was rendering at
+          * scale 1.06 and panning with scroll while every marker stayed put —
+          * about 19px of error on the boot, permanently, growing with distance
+          * from the frame's centre. Sharing the transform is what keeps a dot
+          * on its garment; the crop map alone was only ever half the problem.
+          */}
+        <div className="ps-look-hots absolute inset-0">
+          {look.hotspots.map((h, i) => {
+            const key = `${look.id}:${h.slug}`;
+            return (
+              <Marker
+                key={key}
+                hot={h}
+                index={i}
+                pos={map(h.x, h.y)}
+                frameW={box.w}
+                narrow={narrow}
+                sway={look.sway ? swayFactor(h.y) : 0}
+                open={open === key}
+                onToggle={() => setOpen(open === key ? null : key)}
+              />
+            );
+          })}
+        </div>
       </div>
 
       {/* The dots are an enhancement; this row is the real, reachable content —
@@ -365,6 +453,7 @@ function Marker({
   pos,
   frameW,
   narrow,
+  sway,
   open,
   onToggle,
 }: {
@@ -373,6 +462,8 @@ function Marker({
   pos: { left: number; top: number; visible: boolean };
   frameW: number;
   narrow: boolean;
+  /** Share of the frame's measured sway this marker takes, 0 at the feet. */
+  sway: number;
   open: boolean;
   onToggle: () => void;
 }) {
@@ -539,6 +630,10 @@ function Marker({
         top: `${pos.top}%`,
         ["--hot-delay" as string]: `${420 + index * 120}ms`,
         ["--arm" as string]: "0px",
+        // Its share of the subject's sway. `translate` rather than `transform`:
+        // the arm and label already own `transform`, and the two would clobber
+        // each other written as one property.
+        ["--sway-f" as string]: sway.toFixed(3),
       }}
       data-open={open}
       data-angle={angle}

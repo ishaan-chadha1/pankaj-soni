@@ -942,14 +942,29 @@ main {
  * entry under its own transition, while `translate` tracks scroll continuously
  * off --p. Written as one `transform` they would overwrite each other.
  */
-.ps-look img {
-  scale: 1.15;
+/* The plate's scale is a variable so the marker layer can undo it — see
+   .ps-hot below. Both transition off the same value, so they stay locked
+   together through the 1.8s settle rather than only at the ends. */
+.ps-look {
+  --plate-scale: 1.15;
+}
+.ps-look[data-reveal="true"] {
+  --plate-scale: 1.06;
+}
+.ps-look img,
+.ps-look video,
+.ps-look .ps-look-hots {
+  scale: var(--plate-scale);
   translate: 0 calc(var(--p, 0) * var(--drift, -34px));
   transition: scale 1.8s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: translate;
 }
-.ps-look[data-reveal="true"] img {
-  scale: 1.06;
+/* The marker layer must not eat clicks meant for the plate; only the dots do. */
+.ps-look .ps-look-hots {
+  pointer-events: none;
+}
+.ps-look .ps-look-hots .ps-hot {
+  pointer-events: auto;
 }
 
 /*
@@ -975,6 +990,14 @@ main {
   mix-blend-mode: screen;
   animation: ps-sweep 17s ease-in-out infinite;
 }
+/*
+ * Stills only. The sweep exists to stop a photograph reading as dead; over a
+ * clip that already has light moving in it, a CSS gradient sliding across the
+ * top is just a smear on the glass.
+ */
+.ps-look:has(video)::after {
+  display: none;
+}
 @keyframes ps-sweep {
   0%,
   100% {
@@ -992,8 +1015,8 @@ main {
   .ps-look {
     clip-path: none !important;
   }
-  .ps-look img {
-    scale: 1.06 !important;
+  .ps-look {
+    --plate-scale: 1.06 !important;
   }
 }
 
@@ -1002,9 +1025,16 @@ main {
     clip-path: none;
     transition: none;
   }
-  .ps-look img {
-    scale: 1;
+  .ps-look {
+    --plate-scale: 1;
+  }
+  .ps-look img,
+  .ps-look video,
+  .ps-look .ps-look-hots {
     translate: none;
+    transition: none;
+  }
+  .ps-hot {
     transition: none;
   }
   .ps-look::after {
@@ -1022,6 +1052,26 @@ main {
 .ps-hot {
   position: absolute;
   z-index: 3;
+  /*
+   * Undo the plate's scale.
+   *
+   * The wrapper is scaled so that a marker's POSITION tracks the image — that
+   * is the whole point of putting them in it. But scaling the wrapper also
+   * enlarges everything drawn inside: labels go soft, the arm renders 6% longer
+   * than clampArms measured it, and the product card grows. Counter-scaling
+   * here nets the contents back to 1 while leaving the position transformed,
+   * because a scale about an element's own centre cannot move that element.
+   */
+  scale: calc(1 / var(--plate-scale, 1));
+  /*
+   * The marker's share of the subject's sway, written once per frame onto the
+   * look as --sway-x/y and scaled here by --sway-f, which is 1 at the head and
+   * 0 at the feet. Keeping the multiply in CSS means the rAF loop makes one
+   * property write for the whole frame instead of one per marker.
+   */
+  translate: calc(var(--sway-x, 0px) * var(--sway-f, 0))
+    calc(var(--sway-y, 0px) * var(--sway-f, 0));
+  transition: scale 1.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Arm: line + label share one rotation, so the label lands at the line's end. */
