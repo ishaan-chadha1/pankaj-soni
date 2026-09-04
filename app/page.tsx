@@ -5,6 +5,8 @@ import { Parallax } from "./components/Parallax";
 import ProductCard from "./components/ProductCard";
 import { Curtain, FillRule } from "./components/Motif";
 import LookBook from "./components/LookBook";
+import VideoHero from "./components/VideoHero";
+import ProductRail from "./components/ProductRail";
 import { stagger } from "@/lib/motion";
 
 const MARQUEE = [
@@ -33,46 +35,28 @@ export default function PsHome() {
 
   return (
     <>
-      {/* ───────────────────────── HERO ───────────────────────── */}
-      {/* Compact by design: the campaign frame below is the real hero, and a
-          full-height type block would push it under the fold. */}
-      <section className="mx-auto max-w-[1560px] px-5 pb-[var(--band-s)] pt-[var(--band-m)] sm:px-8">
-        <Reveal>
-          <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-            Autumn Collection — Private Atelier
-          </p>
-        </Reveal>
+      {/*
+        * The film is the hero. No headline over it — a garment moving in real
+        * light outruns a line of type, and copy on top asks the eye to do two
+        * things at once. The <h1> ships inside it, visually hidden, so the
+        * document still has a title.
+        */}
+      <VideoHero
+        src="/video/look-01.mp4"
+        poster="/img/look/look-01-poster.jpg"
+        eyebrow="Autumn Collection — Private Atelier"
+        title="Dressed for the hours that follow"
+        alt="A model in a cream linen shirt and pleated trousers, in a walnut-panelled room."
+      />
 
-        <MaskLines
-          as="h1"
-          className="ps-display ps-h1 mt-6"
-          delay={180}
-          lines={[
-            "Dressed for",
-            <span key="hours">
-              the <span className="ps-display-i" style={{ color: "var(--ps-accent)" }}>hours</span> that follow.
-            </span>,
-          ]}
-        />
-
-        <div className="mt-9 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <Reveal delay={420}>
-            <p className="max-w-[44ch] text-[.95rem] font-light" style={{ color: "var(--ps-muted)" }}>
-              Cloth chosen before the cut, and a shoulder that has not changed
-              since the house opened.
-            </p>
-          </Reveal>
-
-          <Reveal delay={520} className="flex flex-wrap gap-4">
-            <Link href="/c/men" className="ps-btn ps-btn-solid">
-              <span>Shop the Look</span>
-            </Link>
-            <Link href="/atelier" className="ps-btn">
-              <span>The Cloth Room</span>
-            </Link>
-          </Reveal>
-        </div>
-      </section>
+      {/* Straight into the clothes. Nothing between the film and the garments —
+          the rail is the first thing the scroll reaches. */}
+      <ProductRail
+        items={rail}
+        eyebrow="Autumn"
+        title="Selected by the maison"
+        href="/c/men"
+      />
 
       {/* The shoppable campaign — every garment in frame links to its listing. */}
       <LookBook />
@@ -202,31 +186,6 @@ export default function PsHome() {
                 Compose Your Own
               </Link>
             </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────────── RAIL ───────────────────────── */}
-      {/* Was a scroll-driven horizontal rail: it spent 2.5 screens of vertical
-          scroll to move eight cards sideways, and the lookbook above already
-          does "shop the pieces" better. Same products, a fifth of the height. */}
-      <section className="ps-alt ps-band-l">
-        <div className="mx-auto max-w-[1560px] px-5 sm:px-8">
-          <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
-            <MaskLines as="h2" className="ps-display ps-h2" lines={["Selected by the maison"]} />
-            <Reveal delay={120}>
-              <p className="max-w-[34ch] text-[.85rem] font-light" style={{ color: "var(--ps-muted)" }}>
-                The pieces our consultants reach for first.
-              </p>
-            </Reveal>
-          </div>
-
-          <div className="grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4">
-            {rail.slice(0, 4).map((p, i) => (
-              <Reveal key={p.slug} delay={stagger(i)}>
-                <ProductCard product={p} index={i} />
-              </Reveal>
-            ))}
           </div>
         </div>
       </section>

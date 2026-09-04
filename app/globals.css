@@ -1368,3 +1368,196 @@ main {
   width: 100% !important;
   height: 100% !important;
 }
+
+/* ── Video hero ─────────────────────────────────────────────────
+   Not 100svh. A film that fills the viewport exactly leaves nothing below it,
+   and a page whose first screen has no visible edge reads as finished — people
+   stop. Holding back a little shows the top of the rail and asks for the
+   scroll. */
+.ps-vhero {
+  height: 86svh;
+  min-height: 420px;
+  background: var(--ps-bg-alt);
+}
+@media (min-width: 900px) {
+  .ps-vhero {
+    height: 90svh;
+  }
+}
+.ps-vhero-foot {
+  height: 12%;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.12), transparent);
+}
+.ps-vhero-cue {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  color: #fff;
+  mix-blend-mode: difference;
+  font-size: 0.54rem;
+}
+.ps-vhero-line {
+  display: block;
+  width: 1px;
+  height: 34px;
+  background: currentColor;
+  transform-origin: top;
+  animation: ps-cue 2.4s var(--e-inout, ease-in-out) infinite;
+}
+@keyframes ps-cue {
+  0%,
+  100% {
+    transform: scaleY(0.25);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* ── Full-bleed collection rail ─────────────────────────────────── */
+.ps-railsec {
+  padding-block: var(--band-m);
+}
+.ps-rail {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  /* The inset is what makes a plate peek at each edge instead of the row
+     starting flush — the cue that the rail continues. It is also the snap
+     origin, so a snapped plate lands inset rather than jammed to the bezel. */
+  padding-inline: clamp(14px, 5vw, 76px);
+  scroll-padding-inline: clamp(14px, 5vw, 76px);
+  /* Room for the plate name below the picture. */
+  padding-bottom: 4px;
+  overscroll-behavior-x: contain;
+}
+.ps-plate {
+  position: relative;
+  flex: 0 0 auto;
+  /* Roughly 1.35 plates on a phone, so the next one is always half-visible. */
+  width: clamp(238px, 74vw, 300px);
+  scroll-snap-align: start;
+}
+@media (min-width: 700px) {
+  .ps-plate {
+    width: clamp(300px, 34vw, 420px);
+  }
+}
+@media (min-width: 1200px) {
+  .ps-plate {
+    width: clamp(380px, 25vw, 480px);
+  }
+}
+.ps-plate-media {
+  display: block;
+  position: relative;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: var(--ps-bg-alt);
+}
+.ps-plate-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  scale: 1;
+  transition: scale 1.1s var(--e-out, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.ps-plate:hover .ps-plate-media img {
+  scale: 1.045;
+}
+.ps-plate-save {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #1b1b1b;
+  background: rgb(255 255 255 / 0.86);
+  backdrop-filter: blur(6px);
+  transition: background 0.3s var(--e-out, ease), color 0.3s var(--e-out, ease);
+}
+.ps-plate-save:hover {
+  background: #fff;
+}
+.ps-plate-save[aria-pressed="true"] {
+  color: var(--ps-accent);
+}
+/* The bar sits ON the plate, inset, near the foot — the reference's one piece
+   of type over the picture. */
+.ps-plate-bar {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 7%;
+  display: grid;
+  place-items: center;
+  min-height: 46px;
+  padding: 0 12px;
+  color: #f3efe7;
+  background: rgb(16 15 14 / 0.9);
+  font-size: 0.58rem;
+  transition: background 0.3s var(--e-out, ease);
+}
+.ps-plate:hover .ps-plate-bar {
+  background: rgb(16 15 14 / 1);
+}
+.ps-plate-name {
+  margin-top: 0.85rem;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+/* Arrows sit in the bleed, vertically centred on the picture rather than the
+   section — the name below would drag them off-centre. */
+.ps-rail-arrow {
+  position: absolute;
+  top: calc(50% - 1.4rem);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  color: #1b1b1b;
+  background: rgb(255 255 255 / 0.92);
+  box-shadow: 0 2px 18px rgb(0 0 0 / 0.13);
+  transition: opacity 0.3s var(--e-out, ease), background 0.3s var(--e-out, ease);
+}
+.ps-rail-arrow:hover:not(:disabled) {
+  background: #fff;
+}
+.ps-rail-arrow:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+.ps-rail-prev {
+  left: clamp(6px, 1.6vw, 22px);
+}
+.ps-rail-next {
+  right: clamp(6px, 1.6vw, 22px);
+}
+/* Touch scrolls; the arrows are for pointers and would only cover a plate. */
+@media (hover: none) {
+  .ps-rail-arrow {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps-rail {
+    scroll-behavior: auto;
+  }
+  .ps-plate-media img,
+  .ps-plate:hover .ps-plate-media img {
+    scale: 1;
+    transition: none;
+  }
+  .ps-vhero-line {
+    animation: none;
+  }
+}
