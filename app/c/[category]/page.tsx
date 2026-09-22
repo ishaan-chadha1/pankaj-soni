@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CATEGORIES, byCategory, category, type Category } from "@/lib/catalog";
-import { MaskLines, Reveal } from "../../components/Reveal";
+import { Reveal } from "../../components/Reveal";
 import { JsonLd, breadcrumbLd, itemListLd } from "@/lib/seo";
 import SplitText from "../../components/SplitText";
 import { Curtain } from "../../components/Motif";

@@ -8,12 +8,12 @@ import { bySlug, money } from "@/lib/catalog";
 import { useCart } from "../CartProvider";
 
 /**
- * The shoppable campaign — three looks stacked, every garment marked.
+ * The shoppable campaign — one frame, every garment in it marked.
  *
  * On scroll-in the leader lines draw once, then retract to quiet dots a couple
  * of seconds later. The point is to teach where the markers are without leaving
- * six labels permanently competing with the photograph; hovering or focusing a
- * dot brings its line back.
+ * labels permanently competing with the photograph; hovering or focusing a dot
+ * brings its line back.
  *
  * The frame keeps the source aspect rather than cropping to fill: hotspots are
  * percentages of the image, so an object-cover crop would walk every marker off
@@ -35,9 +35,9 @@ export default function LookBook() {
    * Ken-burns, driven continuously rather than triggered.
    *
    * One rAF loop writes a --p per frame (-1 above the fold, +1 below), and CSS
-   * multiplies it by that look's drift. A single shared loop rather than one
-   * per frame: three independent scroll listeners on the same page is three
-   * layout reads a frame for no benefit.
+   * multiplies it by that look's drift. One shared loop rather than one per
+   * frame: a listener per frame is a layout read per frame for no benefit, and
+   * it keeps the cost flat if the campaign grows back to several plates.
    */
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -66,7 +66,7 @@ export default function LookBook() {
   }, []);
 
   return (
-    <section aria-label="Autumn campaign — shop the looks">
+    <section aria-label="After Hours campaign — shop the look">
       {LOOKS.map((look, i) => (
         <LookFrame key={look.id} look={look} index={i} open={open} setOpen={setOpen} />
       ))}
@@ -113,6 +113,8 @@ function LookFrame({
   setOpen,
 }: {
   look: Look;
+  /** Alternates which side the frame sits on, so two spreads do not read as
+   *  the same layout printed twice. */
   index: number;
   open: string | null;
   setOpen: (v: string | null) => void;
@@ -138,12 +140,20 @@ function LookFrame({
     return () => ro.disconnect();
   }, []);
 
-  // Per look, not global: the video plate is 16:9 while the stills are 2.36:1,
-  // and the crop map has to undo the right one or the markers walk.
+  // Per look, not global: a look may carry a clip at a different aspect from
+  // the stills, and the crop map has to undo the right one or the markers walk.
   const [srcW, srcH] = (look.srcAspect ?? LOOK_ASPECT).split("/").map((n) => Number(n.trim()));
   const map = makeCropMap(box.w || 1, box.h || 1, srcW, srcH);
-  // Below this the frame is portrait and there is no room for leader lines.
-  const narrow = box.w > 0 && box.w / box.h < 1.4;
+  /*
+   * Leaders need horizontal ROOM, which is a width question, not an aspect
+   * one. The old test was `w/h < 1.4` — written when every frame was a
+   * landscape band, where the two amount to the same thing. On a 3:4 portrait
+   * that ratio is 0.75 at any size, so a 700px-wide frame with ample room
+   * either side was permanently classed as a phone: leaders off, dots inflated,
+   * card pinned to the bottom of the viewport on a desktop. Measuring the width
+   * says what the layout actually is.
+   */
+  const narrow = box.w > 0 && box.w < 520;
 
   useEffect(() => {
     const el = frame.current;
@@ -257,23 +267,51 @@ function LookFrame({
     .filter((p): p is NonNullable<typeof p> => !!p);
 
   return (
-    <article className="mx-auto mt-14 max-w-[1560px] px-5 first:mt-8 sm:px-8">
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-            {look.eyebrow}
-          </p>
-          <h3 className="ps-display mt-2.5 text-[1.9rem] leading-none sm:text-[2.6rem]">
-            {look.title}
-          </h3>
-        </div>
-        {index === 0 ? (
-          <p className="ps-caps" style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}>
-            Select a marker to shop the piece
-          </p>
-        ) : null}
+    /*
+     * Copy one side, frame the other.
+     *
+     * Every other band on this page is a row of portraits. Setting the
+     * shoppable frame beside its own text is the one place the eye gets a
+     * different shape to land on — and it lets a 3:4 source render at about
+     * 700px, which is inside what the plate actually holds, rather than being
+     * stretched across 1560 or cropped to a letterbox.
+     */
+    <article className="ps-duet mx-auto max-w-[1560px] px-5 sm:px-8" data-flip={index % 2 === 1}>
+      <div className="ps-duet-copy">
+        <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
+          {look.eyebrow}
+        </p>
+        <h2 className="ps-display ps-duet-title">{look.title}</h2>
+        <p className="ps-duet-body">{look.body}</p>
+
+        {/* The dots are an enhancement; this list is the real, reachable
+            content — the keyboard and screen-reader path, and the whole
+            interface on a phone where an 11px target is not a target. */}
+        <ul className="ps-duet-list">
+          {products.map((p) => (
+            <li key={p.slug}>
+              <Link href={`/p/${p.slug}`} className="ps-duet-item group">
+                <span className="ps-media ps-duet-thumb">
+                  <img src={p.image} alt="" loading="lazy" decoding="async" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="ps-caps block" style={{ fontSize: ".5rem", color: "var(--ps-accent)" }}>
+                    {p.line}
+                  </span>
+                  <span className="ps-display mt-1 block truncate text-[1.05rem] leading-tight">
+                    {p.name}
+                  </span>
+                  <span className="mt-1 block text-[.74rem]" style={{ color: "var(--ps-muted)" }}>
+                    {p.soldOut ? "Sold out" : money(p.price)}
+                  </span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
 
+      <div className="ps-duet-frame">
       <div
         ref={frame}
         className="ps-look relative w-full"
@@ -310,8 +348,7 @@ function LookFrame({
           <img
             src={look.image}
             alt={look.alt}
-            loading={index === 0 ? "eager" : "lazy"}
-            fetchPriority={index === 0 ? "high" : "auto"}
+            loading="lazy"
             decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
           />
@@ -345,34 +382,10 @@ function LookFrame({
             );
           })}
         </div>
-      </div>
+        </div>
 
-      {/* The dots are an enhancement; this row is the real, reachable content —
-          it is the keyboard and screen-reader path, and the whole interface on
-          a phone where an 11px target is not a target. */}
-      <ul className="ps-norail mt-5 flex gap-3 overflow-x-auto pb-1">
-        {products.map((p) => (
-          <li key={p.slug} className="shrink-0">
-            <Link
-              href={`/p/${p.slug}`}
-              className="group flex w-[210px] items-center gap-3 p-2 transition-colors ps-t-base"
-              style={{ border: "1px solid var(--ps-line)" }}
-            >
-              <span className="ps-media h-[54px] w-[42px] shrink-0">
-                <img src={p.image} alt="" loading="lazy" decoding="async" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="ps-display block truncate text-[.94rem] leading-tight">
-                  {p.name}
-                </span>
-                <span className="mt-1 block text-[.72rem]" style={{ color: "var(--ps-muted)" }}>
-                  {money(p.price)}
-                </span>
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+        <p className="ps-duet-hint ps-caps">Select a marker to shop the piece</p>
+      </div>
     </article>
   );
 }
@@ -475,7 +488,7 @@ function Marker({
   const { add } = useCart();
   const [added, setAdded] = useState(false);
   const onAdd = useCallback(() => {
-    if (!product) return;
+    if (!product || product.soldOut) return;
     add(product.slug, product.variants[0].id, 1);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1600);
@@ -510,22 +523,23 @@ function Marker({
   /*
    * Nudge the opened card back inside the frame.
    *
-   * The nudge goes on the ANCHOR's transform, not a margin on the card. The
-   * anchor places itself with translate(-100%, -50%) — percentages of its own
-   * box — so a margin on the card resized that box and moved the goalposts with
-   * every correction. A translate appended after the counter-rotation cancels
-   * out against the arm's rotation, which makes it plain screen-space pixels.
+   * The nudge is a custom property on the CARD, in screen pixels, not a
+   * translate appended to the anchor. The anchor is rotated, so anything added
+   * to its transform is rotated with it — and for a leader pointing west that
+   * is close to a 180deg flip, which turns "move down 40px" into "move up
+   * 40px". The card sits in a net-unrotated frame (arm +N, anchor -N), so a
+   * value set there means what it says. See `.ps-hot-anchor` in globals.css.
    */
   const anchorRef = useRef<HTMLSpanElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
-  const anchorBase = `rotate(${-angle}deg) translate(${cardOpensRight ? "0" : "-100%"}, -50%)`;
+  const anchorBase = `rotate(${-angle}deg)`;
 
   useLayoutEffect(() => {
     const anchor = anchorRef.current;
     const card = cardRef.current;
     if (!open || narrow || !anchor || !card) return;
 
-    anchor.style.transform = anchorBase;
+    card.style.setProperty("--nudge-y", "0px");
     const frame = anchor.closest<HTMLElement>(".ps-look");
     if (!frame) return;
     const fr = frame.getBoundingClientRect();
@@ -546,7 +560,7 @@ function Marker({
         : c.bottom > fr.bottom - PAD
           ? fr.bottom - PAD - c.bottom
           : 0;
-    if (dy) anchor.style.transform = `${anchorBase} translate(0px, ${Math.round(dy)}px)`;
+    if (dy) card.style.setProperty("--nudge-y", `${Math.round(dy)}px`);
   }, [open, narrow, frameW, anchorBase, flip]);
 
   // Every hook above runs unconditionally; only now is it safe to bail.
@@ -587,7 +601,9 @@ function Marker({
             <span className="mt-1 text-[.72rem]" style={{ color: "var(--ps-muted)" }}>
               {product.kicker}
             </span>
-            <span className="mt-auto pt-2 text-[.8rem]">{money(product.price)}</span>
+            <span className="mt-auto pt-2 text-[.8rem]">
+              {product.soldOut ? "Sold out" : money(product.price)}
+            </span>
           </span>
         </Link>
 
@@ -600,9 +616,12 @@ function Marker({
           <button
             type="button"
             onClick={onAdd}
+            disabled={product.soldOut}
             className={`ps-btn ps-btn-solid flex-1 !px-3 ${narrow ? "!py-4" : "!py-2.5"}`}
           >
-            <span>{added ? "Added" : "Add to Bag"}</span>
+            <span>
+              {product.soldOut ? "Sold Out" : added ? "Added" : "Add to Bag"}
+            </span>
           </button>
           <Link
             href={`/p/${product.slug}`}

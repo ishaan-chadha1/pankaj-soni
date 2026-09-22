@@ -148,6 +148,11 @@
 :root {
   --shell: 1560px;
 
+  /* Announcement bar + header, measured by Header and written onto <html>.
+     This fallback is the desktop value; it only ever applies for the frame
+     before the observer runs. */
+  --ps-chrome: 114px;
+
   /* ── Rhythm ──────────────────────────────────────────────────
    * Four intervals, and nothing else. The home page previously ran on
    * thirteen different paddings, which is why it read as noise rather than
@@ -967,47 +972,6 @@ main {
   pointer-events: auto;
 }
 
-/*
- * A slow raking light. This is what stops a still photograph reading as dead —
- * a soft warm band drifting across the frame on a long loop, as if the light in
- * the room were moving. Kept under the markers and blended, not overlaid, so it
- * lifts the highlights instead of fogging the image.
- */
-.ps-look::after {
-  content: "";
-  position: absolute;
-  inset: -25% -40%;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    102deg,
-    transparent 34%,
-    rgba(255, 246, 230, 0.1) 45%,
-    rgba(255, 250, 240, 0.2) 50%,
-    rgba(255, 246, 230, 0.09) 56%,
-    transparent 68%
-  );
-  mix-blend-mode: screen;
-  animation: ps-sweep 17s ease-in-out infinite;
-}
-/*
- * Stills only. The sweep exists to stop a photograph reading as dead; over a
- * clip that already has light moving in it, a CSS gradient sliding across the
- * top is just a smear on the glass.
- */
-.ps-look:has(video)::after {
-  display: none;
-}
-@keyframes ps-sweep {
-  0%,
-  100% {
-    transform: translateX(-34%);
-  }
-  50% {
-    transform: translateX(34%);
-  }
-}
-
 /* Without scripting the observer never sets data-reveal, and the frame would
    stay clipped to a hairline — the banner would simply not exist. Same guard as
    the scroll reveals. */
@@ -1036,10 +1000,6 @@ main {
   }
   .ps-hot {
     transition: none;
-  }
-  .ps-look::after {
-    animation: none;
-    opacity: 0.5;
   }
 }
 
@@ -1086,9 +1046,14 @@ main {
 .ps-hot-line {
   display: block;
   width: var(--arm);
-  height: 1px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.95);
+  /* An ink hairline on both sides of the ivory, for the same reason the ring
+     has two edges: the leader crosses from cloth onto seamless and has to
+     survive the handover. */
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.35),
+    0 1px 4px rgba(0, 0, 0, 0.3);
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 0.7s var(--ease);
@@ -1110,15 +1075,40 @@ main {
   pointer-events: auto;
   z-index: 6;
   /*
-   * Pivot about the point the leader stops, not the box's middle.
+   * A ZERO-SIZE POINT at the end of the leader, and nothing else.
    *
-   * The arm rotates about `left center`; a child that counter-rotates about its
-   * own centre swings its whole width around that centre and lands somewhere
-   * else entirely — a 268px card ended up ~280px from the line's end. This is
-   * the same defect that made the labels miss by a constant amount, which
-   * clampArms had been quietly correcting for.
+   * It used to be the card's own box, counter-rotating with
+   * `rotate(-Ndeg) translate(0, -50%)`. That is fine while the leader points
+   * roughly east — but the two markers on a portrait frame point in opposite
+   * directions, and at N=187deg the counter-rotation is very nearly a 180deg
+   * flip, which mirrors the -50% that was supposed to centre the card. The
+   * card landed a full card-height (176px) above the line it was meant to hang
+   * off, while its twin at N=7deg sat correctly. Same code, opposite sign.
+   *
+   * Giving the anchor no size makes the rotation a pure spin about the leader's
+   * endpoint — no displacement to mirror. The card then centres itself inside
+   * an anchor whose net rotation is zero (arm +N, anchor -N), so a plain
+   * translateY(-50%) means what it says.
    */
+  width: 0;
+  height: 0;
   transform-origin: left center;
+}
+
+/* Hangs off the anchor point: left edge on it when the card opens right, right
+   edge on it when it opens left. The vertical nudge that rescues a card from
+   the top or bottom of the frame rides here too, in plain screen pixels,
+   rather than being appended to a transform the rotation would mangle. */
+.ps-hot-anchor > .ps-hot-card {
+  position: absolute;
+  top: 0;
+  transform: translateY(calc(-50% + var(--nudge-y, 0px)));
+}
+.ps-hot-anchor > .ps-hot-card[data-side="right"] {
+  left: 0;
+}
+.ps-hot-anchor > .ps-hot-card[data-side="left"] {
+  right: 0;
 }
 
 .ps-hot-label {
@@ -1164,44 +1154,52 @@ main {
   transform: translate(-50%, -50%);
   z-index: 2;
   display: block;
-  width: 19px;
-  height: 19px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   cursor: pointer;
   /*
-   * A ring with a pinprick centre, not a filled disc. A solid dot sat on the
-   * model's face as a white blob; an open ring reads as a precise mark and lets
-   * the photograph through it.
+   * A FROSTED LENS, not a hairline ring.
    *
-   * The marks live on fixed warm photography, so they are struck in ivory with a
-   * hairline of shadow — that holds on both the walnut and the cream cloth,
-   * where the gold accent went muddy against the wood.
+   * The previous mark was a 19px ivory ring with a pinprick centre, drawn on
+   * the assumption that the photography underneath was warm walnut and cream
+   * cloth. This campaign is black crepe under hand-set silver crystal, and an
+   * ivory hairline laid over beadwork is indistinguishable from the beadwork —
+   * on the shoulder of the Noir Vine it simply disappeared.
+   *
+   * Three layers now carry it on ANY ground: a bright pinprick, a translucent
+   * dark disc that the photograph shows through blurred, and a ring that is
+   * ivory on its inside edge and ink on its outside. Whichever way the picture
+   * goes, one of the two edges is in contrast with it.
    */
-  background: radial-gradient(circle, #fff 0 2.4px, transparent 2.6px);
-  border: 1px solid rgba(255, 255, 255, 0.92);
+  background:
+    radial-gradient(circle, #fff 0 3.1px, transparent 3.3px),
+    rgba(14, 13, 12, 0.34);
+  backdrop-filter: blur(2px) saturate(0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.97);
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.16),
-    0 2px 9px rgba(0, 0, 0, 0.3);
+    0 0 0 1px rgba(0, 0, 0, 0.34),
+    0 3px 14px rgba(0, 0, 0, 0.45);
   transition: transform 0.45s var(--ease), background 0.45s var(--ease),
-    border-color 0.45s var(--ease);
-}
-.ps-hot-dot::after {
+    border-color 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}.ps-hot-dot::after {
   content: "";
   position: absolute;
-  inset: -7px;
+  inset: -8px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
   opacity: 0;
-  animation: ps-hot-pulse 4.4s var(--ease) infinite;
+  animation: ps-hot-pulse 3s var(--ease) infinite;
   animation-delay: var(--hot-delay, 0ms);
   pointer-events: none;
 }
 /* Barely there. At full strength this read as a ripple sitting on the model's
    face; it only needs to say "live", not draw attention to itself. */
 @keyframes ps-hot-pulse {
-  0% { transform: scale(0.85); opacity: 0; }
-  30% { opacity: 0.28; }
-  100% { transform: scale(1.22); opacity: 0; }
+  0% { transform: scale(0.8); opacity: 0; }
+  22% { opacity: 0.75; }
+  100% { transform: scale(1.75); opacity: 0; }
 }
 
 .ps-hot-dot:hover,
@@ -1235,6 +1233,12 @@ main {
   transform-origin: var(--card-origin, left center);
   animation: ps-hot-unfurl 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
 }
+/* An animation on `transform` outranks the positioning transform above, so the
+   pinned card fades and slides on `opacity` and `translate` instead — separate
+   properties, which compose with the transform rather than replacing it. */
+.ps-hot-anchor > .ps-hot-card {
+  animation-name: ps-hot-unfurl-pinned;
+}
 /* A pip where the leader meets the card, so the two read as one object. */
 .ps-hot-card[data-side]::before {
   content: "";
@@ -1256,6 +1260,16 @@ main {
 /* The sheet has no leader to meet. */
 .ps-hot-card[data-narrow="true"]::before {
   display: none;
+}
+@keyframes ps-hot-unfurl-pinned {
+  from {
+    opacity: 0;
+    translate: var(--unfurl-from, -12px) 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
 }
 @keyframes ps-hot-unfurl {
   from {
@@ -1296,8 +1310,8 @@ main {
    sticker stamped over it. The touch target is carried by ::before, so the mark
    stays small while the thumb target does not. */
 .ps-hot[data-narrow="true"] .ps-hot-dot {
-  width: 21px;
-  height: 21px;
+  width: 28px;
+  height: 28px;
 }
 .ps-hot[data-narrow="true"] .ps-hot-dot::after {
   inset: -8px;
@@ -1367,53 +1381,6 @@ main {
   display: block;
   width: 100% !important;
   height: 100% !important;
-}
-
-/* ── Video hero ─────────────────────────────────────────────────
-   Not 100svh. A film that fills the viewport exactly leaves nothing below it,
-   and a page whose first screen has no visible edge reads as finished — people
-   stop. Holding back a little shows the top of the rail and asks for the
-   scroll. */
-.ps-vhero {
-  height: 86svh;
-  min-height: 420px;
-  background: var(--ps-bg-alt);
-}
-@media (min-width: 900px) {
-  .ps-vhero {
-    height: 90svh;
-  }
-}
-.ps-vhero-foot {
-  height: 12%;
-  background: linear-gradient(to top, rgb(0 0 0 / 0.12), transparent);
-}
-.ps-vhero-cue {
-  display: grid;
-  justify-items: center;
-  gap: 0.55rem;
-  color: #fff;
-  mix-blend-mode: difference;
-  font-size: 0.54rem;
-}
-.ps-vhero-line {
-  display: block;
-  width: 1px;
-  height: 34px;
-  background: currentColor;
-  transform-origin: top;
-  animation: ps-cue 2.4s var(--e-inout, ease-in-out) infinite;
-}
-@keyframes ps-cue {
-  0%,
-  100% {
-    transform: scaleY(0.25);
-    opacity: 0.45;
-  }
-  50% {
-    transform: scaleY(1);
-    opacity: 1;
-  }
 }
 
 /* ── Full-bleed collection rail ─────────────────────────────────── */
@@ -1557,7 +1524,473 @@ main {
     scale: 1;
     transition: none;
   }
-  .ps-vhero-line {
-    animation: none;
+}
+
+/* ── Campaign hero ──────────────────────────────────────────────
+   Three portraits and a name.
+
+   HEIGHT. The announcement bar and header sit above this in flow, so a hero at
+   100svh is 100svh plus the chrome and overruns the fold — which is exactly
+   what the old one did, pushing its own scroll cue off the bottom of the
+   window. Subtracting the measured chrome and then a further 74px leaves the
+   next section's top edge deliberately visible, which is the only honest way
+   to ask for a scroll. */
+.ps-chero {
+  position: relative;
+  height: calc(100svh - var(--ps-chrome, 114px) - 74px);
+  min-height: 520px;
+  max-height: 1180px;
+  overflow: hidden;
+  background: var(--ps-invert-bg);
+  isolation: isolate;
+}
+.ps-chero-panes {
+  display: grid;
+  /* A hair over one third each, so the two seams land off-centre and the row
+     reads as a composition rather than as a table. */
+  grid-template-columns: 1.04fr 1fr 1.04fr;
+  gap: 2px;
+  height: 100%;
+}
+.ps-chero-pane {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  background-size: cover;
+  background-position: center;
+  /* Opens from a hairline at its own centre line, staggered down the row.
+     Same gesture the shoppable frame uses, so the page has one vocabulary. */
+  clip-path: inset(50% 0 50% 0);
+  transition: clip-path 1.35s var(--e-inout) calc(var(--i) * 130ms);
+}
+[data-shown="true"] > .ps-chero-panes > .ps-chero-pane {
+  clip-path: inset(0 0 0 0);
+}
+.ps-chero-pane img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Individual properties, not the shorthand: the settle and the load fade
+     have to run independently or they overwrite each other. */
+  scale: 1.1;
+  opacity: 0;
+  transition:
+    scale 2.4s var(--e-out) calc(var(--i) * 130ms),
+    opacity 0.9s ease;
+}
+[data-shown="true"] > .ps-chero-panes > .ps-chero-pane img {
+  scale: 1.02;
+}
+.ps-chero-pane img[data-loaded="true"] {
+  opacity: 1;
+}
+
+/* Only the foot, and only ten percent. The lockup sits at 62% where all three
+   frames are dark cloth, so this is insurance for the descenders rather than
+   a scrim over the picture. */
+.ps-chero-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgb(8 8 9 / 0.2) 0%,
+    transparent 24%,
+    transparent 38%,
+    rgb(8 8 9 / 0.3) 60%,
+    rgb(8 8 9 / 0.62) 82%,
+    rgb(8 8 9 / 0.74) 100%
+  );
+}
+
+.ps-chero-lockup {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 68%;
+  width: min(92vw, 820px);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #f6f2ea;
+}
+.ps-chero-eyebrow {
+  color: rgb(246 242 234 / 0.9);
+  letter-spacing: 0.26em;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.9s ease 0.72s, transform 0.9s var(--e-out) 0.72s;
+}
+.ps-chero-title {
+  /* A didone this size with the tracking opened up is the whole identity.
+     It does not need a second typeface or a rule under it. */
+  margin-top: 0.6rem;
+  font-size: clamp(2.05rem, 6.1vw, 5.6rem);
+  line-height: 0.94;
+  letter-spacing: 0.075em;
+  /* The letterspacing pushes the last glyph off-centre; the indent puts the
+     optical centre back where the mathematical one is. */
+  text-indent: 0.055em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 1.1s ease 0.82s, transform 1.1s var(--e-out) 0.82s;
+}
+.ps-chero-sub {
+  margin-top: 1.15rem;
+  font-size: 0.92rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: rgb(246 242 234 / 0.9);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.9s ease 0.98s, transform 0.9s var(--e-out) 0.98s;
+}
+.ps-chero-cta {
+  margin-top: 2.1rem;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.9s ease 1.12s, transform 0.9s var(--e-out) 1.12s;
+}
+[data-shown="true"] .ps-chero-eyebrow,
+[data-shown="true"] .ps-chero-title,
+[data-shown="true"] .ps-chero-sub,
+[data-shown="true"] .ps-chero-cta {
+  opacity: 1;
+  transform: none;
+}
+
+/* The solid button is ink-on-paper everywhere else on the site. Over a
+   photograph it has to be the other way round or it disappears into the
+   shadow it is sitting on. */
+.ps-chero-cta.ps-btn-solid {
+  background: #f6f2ea;
+  border-color: #f6f2ea;
+  color: #14120f;
+}
+.ps-chero-cta.ps-btn-solid::before {
+  background: #ffffff;
+}
+.ps-chero-cta.ps-btn-solid:hover,
+.ps-chero-cta.ps-btn-solid:focus-visible {
+  color: #14120f;
+}
+
+/* Two panes on a tablet: three portraits in a 768px window are 250px wide and
+   every face in them is thumbnail-sized. */
+@media (max-width: 1023px) {
+  .ps-chero-panes {
+    grid-template-columns: 1fr 1fr;
   }
+  .ps-chero-pane:last-child {
+    display: none;
+  }
+}
+/* One frame on a phone — the couple, which carries the whole collection. */
+@media (max-width: 767px) {
+  .ps-chero {
+    height: calc(100svh - var(--ps-chrome, 130px) - 56px);
+  }
+  .ps-chero-panes {
+    grid-template-columns: 1fr;
+  }
+  .ps-chero-pane:first-child {
+    display: none;
+  }
+  .ps-chero-lockup {
+    top: 70%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-chero-pane,
+  .ps-chero-pane img,
+  .ps-chero-eyebrow,
+  .ps-chero-title,
+  .ps-chero-sub,
+  .ps-chero-cta {
+    clip-path: none;
+    scale: 1;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+/* Without scripting `data-shown` never flips and the panes stay clipped to a
+   hairline — the hero would simply not exist. Same guard as the reveals. */
+@media (scripting: none) {
+  .ps-chero-pane {
+    clip-path: none !important;
+  }
+  .ps-chero-pane img {
+    scale: 1 !important;
+    opacity: 1 !important;
+  }
+  .ps-chero-eyebrow,
+  .ps-chero-title,
+  .ps-chero-sub,
+  .ps-chero-cta {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ── The work ───────────────────────────────────────────────────
+   Four faceless detail frames on the page's one inverted ground. Every one of
+   them is a dark garment shot on pale grey: on paper they read as four grey
+   rectangles, and against ink the crystal is the only thing in the room. */
+.ps-craft {
+  padding-block: var(--band-l);
+}
+.ps-craft-head {
+  max-width: 48rem;
+  margin-bottom: clamp(2.75rem, 5vw, 4.5rem);
+}
+.ps-craft-title {
+  margin-top: 1.1rem;
+  font-size: clamp(2.1rem, 5.2vw, 3.6rem);
+  line-height: 1.02;
+}
+.ps-craft-lede {
+  margin-top: 1.75rem;
+  max-width: 54ch;
+  font-size: 0.93rem;
+  font-weight: 300;
+  line-height: 1.7;
+  /* --ps-muted is tuned for the paper ground and goes to mud on ink. */
+  color: color-mix(in srgb, var(--ps-invert-text) 66%, transparent);
+}
+.ps-craft-grid {
+  display: grid;
+  gap: clamp(1.1rem, 2vw, 1.6rem);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 1023px) {
+  .ps-craft-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 519px) {
+  .ps-craft-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.ps-craft-plate {
+  display: block;
+}
+.ps-craft-media {
+  display: block;
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+.ps-craft-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--craft-pos, 50% 50%);
+  opacity: 0;
+  scale: var(--craft-zoom, 1);
+  transition: opacity 0.7s ease, scale 1.1s var(--e-out);
+}
+.ps-craft-media img[data-loaded="true"] {
+  opacity: 1;
+}
+.ps-craft-plate:hover .ps-craft-media img {
+  scale: calc(var(--craft-zoom, 1) * 1.045);
+}
+.ps-craft-piece {
+  display: block;
+  margin-top: 1.15rem;
+  font-size: 1.24rem;
+  line-height: 1.2;
+}
+.ps-craft-note {
+  display: block;
+  margin-top: 0.5rem;
+  max-width: 30ch;
+  font-size: 0.78rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--ps-invert-text) 58%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps-craft-media img,
+  .ps-craft-plate:hover .ps-craft-media img {
+    scale: var(--craft-zoom, 1);
+    transition: none;
+  }
+}
+
+/* ── Shoppable frame, set beside its copy ───────────────────────
+   Every other band on this page is a row of portraits. This is the one place
+   the eye gets a different shape — and it lets a 3:4 source render at about
+   700px, inside what the plate actually holds, instead of being stretched
+   across the full measure or cropped to a letterbox. */
+.ps-duet {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: center;
+  padding-block: var(--band-l);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+}
+/* Second spread mirrors the first. `order` rather than a reversed column list,
+   so the source order stays copy-then-frame and a screen reader hears the
+   heading before the picture it belongs to, on both. */
+.ps-duet[data-flip="true"] {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
+}
+.ps-duet[data-flip="true"] > .ps-duet-copy {
+  order: 2;
+}
+.ps-duet[data-flip="true"] > .ps-duet-frame {
+  order: 1;
+}
+/* Consecutive spreads share one interval instead of stacking two. */
+.ps-duet + .ps-duet {
+  padding-top: 0;
+}
+@media (max-width: 1023px) {
+  /*
+   * Stacked, and the frame always follows its own copy.
+   *
+   * The column reset has to be repeated for the flipped variant: the
+   * `[data-flip]` rule above is both later in the sheet and more specific than
+   * the plain `.ps-duet` single-column rule, so without this the mirrored
+   * spread kept two columns on a phone and rendered its frame 190px wide
+   * beside a copy column wrapping at six words a line.
+   */
+  .ps-duet[data-flip="true"] {
+    grid-template-columns: 1fr;
+  }
+  .ps-duet[data-flip="true"] > .ps-duet-copy,
+  .ps-duet[data-flip="true"] > .ps-duet-frame {
+    order: initial;
+  }
+  /* Stacked, consecutive spreads need their interval back. */
+  .ps-duet + .ps-duet {
+    padding-top: var(--band-m);
+  }
+}
+@media (max-width: 1023px) {
+  .ps-duet {
+    grid-template-columns: 1fr;
+  }
+}
+.ps-duet-title {
+  margin-top: 1.1rem;
+  font-size: clamp(2.3rem, 5.6vw, 3.9rem);
+  line-height: 1;
+}
+.ps-duet-body {
+  margin-top: 1.6rem;
+  max-width: 46ch;
+  font-size: 0.93rem;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--ps-muted);
+}
+.ps-duet-list {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 2.5rem;
+  max-width: 24rem;
+}
+.ps-duet-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.65rem;
+  border: 1px solid var(--ps-line);
+  transition: border-color var(--t-base) var(--ease), background var(--t-base) var(--ease);
+}
+.ps-duet-item:hover {
+  border-color: var(--ps-line-strong);
+  background: var(--ps-surface);
+}
+.ps-duet-thumb {
+  flex: 0 0 auto;
+  width: 54px;
+  height: 70px;
+}
+.ps-duet-frame {
+  position: relative;
+}
+.ps-duet-hint {
+  margin-top: 1rem;
+  font-size: 0.54rem;
+  color: var(--ps-faint);
+}
+/* The card unfurls out of the leader and must not be clipped by the column. */
+.ps-duet-frame,
+.ps-duet {
+  overflow: visible;
+}
+
+/* ── Sold out ───────────────────────────────────────────────────
+   A capped run that has gone stays on the rail. Saying so is more convincing
+   than quietly pulling the plate, and it is the house position in one word. */
+.ps-plate-sold {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.5rem;
+  color: #f3efe7;
+  background: rgb(16 15 14 / 0.9);
+  backdrop-filter: blur(6px);
+}
+/* Lifted off the picture, not laid over it — a grey wash on a black garment
+   just makes it look badly exposed. */
+.ps-plate[data-sold="true"] .ps-plate-media img {
+  filter: saturate(0.55) contrast(0.94) brightness(1.04);
+}
+
+/* ── Closing campaign band ──────────────────────────────────────
+   A duet frame run full-bleed under the closing line. The source is a 3:4
+   portrait, so at this width it is cropped hard — `object-position` holds the
+   crop on the figures at the right of frame and lets the empty seamless on the
+   left carry the type. */
+.ps-closer {
+  min-height: clamp(520px, 78svh, 860px);
+  padding-block: var(--band-l);
+}
+.ps-closer-veil {
+  /* Reads from the left, where the frame is empty, and has cleared before it
+     reaches the figures. A flat scrim across the whole plate would grey out
+     the one part of the picture worth showing. */
+  background: linear-gradient(
+    96deg,
+    color-mix(in srgb, var(--ps-bg) 94%, transparent) 0%,
+    color-mix(in srgb, var(--ps-bg) 88%, transparent) 30%,
+    color-mix(in srgb, var(--ps-bg) 52%, transparent) 54%,
+    transparent 78%
+  );
+}
+@media (max-width: 767px) {
+  /* No room to set type beside the figures; the veil goes vertical and the
+     copy sits under them. */
+  .ps-closer-veil {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--ps-bg) 62%, transparent) 42%,
+      color-mix(in srgb, var(--ps-bg) 93%, transparent) 72%
+    );
+  }
+  .ps-closer {
+    align-items: flex-end;
+  }
+}
+
+/* Journal entries are set as type. The rule at the top is the only graphic,
+   and it thickens on hover — the whole affordance in one line. */
+.ps-journal {
+  transition: border-color var(--t-base) var(--ease);
+}
+.ps-journal:hover {
+  border-top-color: var(--ps-accent);
 }

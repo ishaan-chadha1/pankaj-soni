@@ -2,7 +2,7 @@
   "name": "pankaj-soni",
   "version": "1.0.0",
   "private": true,
-  "description": "PANKAJ SONI — a fictional luxury maison. Storefront, editorial and an interactive WebGL fragrance instrument.",
+  "description": "PANKAJ SONI — a fictional luxury maison. Storefront, editorial and an interactive WebGL cloth instrument.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,7 +11,9 @@
     "serve:static": "npx serve out -l 4000",
     "assets": "node scripts/assets.mjs",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "photos": "node scripts/photos.mjs",
+    "probe": "node scripts/probe-hotspots.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",
@@ -28,6 +30,7 @@
     "@types/three": "^0.185.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

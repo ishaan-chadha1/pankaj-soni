@@ -60,8 +60,8 @@ export default function CheckoutView() {
         <p className="mt-4 max-w-[36ch] text-[.92rem] font-light" style={{ color: "var(--ps-muted)" }}>
           There is nothing to check out just yet.
         </p>
-        <Link href="/c/outerwear" className="ps-btn ps-btn-solid mt-9">
-          <span>Discover Outerwear</span>
+        <Link href="/c/occasion" className="ps-btn ps-btn-solid mt-9">
+          <span>Discover the Occasion</span>
         </Link>
       </div>
     );

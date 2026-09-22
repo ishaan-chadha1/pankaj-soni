@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, ViewTransition } from "react";
 import { money, type Product } from "@/lib/catalog";
+import { blurForImage, setForImage } from "@/lib/photos";
 import { useCart } from "../CartProvider";
 
 export default function ProductCard({
@@ -35,13 +36,18 @@ export default function ProductCard({
       className="group block"
       style={{ transitionDelay: `${index * 40}ms` }}
     >
-      <div className="ps-media ps-zoom ps-swap relative aspect-[3/4]">
+      <div
+        className="ps-media ps-zoom ps-swap relative aspect-[3/4]"
+        style={{ backgroundImage: blurForImage(product.image) }}
+      >
         {/* Named identity for the morph into the product page. The same name is
             on the PDP hero, so the browser animates one object moving rather
             than two swapping. */}
         <ViewTransition name={`plate-${product.slug}`} share="morph">
           <img
             src={product.image}
+            srcSet={setForImage(product.image)}
+            sizes="(max-width: 1023px) 50vw, 33vw"
             alt={product.name}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
@@ -50,6 +56,8 @@ export default function ProductCard({
         </ViewTransition>
         <img
           src={product.hover}
+          srcSet={setForImage(product.hover)}
+          sizes="(max-width: 1023px) 50vw, 33vw"
           alt=""
           aria-hidden
           loading="lazy"

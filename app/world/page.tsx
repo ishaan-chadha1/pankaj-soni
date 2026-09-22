@@ -46,8 +46,8 @@ const CHAPTERS = [
 const SERVICES = [
   ["Private Appointment", "An hour with a consultant, in any boutique or by video, at no charge."],
   ["Alterations", "Complimentary for the life of any tailored piece bought from the maison."],
-  ["The Refill Service", "Return a décanteur to a boutique and have it filled rather than replaced."],
-  ["Alterations", "Complimentary for the life of any tailored piece bought from the maison."],
+  ["The Atelier Fitting", "Three fittings on every occasion piece before it leaves the house."],
+  ["Restoration", "Embroidery re-set and cloth re-finished, for as long as the piece is worn."],
 ];
 
 export default function WorldPage() {

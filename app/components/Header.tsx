@@ -40,10 +40,10 @@ const MENU: MenuDef[] = [
       },
     ],
     feature: {
-      image: "/img/p-ed-03.svg",
+      image: "/img/campaign/nocturne-gown-02-810.webp",
       eyebrow: "Ready-to-Wear",
       title: "An unbroken line",
-      href: "/c/women",
+      href: "/p/liquid-column-gown",
     },
   },
   {
@@ -56,6 +56,7 @@ const MENU: MenuDef[] = [
           { label: "Shawl Collar Dinner Jacket", href: "/p/shawl-collar-dinner-jacket" },
           { label: "Single-Breasted Suit", href: "/p/single-breasted-suit" },
           { label: "Pleated Trouser", href: "/p/pleated-trouser" },
+          { label: "Double-Face Overcoat", href: "/p/double-face-overcoat" },
         ],
       },
       {
@@ -69,38 +70,38 @@ const MENU: MenuDef[] = [
       },
     ],
     feature: {
-      image: "/img/look/look-02.jpg",
-      eyebrow: "Tailoring",
-      title: "The Shoulder",
-      href: "/world",
+      image: "/img/campaign/noir-vine-02-810.webp",
+      eyebrow: "Occasion",
+      title: "Two hundred hours on the sleeve",
+      href: "/p/noir-vine-bandhgala",
     },
   },
   {
-    label: "Outerwear",
-    href: "/c/outerwear",
+    label: "Occasion",
+    href: "/c/occasion",
     cols: [
       {
-        title: "Coats",
+        title: "The Collection",
         links: [
-          { label: "Double-Face Overcoat", href: "/p/double-face-overcoat" },
-          { label: "Unstructured Topcoat", href: "/p/unstructured-topcoat" },
-          { label: "Belted Trench", href: "/p/belted-trench" },
+          { label: "Noir Vine Bandhgala", href: "/p/noir-vine-bandhgala" },
+          { label: "Orbit Bandhgala", href: "/p/orbit-bandhgala" },
+          { label: "Tidemark Sherwani", href: "/p/tidemark-sherwani" },
         ],
       },
       {
-        title: "Shorter",
+        title: "Shop",
         links: [
-          { label: "Shearling Blouson", href: "/p/shearling-blouson" },
-          { label: "All Outerwear", href: "/c/outerwear" },
+          { label: "All Occasion", href: "/c/occasion" },
+          { label: "Double-Face Overcoat", href: "/p/double-face-overcoat" },
           { label: "The Cloth Room", href: "/atelier" },
         ],
       },
     ],
     feature: {
-      image: "/img/p-cat-outerwear.svg",
-      eyebrow: "Outerwear",
-      title: "Forty hours a coat",
-      href: "/c/outerwear",
+      image: "/img/campaign/tidemark-detail-810.webp",
+      eyebrow: "Occasion",
+      title: "Broken only at the hem",
+      href: "/p/tidemark-sherwani",
     },
   },
   {
@@ -146,7 +147,7 @@ const MENU: MenuDef[] = [
       },
     ],
     feature: {
-      image: "/img/look/look-03.jpg",
+      image: "/img/campaign/duet-01-810.webp",
       eyebrow: "Leather Goods",
       title: "Box calf, brass, nothing to prove",
       href: "/c/leather",
@@ -204,6 +205,8 @@ export default function Header() {
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
   const hoverTimer = useRef<number | null>(null);
+  const bar = useRef<HTMLDivElement | null>(null);
+  const shell = useRef<HTMLElement | null>(null);
 
   // The home and atelier heroes are full-bleed, so the bar floats transparent
   // over them and goes solid everywhere else (and once you scroll).
@@ -214,6 +217,32 @@ export default function Header() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /*
+   * Publish the chrome's height so a full-height hero can subtract it.
+   *
+   * The announcement bar and the header sit ABOVE the hero in flow — the bar
+   * is static and the header is sticky, which only overlays once you have
+   * scrolled. So a hero at 90svh is 90svh PLUS whatever the chrome is, and it
+   * overran the fold by 37px on a 768px viewport: the scroll cue sat below the
+   * bottom of the window and the section it was inviting you to was two
+   * hundred pixels further down again.
+   *
+   * It cannot be a constant. The announcement wraps to two lines under about
+   * 560px and the header's own padding steps at `lg`, so the total runs from
+   * roughly 100 to 130px. Measuring is four lines and is always right.
+   */
+  useEffect(() => {
+    const write = () => {
+      const h = (bar.current?.offsetHeight ?? 0) + (shell.current?.offsetHeight ?? 0);
+      if (h) document.documentElement.style.setProperty("--ps-chrome", `${h}px`);
+    };
+    write();
+    const ro = new ResizeObserver(write);
+    if (bar.current) ro.observe(bar.current);
+    if (shell.current) ro.observe(shell.current);
+    return () => ro.disconnect();
   }, []);
 
   // Dismiss every panel on navigation. Adjusting during render rather than in
@@ -259,6 +288,7 @@ export default function Header() {
     <>
       {/* announcement */}
       <div
+        ref={bar}
         className="ps-caps relative z-[60] flex items-center justify-center overflow-hidden py-2.5 text-center"
         style={{
           background: "var(--ps-invert-bg)",
@@ -270,6 +300,7 @@ export default function Header() {
       </div>
 
       <header
+        ref={shell}
         className="sticky top-0 z-50 transition-all ps-t-slow"
         style={{
           background: opaque ? "color-mix(in srgb, var(--ps-bg) 88%, transparent)" : "transparent",
@@ -433,7 +464,7 @@ export default function Header() {
           </div>
           <input
             className="ps-field ps-display mt-8 text-[2rem] sm:text-[2.8rem]"
-            placeholder="Tailoring, outerwear, eyewear…"
+            placeholder="Tailoring, occasion, eyewear…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             autoComplete="off"

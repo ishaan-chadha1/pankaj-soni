@@ -1,7 +1,7 @@
 /**
  * The PANKAJ SONI house — an invented luxury maison.
  *
- * An apparel house: tailoring, outerwear, knitwear, eyewear and leather. Every
+ * An apparel house: tailoring, occasionwear, knitwear, eyewear and leather. Every
  * product, price and line of copy here is original to this project. `PANKAJ
  * SONI` is used the way any couture label uses a founder's name: as a wordmark
  * for a fictional house, with no connection to, or information about, any real
@@ -11,7 +11,7 @@
 export type Category =
   | "women"
   | "men"
-  | "outerwear"
+  | "occasion"
   | "eyewear"
   | "leather"
   | "gifts";
@@ -44,6 +44,9 @@ export type Product = {
   details: string[];
   composition?: string;
   badge?: "New" | "Exclusive" | "Limited" | "Icon";
+  /** Dims the plate and shows a badge. The house cuts in small numbers, and a
+   *  run that has gone stays on the site rather than quietly disappearing. */
+  soldOut?: boolean;
   featured?: boolean;
 };
 
@@ -66,10 +69,10 @@ export const CATEGORIES: {
     image: "/img/p-cat-men.svg",
   },
   {
-    slug: "outerwear",
-    label: "Outerwear",
-    tagline: "Weight where it is needed, nowhere else.",
-    image: "/img/p-cat-outerwear.svg",
+    slug: "occasion",
+    label: "Occasion",
+    tagline: "Everything that is worked by hand.",
+    image: "/img/campaign/orbit-02-810.webp",
   },
   {
     slug: "eyewear",
@@ -115,8 +118,8 @@ export const PRODUCTS: Product[] = [
     category: "women",
     kicker: "Wool grain de poudre · Silk lapel",
     price: 3900,
-    image: "/img/p-cat-women.svg",
-    hover: "/img/p-ed-03.svg",
+    image: "/img/campaign/vapour-gown-01-810.webp",
+    hover: "/img/campaign/vapour-gown-detail-810.webp",
     badge: "Icon",
     featured: true,
     story:
@@ -141,9 +144,10 @@ export const PRODUCTS: Product[] = [
     category: "women",
     kicker: "Bias-cut silk satin",
     price: 4600,
-    image: "/img/p-ed-03.svg",
-    hover: "/img/p-cat-women.svg",
+    image: "/img/campaign/nocturne-gown-01-810.webp",
+    hover: "/img/campaign/nocturne-gown-02-810.webp",
     badge: "Limited",
+    featured: true,
     story:
       "Cut on the bias from a single width of silk satin, so it falls without one horizontal break anywhere in its length. It moves before you do.",
     variants: WOMENS(4600).slice(0, 3),
@@ -163,7 +167,6 @@ export const PRODUCTS: Product[] = [
     price: 1290,
     image: "/img/p-ed-01.svg",
     hover: "/img/p-cat-women.svg",
-    featured: true,
     story:
       "Six-ply cashmere with no buttons and no fastening but its own belt, so it holds whatever shape you put it in. Heavy enough to wear as a jacket in a warm month.",
     variants: [
@@ -274,8 +277,8 @@ export const PRODUCTS: Product[] = [
     category: "men",
     kicker: "Wool mohair · Silk shawl",
     price: 4200,
-    image: "/img/p-cat-men.svg",
-    hover: "/img/p-ed-02.svg",
+    image: "/img/campaign/silver-seam-01-810.webp",
+    hover: "/img/campaign/silver-seam-02-810.webp",
     featured: true,
     badge: "Icon",
     story:
@@ -300,8 +303,8 @@ export const PRODUCTS: Product[] = [
     category: "men",
     kicker: "Fresco wool · Two piece",
     price: 3600,
-    image: "/img/look/look-02.jpg",
-    hover: "/img/p-cat-men.svg",
+    image: "/img/campaign/midnight-swirl-01-810.webp",
+    hover: "/img/campaign/midnight-swirl-detail-810.webp",
     featured: true,
     story:
       "Open-weave fresco wool that breathes in August and holds a crease in October. Cut from the same shoulder as the dinner jacket, because there is only one.",
@@ -320,8 +323,8 @@ export const PRODUCTS: Product[] = [
     category: "men",
     kicker: "Cotton poplin · Bib front",
     price: 690,
-    image: "/img/look/look-03.jpg",
-    hover: "/img/p-cat-men.svg",
+    image: "/img/campaign/silver-seam-02-810.webp",
+    hover: "/img/campaign/silver-seam-detail-810.webp",
     story:
       "Swiss cotton poplin with a narrow pleated bib and a covered placket. Cut close through the body without pulling at the button.",
     variants: [
@@ -366,9 +369,8 @@ export const PRODUCTS: Product[] = [
     category: "men",
     kicker: "Wool-linen · Double pleat",
     price: 890,
-    image: "/img/look/look-02.jpg",
-    hover: "/img/p-cat-men.svg",
-    featured: true,
+    image: "/img/campaign/pleated-trouser-crop-810.webp",
+    hover: "/img/campaign/noir-vine-01-810.webp",
     story:
       "A double-pleated trouser in a wool-linen cloth heavy enough to hold its line and open enough to wear in August. Cut high on the waist and left long over the shoe.",
     variants: ITALIAN(890),
@@ -415,8 +417,8 @@ export const PRODUCTS: Product[] = [
     category: "men",
     kicker: "Polished calf · Leather sole",
     price: 1490,
-    image: "/img/look/look-01.jpg",
-    hover: "/img/p-cat-men.svg",
+    image: "/img/p-cat-men.svg",
+    hover: "/img/p-ed-01.svg",
     story:
       "A Chelsea boot on a narrow last with a Blake-stitched leather sole. Polished calf, elastic gusset, pull tab in matching leather.",
     variants: [
@@ -438,13 +440,12 @@ export const PRODUCTS: Product[] = [
     slug: "double-face-overcoat",
     name: "Double-Face Overcoat",
     line: "Outerwear",
-    category: "outerwear",
+    category: "men",
     kicker: "Cashmere · Unlined",
     price: 4800,
     image: "/img/p-cat-outerwear.svg",
     hover: "/img/p-ed-01.svg",
     badge: "Exclusive",
-    featured: true,
     story:
       "Two faces of cashmere joined by hand, so the coat needs no lining and weighs almost nothing for its warmth. Every edge is closed with a stitch you can see if you look, and are meant to.",
     variants: ITALIAN(4800).slice(0, 4),
@@ -461,62 +462,83 @@ export const PRODUCTS: Product[] = [
     ],
   },
   {
-    slug: "belted-trench",
-    name: "Belted Trench",
-    line: "Outerwear",
-    category: "outerwear",
-    kicker: "Cotton gabardine · Storm flap",
-    price: 3200,
-    image: "/img/p-ed-02.svg",
-    hover: "/img/p-cat-outerwear.svg",
+    slug: "orbit-bandhgala",
+    name: "Orbit Bandhgala",
+    line: "Occasion",
+    category: "occasion",
+    kicker: "Wool crêpe · Appliqué discs",
+    price: 4400,
+    image: "/img/campaign/orbit-01-810.webp",
+    hover: "/img/campaign/orbit-03-810.webp",
+    badge: "New",
+    featured: true,
     story:
-      "Densely woven cotton gabardine that turns rain without a coating and softens with every year. Cut generous enough to go over tailoring without crushing the shoulder.",
-    variants: ITALIAN(3200).slice(0, 4),
+      "Discs of midnight wool laid over black and outlined in crystal, scattered so the eye reads them as falling rather than placed. Each one is cut, turned and set by hand, and no two sit at the same angle. Closed high at the collar, so the front reads clean until it does not.",
+    variants: ITALIAN(4400),
     spec: {
-      cloth: ["Cotton gabardine", "Viscose lining"],
-      cut: ["Double breasted", "Storm flap", "Deep back vent"],
-      finish: ["Horn buckle", "Self belt", "Made in England"],
+      cloth: ["Wool crêpe", "Midnight wool appliqué", "Crystal and antique bead"],
+      cut: ["Mandarin collar", "Concealed placket", "Side vents"],
+      finish: ["Discs cut and turned by hand", "Outlined on the frame", "Made in India"],
     },
-    details: ["Cotton gabardine", "Double breasted, storm flap", "Made in England"],
+    details: [
+      "Wool crêpe with appliquéd wool discs and crystal outline",
+      "Mandarin collar, concealed placket, side vents",
+      "No two discs set at the same angle",
+      "Made in India — specialist dry clean only",
+    ],
   },
   {
-    slug: "shearling-blouson",
-    name: "Shearling Blouson",
-    line: "Outerwear",
-    category: "outerwear",
-    kicker: "Spanish shearling · Short body",
+    slug: "noir-vine-bandhgala",
+    name: "Noir Vine Bandhgala",
+    line: "Occasion",
+    category: "occasion",
+    kicker: "Wool crêpe · Hand-set crystal",
     price: 5400,
-    image: "/img/p-cat-outerwear.svg",
-    hover: "/img/p-ed-03.svg",
+    image: "/img/campaign/noir-vine-01-810.webp",
+    hover: "/img/campaign/noir-vine-02-810.webp",
     badge: "Limited",
+    soldOut: true,
+    featured: true,
     story:
-      "Spanish shearling selected for its short even nap, cut to a blouson so the weight sits on the shoulder rather than dragging from the hem.",
-    variants: ITALIAN(5400).slice(0, 4),
+      "A bandhgala cut close to the body and broken open down the front, with a vine of hand-set crystal and bugle bead running from the collar out along the shoulder. Two hundred hours on the sleeve alone. Everything around it is left plain, because embroidery only reads if something near it stays quiet.",
+    variants: ITALIAN(5400),
     spec: {
-      cloth: ["Spanish entrefino shearling"],
-      cut: ["Blouson body", "Ribbed hem and cuff", "Stand collar"],
-      finish: ["Hand-cut panels", "Edges left raw", "Made in Spain"],
+      cloth: ["Wool crêpe", "Silk organza foundation", "Crystal, bugle and cut bead"],
+      cut: ["Mandarin collar", "Open front", "Close through the body"],
+      finish: ["Embroidered on the frame, panel by panel", "Hand-finished facings", "Made in India"],
     },
-    details: ["Spanish shearling", "Ribbed hem and cuff", "Made in Spain"],
+    details: [
+      "Wool crêpe with hand-set crystal, bead and bugle work",
+      "Mandarin collar, open front, close through the body",
+      "Approximately 200 hours of hand embroidery",
+      "Made in India — specialist dry clean only",
+    ],
   },
   {
-    slug: "unstructured-topcoat",
-    name: "Unstructured Topcoat",
-    line: "Outerwear",
-    category: "outerwear",
-    kicker: "Wool flannel · No canvas",
-    price: 2900,
-    image: "/img/p-ed-01.svg",
-    hover: "/img/p-cat-outerwear.svg",
+    slug: "tidemark-sherwani",
+    name: "Tidemark Sherwani",
+    line: "Occasion",
+    category: "occasion",
+    kicker: "Midnight wool · Scalloped hem",
+    price: 4900,
+    image: "/img/campaign/tidemark-detail-810.webp",
+    hover: "/img/campaign/orbit-02-810.webp",
+    badge: "Exclusive",
+    featured: true,
     story:
-      "No canvas, no padding, no structure at all — the cloth is heavy enough to do the work itself. It creases when you sit and forgets by the time you stand.",
-    variants: ITALIAN(2900),
+      "A long sherwani in midnight wool, held plain through the body and then broken at the hem by a scalloped tide of sequin, bugle and dulled silver. The shoulders carry a fine scatter of crystal that only shows when you turn. Nothing at all in between — that is the whole idea.",
+    variants: ITALIAN(4900),
     spec: {
-      cloth: ["Wool flannel, 480g", "Half lining"],
-      cut: ["Unstructured shoulder", "Single breasted", "Mid-thigh"],
-      finish: ["No canvas or padding", "Hand-set sleeve", "Made in Italy"],
+      cloth: ["Midnight wool", "Sequin, bugle and dulled silver thread"],
+      cut: ["Mandarin collar", "Knee length", "Centre-front placket"],
+      finish: ["Scalloped hem worked by hand", "Matching cuff", "Made in India"],
     },
-    details: ["Wool flannel, unstructured", "Half lined", "Made in Italy"],
+    details: [
+      "Midnight wool with hand-worked scalloped hem and cuff",
+      "Mandarin collar, knee length",
+      "Crystal scatter across the shoulder",
+      "Made in India — specialist dry clean only",
+    ],
   },
 
   /* ─────────────  EYEWEAR  ───────────── */
@@ -529,7 +551,6 @@ export const PRODUCTS: Product[] = [
     price: 490,
     image: "/img/e-monolith.svg",
     hover: "/img/p-cat-eyewear.svg",
-    featured: true,
     story:
       "A squared frame cut from a single block of Italian acetate, then tumbled for nine days. Heavy in the hand, weightless on the face.",
     variants: [
@@ -598,10 +619,9 @@ export const PRODUCTS: Product[] = [
     category: "leather",
     kicker: "Box calf · Brass hardware",
     price: 2400,
-    image: "/img/look/look-03.jpg",
-    hover: "/img/p-cat-leather.svg",
+    image: "/img/p-cat-leather.svg",
+    hover: "/img/p-ed-01.svg",
     badge: "New",
-    featured: true,
     story:
       "Box calf over a soft frame, so it slumps when empty and squares up when full. Two nights, one suit, and nothing you would be embarrassed to set down in a good hotel.",
     variants: [
@@ -656,8 +676,8 @@ export const PRODUCTS: Product[] = [
     category: "leather",
     kicker: "Braided calf · Brass pin",
     price: 340,
-    image: "/img/look/look-01.jpg",
-    hover: "/img/p-cat-leather.svg",
+    image: "/img/p-cat-leather.svg",
+    hover: "/img/p-ed-02.svg",
     story:
       "Braided calf with no punched holes — the pin goes wherever it needs to, which is the whole argument for a woven belt.",
     variants: [
@@ -678,7 +698,6 @@ export const PRODUCTS: Product[] = [
     price: 590,
     image: "/img/p-cat-gifts.svg",
     hover: "/img/p-ed-01.svg",
-    featured: true,
     story:
       "Six-ply cashmere woven wide enough to wear as a wrap, with a fringe knotted by hand rather than cut by machine.",
     variants: [

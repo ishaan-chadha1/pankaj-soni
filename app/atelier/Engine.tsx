@@ -81,8 +81,8 @@ const NEAREST: Record<string, string> = {
   twill: "single-breasted-suit",
   satin: "liquid-column-gown",
   grenadine: "silk-tie",
-  gabardine: "belted-trench",
-  flannel: "unstructured-topcoat",
+  gabardine: "orbit-bandhgala",
+  flannel: "tidemark-sherwani",
 };
 
 /* Magnification. Thread counts are what the shader draws across the frame, so a

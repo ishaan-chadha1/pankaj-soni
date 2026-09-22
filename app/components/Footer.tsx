@@ -17,7 +17,7 @@ const COLS = [
     links: [
       { label: "Women", href: "/c/women" },
       { label: "Men", href: "/c/men" },
-      { label: "Outerwear", href: "/c/outerwear" },
+      { label: "Occasion", href: "/c/occasion" },
       { label: "Eyewear", href: "/c/eyewear" },
       { label: "Leather Goods", href: "/c/leather" },
       { label: "Gifts", href: "/c/gifts" },
@@ -29,7 +29,7 @@ const COLS = [
       { label: "Contact the Maison", href: "/world" },
       { label: "Shipping & Returns", href: "/world" },
       { label: "Engraving", href: "/world" },
-      { label: "Refill Service", href: "/world" },
+      { label: "Restoration", href: "/world" },
       { label: "Book an Appointment", href: "/world" },
     ],
   },

@@ -82,12 +82,15 @@ export function MaskLines({
   delay = 0,
   step = 90,
   as = "div",
+  id,
 }: {
   lines: ReactNode[];
   className?: string;
   delay?: number;
   step?: number;
   as?: "h1" | "h2" | "h3" | "div";
+  /** So a section can point `aria-labelledby` at the heading it already has. */
+  id?: string;
 }) {
   const ref = useRef<HTMLElement | null>(null);
   const setRef = useCallback((node: HTMLElement | null) => {
@@ -121,7 +124,7 @@ export function MaskLines({
   return createElement(
     as,
     // eslint-disable-next-line react-hooks/refs
-    { ref: setRef, className },
+    { ref: setRef, className, id },
     lines.map((l, i) => (
       <span key={i} className="ps-mask" data-shown={shown}>
         <span style={{ transitionDelay: `${delay + i * step}ms` }}>{l}</span>

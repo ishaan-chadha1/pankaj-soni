@@ -58,8 +58,8 @@ export default function BagView() {
           <Link href="/p/double-face-overcoat" className="ps-btn ps-btn-solid">
             <span>The Overcoat</span>
           </Link>
-          <Link href="/c/outerwear" className="ps-btn">
-            <span>All Outerwear</span>
+          <Link href="/c/occasion" className="ps-btn">
+            <span>All Occasion</span>
           </Link>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { money, type Product } from "@/lib/catalog";
+import { blurForImage, setForImage } from "@/lib/photos";
 
 const SAVED_KEY = "ps:saved";
 
@@ -18,6 +19,18 @@ const SAVED_KEY = "ps:saved";
  * by JS. That is what gives momentum on a trackpad, kinetic flick on a phone,
  * shift+wheel on a mouse, and arrow keys with focus, none of which a hand-
  * rolled carousel gets without writing all four.
+ *
+ * IT LOOPS, and it keeps all of that.
+ *
+ * The set is rendered three times and the rail parks on the middle copy. When
+ * a scroll carries you past the copy you started in, `scrollLeft` is moved by
+ * exactly one set width — you are put back where you were relative to the
+ * plates, so the row appears to have no end. The jump is a hard assignment, not
+ * an animation, and it lands on an identical pixel, so there is nothing to see.
+ *
+ * Doing it this way rather than with a transform keeps momentum: a kinetic
+ * flick that crosses the seam carries its velocity through, because the
+ * browser is still the one scrolling.
  */
 export default function ProductRail({
   items,
@@ -31,8 +44,12 @@ export default function ProductRail({
   href: string;
 }) {
   const rail = useRef<HTMLDivElement | null>(null);
-  const [ends, setEnds] = useState({ start: true, end: false });
   const [saved, setSaved] = useState<Set<string>>(new Set());
+
+  /* Three copies. Two is enough to loop in one direction but leaves nothing to
+     scroll back into; three means the middle copy always has a full set either
+     side of it, so the seam is never within a viewport of where you are. */
+  const COPIES = 3;
 
   // Read once on mount. Rendering from localStorage during the first paint
   // would disagree with the server markup and take the whole tree down.
@@ -62,24 +79,66 @@ export default function ProductRail({
     });
   }, []);
 
-  const readEnds = useCallback(() => {
+  /**
+   * Width of ONE copy of the set, measured rather than computed.
+   *
+   * The plate width is a `clamp()` that resolves differently at every
+   * breakpoint and the gap is a CSS value, so the only reliable number is the
+   * distance between a plate and its own duplicate one set later.
+   */
+  const setWidth = useCallback(() => {
     const el = rail.current;
-    if (!el) return;
-    const max = el.scrollWidth - el.clientWidth;
-    setEnds({ start: el.scrollLeft < 8, end: el.scrollLeft > max - 8 });
-  }, []);
+    if (!el) return 0;
+    const plates = el.querySelectorAll<HTMLElement>(".ps-plate");
+    if (plates.length < items.length + 1) return 0;
+    return plates[items.length].offsetLeft - plates[0].offsetLeft;
+  }, [items.length]);
 
+  /* Park on the middle copy so there is a full set to scroll back into. */
   useEffect(() => {
-    readEnds();
     const el = rail.current;
     if (!el) return;
-    const ro = new ResizeObserver(readEnds);
+    const park = () => {
+      const w = setWidth();
+      if (w) el.scrollLeft = w;
+    };
+    park();
+    // Plate width depends on decoded images and on the breakpoint, so the
+    // first measurement can be taken before either has settled.
+    const ro = new ResizeObserver(park);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [readEnds]);
+    // Parking again on every resize is deliberate: the set width changes with
+    // the breakpoint, so a stale offset would land mid-plate.
+  }, [setWidth]);
 
-  // One plate per press. Measured rather than assumed: the plate width is a
-  // clamp() that resolves differently at every breakpoint.
+  /**
+   * Keep the scroll inside the middle copy.
+   *
+   * `scroll-snap-type` is switched off around the assignment. With mandatory
+   * snapping left on, the browser re-snaps to whatever is nearest AFTER the
+   * jump, which on a fast flick cancelled the momentum and stopped the rail
+   * dead at the seam.
+   */
+  const wrap = useCallback(() => {
+    const el = rail.current;
+    if (!el) return;
+    const w = setWidth();
+    if (!w) return;
+    const x = el.scrollLeft;
+    if (x >= w * 0.5 && x < w * 1.5) return;
+
+    const snap = el.style.scrollSnapType;
+    el.style.scrollSnapType = "none";
+    el.scrollLeft = x < w * 0.5 ? x + w : x - w;
+    // Restored on the next frame: setting it back synchronously re-snaps
+    // against the value we just wrote.
+    requestAnimationFrame(() => {
+      el.style.scrollSnapType = snap;
+    });
+  }, [setWidth]);
+
+  // One plate per press. The wrap handles running off either end.
   const nudge = (dir: 1 | -1) => {
     const el = rail.current;
     if (!el) return;
@@ -103,14 +162,45 @@ export default function ProductRail({
       </div>
 
       <div className="relative">
-        <div ref={rail} onScroll={readEnds} className="ps-rail ps-norail">
-          {items.map((p) => {
+        <div ref={rail} onScroll={wrap} className="ps-rail ps-norail">
+          {Array.from({ length: COPIES }, (_, copy) =>
+            items.map((p) => {
             const on = saved.has(p.slug);
+            /* Only the middle copy is real to assistive tech and to the tab
+               order. The other two are the same nine products again, and a
+               screen reader reading the collection three times is worse than
+               not looping at all. */
+            const clone = copy !== 1;
             return (
-              <article key={p.slug} className="ps-plate">
-                <Link href={`/p/${p.slug}`} className="ps-plate-media" aria-label={p.name}>
-                  <img src={p.image} alt={p.name} loading="lazy" decoding="async" />
+              <article
+                key={`${copy}-${p.slug}`}
+                className="ps-plate"
+                data-sold={p.soldOut ? "true" : undefined}
+                aria-hidden={clone || undefined}
+                inert={clone || undefined}
+              >
+                <Link
+                  href={`/p/${p.slug}`}
+                  className="ps-plate-media"
+                  aria-label={p.name}
+                  /* Holds the plate in roughly the right colours while it
+                     decodes, so a rail of portraits resolves out of the
+                     photograph instead of flashing nine empty boxes. */
+                  style={{ backgroundImage: blurForImage(p.image) }}
+                >
+                  <img
+                    src={p.image}
+                    srcSet={setForImage(p.image)}
+                    sizes="(max-width: 699px) 74vw, (max-width: 1199px) 34vw, 25vw"
+                    alt={p.name}
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </Link>
+
+                {/* A capped run that has gone stays on the rail. Saying so is
+                    more convincing than quietly removing the plate. */}
+                {p.soldOut ? <span className="ps-plate-sold ps-caps">Sold Out</span> : null}
 
                 <button
                   type="button"
@@ -132,7 +222,7 @@ export default function ProductRail({
 
                 {/* The plate is the product; the bar is the only type on it. */}
                 <Link href={`/p/${p.slug}`} className="ps-plate-bar ps-caps">
-                  {money(p.price)}
+                  {p.soldOut ? "Price on Request" : money(p.price)}
                 </Link>
 
                 {/* Reachable name, off-picture. The bar carries the price alone
@@ -144,14 +234,14 @@ export default function ProductRail({
                 </h3>
               </article>
             );
-          })}
+            })
+          )}
         </div>
 
         <button
           type="button"
           className="ps-rail-arrow ps-rail-prev"
           onClick={() => nudge(-1)}
-          disabled={ends.start}
           aria-label="Previous"
         >
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -162,7 +252,6 @@ export default function ProductRail({
           type="button"
           className="ps-rail-arrow ps-rail-next"
           onClick={() => nudge(1)}
-          disabled={ends.end}
           aria-label="Next"
         >
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">

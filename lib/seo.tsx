@@ -30,7 +30,7 @@ export function organizationLd() {
     url: SITE,
     logo: abs("/img/og.png"),
     description:
-      "A maison of tailoring, outerwear, knitwear, eyewear and leather.",
+      "A maison of hand-embroidered occasionwear, tailoring, knitwear, eyewear and leather.",
   };
 }
 
