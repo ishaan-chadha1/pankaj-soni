@@ -2,6 +2,7 @@
 
 import {
   createElement,
+  Fragment,
   useCallback,
   useEffect,
   useRef,
@@ -125,10 +126,23 @@ export function MaskLines({
     as,
     // eslint-disable-next-line react-hooks/refs
     { ref: setRef, className, id },
+    /*
+     * The space between lines is not decorative.
+     *
+     * Each line is its own block, so nothing separated them in the text
+     * content and the accessible name of every multi-line heading on the site
+     * ran its words together — "We make fewerthings, and wefinish them.",
+     * "Five rooms,by appointment.". Screen readers said it that way and so did
+     * anything reading the markup. A whitespace text node between two blocks
+     * collapses to nothing visually and fixes both.
+     */
     lines.map((l, i) => (
-      <span key={i} className="ps-mask" data-shown={shown}>
-        <span style={{ transitionDelay: `${delay + i * step}ms` }}>{l}</span>
-      </span>
+      <Fragment key={i}>
+        {i > 0 ? " " : null}
+        <span className="ps-mask" data-shown={shown}>
+          <span style={{ transitionDelay: `${delay + i * step}ms` }}>{l}</span>
+        </span>
+      </Fragment>
     ))
   );
 }

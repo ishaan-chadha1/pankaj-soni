@@ -21,7 +21,16 @@ export default function Buy({ product }: { product: Product }) {
   const variant = product.variants.find((v) => v.id === variantId)!;
   const shades = product.variants.some((v) => v.swatch);
 
+  /*
+   * A capped run that has gone cannot be bought.
+   *
+   * The rail badges it and the campaign card disables its button, but the
+   * product page itself was still handing a sold-out piece straight to the bag
+   * — the one screen where someone actually decides to buy. Three surfaces read
+   * the same flag now.
+   */
   const onAdd = () => {
+    if (product.soldOut) return;
     add(product.slug, variantId, qty);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1800);
@@ -30,7 +39,9 @@ export default function Buy({ product }: { product: Product }) {
   return (
     <div>
       <div className="flex items-baseline gap-4">
-        <p className="ps-display text-[1.7rem]">{money(variant.price)}</p>
+        <p className="ps-display text-[1.7rem]">
+          {product.soldOut ? "Price on Request" : money(variant.price)}
+        </p>
         {product.variants.length > 1 ? (
           <p className="ps-caps" style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}>
             {variant.label}
@@ -107,7 +118,7 @@ export default function Buy({ product }: { product: Product }) {
             type="button"
             aria-label="Decrease quantity"
             onClick={() => setQty((q) => Math.max(1, q - 1))}
-            className="px-4 py-3 leading-none transition-opacity hover:opacity-60"
+            className="ps-qty px-4 py-3 leading-none transition-opacity hover:opacity-60"
           >
             −
           </button>
@@ -116,20 +127,35 @@ export default function Buy({ product }: { product: Product }) {
             type="button"
             aria-label="Increase quantity"
             onClick={() => setQty((q) => Math.min(10, q + 1))}
-            className="px-4 py-3 leading-none transition-opacity hover:opacity-60"
+            className="ps-qty px-4 py-3 leading-none transition-opacity hover:opacity-60"
           >
             +
           </button>
         </div>
 
-        <button type="button" onClick={onAdd} className="ps-btn ps-btn-solid flex-1">
-          <span>{added ? "Added to Bag" : "Add to Bag"}</span>
+        <button
+          type="button"
+          onClick={onAdd}
+          disabled={product.soldOut}
+          className="ps-btn ps-btn-solid flex-1"
+        >
+          <span>
+            {product.soldOut ? "Sold Out" : added ? "Added to Bag" : "Add to Bag"}
+          </span>
         </button>
       </div>
 
-      <button type="button" className="ps-btn mt-3 w-full">
-        <span>Add Engraving — Complimentary</span>
-      </button>
+      {product.soldOut ? (
+        <p className="mt-4 text-[.8rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
+          This run is complete. The house cuts a capped number and does not
+          repeat them — a consultant can tell you what is closest, or take a
+          commission.
+        </p>
+      ) : (
+        <button type="button" className="ps-btn mt-3 w-full">
+          <span>Add Engraving — Complimentary</span>
+        </button>
+      )}
 
       <ul className="mt-9 space-y-2.5 text-[.78rem] font-light" style={{ color: "var(--ps-muted)" }}>
         <li className="flex gap-3">

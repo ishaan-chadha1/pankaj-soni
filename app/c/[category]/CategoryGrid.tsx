@@ -42,13 +42,21 @@ export default function CategoryGrid({ products }: { products: Product[] }) {
 
   return (
     <>
+      {/*
+        * Sticks flush under the header, whatever the header currently is.
+        *
+        * This was `top-[68px]` — a desktop measurement. On a phone the header
+        * is 53px once the announcement has scrolled away, so the bar floated
+        * fifteen pixels clear of it with page showing through the gap, and its
+        * own 51px height then ran into the product names scrolling underneath:
+        * measured, an 18px overlap with the titles bleeding through. `--ps-header`
+        * is written by Header on every resize.
+        *
+        * Near-opaque rather than 88%: a filter bar is a surface you read
+        * against, not a veil. The blur stays for the soft edge.
+        */}
       <div
-        className="sticky top-[68px] z-30 -mx-5 mb-12 px-5 py-4 sm:-mx-8 sm:px-8"
-        style={{
-          background: "color-mix(in srgb, var(--ps-bg) 88%, transparent)",
-          backdropFilter: "blur(14px)",
-          borderBottom: "1px solid var(--ps-line)",
-        }}
+        className="ps-filterbar sticky z-30 -mx-5 mb-12 px-5 py-4 sm:-mx-8 sm:px-8"
       >
         <div className="flex flex-wrap items-center justify-between gap-5">
           <div className="ps-norail flex items-center gap-6 overflow-x-auto">

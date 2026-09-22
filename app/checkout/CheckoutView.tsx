@@ -40,7 +40,27 @@ export default function CheckoutView() {
 
   const tax = Math.round(subtotal * 0.08);
   const total = subtotal + tax;
-  const orderNo = "PS-" + String(Math.abs(subtotal * 7919 + count * 104729) % 900000 + 100000);
+
+  /*
+   * Captured when the order is placed, not derived during render.
+   *
+   * It used to be computed from `subtotal` and `count` in the render body — and
+   * placing an order calls `clear()`, which zeroes both before the confirmation
+   * paints. The expression collapsed to a constant, so every order the site ever
+   * took confirmed as PS-100000.
+   *
+   * The clock term keeps two identical carts from sharing a number. Reading it
+   * here is safe where reading it during render would not be: a click handler
+   * only ever runs on the client, so there is no server value to disagree with.
+   */
+  const [orderNo, setOrderNo] = useState("");
+
+  const placeOrder = () => {
+    const seed = subtotal * 7919 + count * 104729 + (Date.now() % 100000);
+    setOrderNo("PS-" + ((Math.abs(seed) % 900000) + 100000));
+    setStep(3);
+    clear();
+  };
 
   // The heading still ships in the pre-hydration state: the cart is read from
   // localStorage after mount, so returning an empty div here left /checkout
@@ -109,15 +129,15 @@ export default function CheckoutView() {
               <div className="mt-7 grid gap-6 sm:grid-cols-2">
                 <label className="sm:col-span-2">
                   <span className="sr-only">Email address</span>
-                  <input className="ps-field" placeholder="Email address" type="email" value={form.email} onChange={set("email")} />
+                  <input className="ps-field" placeholder="Email address" type="email" autoComplete="email" value={form.email} onChange={set("email")} />
                 </label>
                 <label>
                   <span className="sr-only">First name</span>
-                  <input className="ps-field" placeholder="First name" value={form.first} onChange={set("first")} />
+                  <input className="ps-field" placeholder="First name" autoComplete="given-name" value={form.first} onChange={set("first")} />
                 </label>
                 <label>
                   <span className="sr-only">Last name</span>
-                  <input className="ps-field" placeholder="Last name" value={form.last} onChange={set("last")} />
+                  <input className="ps-field" placeholder="Last name" autoComplete="family-name" value={form.last} onChange={set("last")} />
                 </label>
               </div>
               <button type="button" onClick={() => setStep(1)} className="ps-btn ps-btn-solid mt-10">
@@ -132,19 +152,19 @@ export default function CheckoutView() {
               <div className="mt-7 grid gap-6 sm:grid-cols-2">
                 <label className="sm:col-span-2">
                   <span className="sr-only">Address</span>
-                  <input className="ps-field" placeholder="Address" value={form.address} onChange={set("address")} />
+                  <input className="ps-field" placeholder="Address" autoComplete="street-address" value={form.address} onChange={set("address")} />
                 </label>
                 <label>
                   <span className="sr-only">City</span>
-                  <input className="ps-field" placeholder="City" value={form.city} onChange={set("city")} />
+                  <input className="ps-field" placeholder="City" autoComplete="address-level2" value={form.city} onChange={set("city")} />
                 </label>
                 <label>
                   <span className="sr-only">Postcode</span>
-                  <input className="ps-field" placeholder="Postcode" value={form.postcode} onChange={set("postcode")} />
+                  <input className="ps-field" placeholder="Postcode" autoComplete="postal-code" value={form.postcode} onChange={set("postcode")} />
                 </label>
                 <label className="sm:col-span-2">
                   <span className="sr-only">Country</span>
-                  <select className="ps-field cursor-pointer" value={form.country} onChange={set("country")}>
+                  <select className="ps-field cursor-pointer" autoComplete="country-name" value={form.country} onChange={set("country")}>
                     {["India", "France", "Italy", "United Kingdom", "United States", "Japan"].map((c) => (
                       <option key={c} value={c} style={{ background: "var(--ps-surface)", color: "var(--ps-text)" }}>
                         {c}
@@ -235,14 +255,7 @@ export default function CheckoutView() {
               </div>
 
               <div className="mt-10 flex flex-wrap gap-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStep(3);
-                    clear();
-                  }}
-                  className="ps-btn ps-btn-solid"
-                >
+                <button type="button" onClick={placeOrder} className="ps-btn ps-btn-solid">
                   <span>Place Order — {money(total)}</span>
                 </button>
                 <button type="button" onClick={() => setStep(1)} className="ps-btn">

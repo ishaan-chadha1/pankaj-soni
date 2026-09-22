@@ -1377,7 +1377,17 @@ main {
  * R3F's wrapper div, not the canvas — so the element is pinned here instead,
  * which makes the result independent of when the measure lands.
  */
+/*
+ * A finger drag has to reach the shader.
+ *
+ * The canvas defaulted to `touch-action: auto`, so every touch was claimed by
+ * the page scroller and "Drag across the cloth" did nothing at all on a phone.
+ * `pan-y` hands vertical gestures back to the page — you can still scroll
+ * straight past the specimen — while horizontal movement, which is the gesture
+ * that matters here, reaches the canvas.
+ */
 .ps-loom canvas {
+  touch-action: pan-y;
   display: block;
   width: 100% !important;
   height: 100% !important;
@@ -1993,4 +2003,58 @@ main {
 }
 .ps-journal:hover {
   border-top-color: var(--ps-accent);
+}
+
+/* ── Sticky filter bar ──────────────────────────────────────────
+   Sits flush under the header at whatever height the header currently is.
+   See the note in CategoryGrid for why this is not a constant. */
+.ps-filterbar {
+  top: var(--ps-header, 68px);
+  background: color-mix(in srgb, var(--ps-bg) 97%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--ps-line);
+}
+
+/* ── Touch targets ──────────────────────────────────────────────
+   The visual weight of these controls is right; the hit areas are not. Every
+   rule here is coarse-pointer only, so a mouse keeps the tight targets the
+   design is drawn around. `.ps-tap` handles the cases where the artwork must
+   stay small and the hit area is pushed out with a pseudo-element; these are
+   the cases where the control can simply be bigger. */
+@media (pointer: coarse) {
+  /* Size, shade and lens chips. 43px was one pixel short of the floor. */
+  .ps-chip {
+    min-height: 44px;
+  }
+  /* Quantity steppers, which ran from 26px in the bag drawer to 40px on a
+     product page — three different sizes for the same control. */
+  .ps-qty {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  /* The weight slider's track stays a hairline; the padding is invisible and
+     gives the thumb somewhere to land. */
+  input[type="range"] {
+    padding-block: 14px;
+  }
+  /* Palette chips in the mobile menu. */
+  .ps-swatch-chip {
+    width: 44px;
+    height: 44px;
+  }
+  /*
+   * Buttons carrying a `!py-*` override — Apply on the bag, Sign Up in the
+   * footer, the skip link — landed at 39, 43 and 43px. A floor costs nothing
+   * where the button is already taller and rescues the handful that are a few
+   * pixels short.
+   *
+   * Inline text links are deliberately NOT included. The footer columns are
+   * 22px lines with 10px between them, which clears the target-size spacing
+   * exception, and padding a list of twenty-six links to 44px each would turn
+   * the footer into four very long columns.
+   */
+  .ps-btn,
+  .ps-skip {
+    min-height: 44px;
+  }
 }

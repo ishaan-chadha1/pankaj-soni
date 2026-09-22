@@ -267,11 +267,52 @@ How it fits together:
 - `ThemeScript` writes `data-theme` onto `<html>` in a blocking inline script
   before first paint. Applying it in an effect instead would paint once in the
   default palette and then snap — the classic theme flash.
+- **`ThemeProvider` starts at the default on both sides and adopts the real
+  palette after mount.** It must not read `data-theme` back during render, even
+  though the script has already put it there: the server renders Bone, so a
+  client first render of Sage makes the picker's own label a hydration text
+  mismatch. React then discards the server HTML, re-renders the whole document,
+  and `data-theme` goes with it — every palette but the default silently
+  reverted to Bone on reload, and the site lost its server rendering. Nothing
+  flashes, because the script has already painted the page; this state only
+  drives the picker's chip.
 - Every palette clears WCAG AA (4.5:1) for body, muted and accent text. The
   accent carries the small-caps eyebrow labels, so it is held to the normal-text
   threshold rather than the large-text one.
 - `.ps-invert` is the one exception: a single high-contrast band per page, the
   way print editorial uses one. It is a dark *block*, not a dark theme.
+
+## On a phone
+
+- **Nothing is `top-[68px]`.** `Header` measures itself into `--ps-chrome`
+  (announcement + header) and `--ps-header` (the header alone) on every resize.
+  The hero subtracts the first; the category filter bar sticks at the second.
+  A constant is wrong at every breakpoint but one — the filter bar used to float
+  fifteen pixels clear of the header with page showing through the gap, and its
+  own height then ran into the product names scrolling underneath.
+- **The closed panels are `inert`.** The mobile menu and the search overlay are
+  always in the DOM — one translated off-screen, one at opacity 0 — which is
+  what lets them animate. Without `inert` that left fifteen menu links and the
+  search field in the tab order and the accessibility tree while invisible.
+- **An open panel behaves like a modal**: the page behind it is locked, focus
+  moves into it, Tab wraps at its edges rather than walking out into content
+  nobody can see, and focus returns to whatever opened it.
+- **Touch targets are a coarse-pointer concern only.** `.ps-tap` pushes a hit
+  area out with a pseudo-element where the artwork has to stay small — a 17px
+  header glyph, a 20px close. Where the control can simply be bigger it is:
+  `.ps-chip`, `.ps-qty`, `.ps-swatch-chip` and `.ps-btn` take a 44px floor under
+  `(pointer: coarse)`. A mouse keeps the tight targets the design is drawn
+  around. Inline text links are deliberately exempt — padding twenty-six footer
+  links to 44px each turns the footer into four very long columns, and the
+  spacing between them already clears the exception.
+- **The cloth takes `touch-action: pan-y`.** On `auto` every touch went to the
+  page scroller and "Drag across the cloth" did nothing at all on a phone.
+  `pan-y` hands vertical gestures back to the page and lets horizontal ones —
+  the gesture that matters — reach the shader.
+- **A product hero is `cover` for a photograph, `contain` with padding for a
+  generated plate.** A drawn plate is an object floating on paper and needs the
+  margin; a photograph is already composed, and the margin just spends a quarter
+  of the frame on cream.
 
 ## The drawn imagery
 
@@ -314,9 +355,18 @@ the field rather than cutting to it.
 
 - The checkout is deliberately inert. It collects no card details and contacts no
   payment processor; placing an order clears the bag and shows a confirmation.
+- The order number is captured in the click handler, **before** `clear()` runs.
+  Derived during render from the subtotal — as it was — it read zero by the time
+  the confirmation painted, and every order the site ever took confirmed as
+  PS-100000.
 - Promo codes `ATELIER10` and `MAISON` work on the bag page.
-- One piece is marked `soldOut`. A capped run that has gone stays on the rail
-  rather than quietly disappearing — it dims the plate, badges it, swaps the
-  price for "Price on Request" and disables every add-to-bag path.
+- One piece is marked `soldOut`. A capped run that has gone stays on the site
+  rather than quietly disappearing. **Five surfaces read the one flag**: the
+  rail dims the plate and badges it, the grid card refuses to quick-add, the
+  campaign card disables its button, the product page shows "Price on Request"
+  with a disabled CTA and a line about commissioning, and the JSON-LD reports
+  `SoldOut` instead of `InStock`. Adding a sixth surface means checking the
+  flag there too — the product page was missed on the first pass and happily
+  sold a run that had gone.
 - Respects `prefers-reduced-motion` throughout; the custom cursor is pointer-only
   and the native cursor is only hidden once it has actually mounted.

@@ -19,8 +19,9 @@ export default function ProductCard({
   const [busy, setBusy] = useState(false);
 
   // Single-variant products can go straight into the bag; anything with a real
-  // choice to make (size, shade) has to go through the product page.
-  const oneVariant = product.variants.length === 1;
+  // choice to make (size, shade) — or a run that has gone — has to go through
+  // the product page.
+  const oneVariant = product.variants.length === 1 && !product.soldOut;
 
   const quickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -98,7 +99,7 @@ export default function ProductCard({
               className="ps-caps block w-full py-4 text-center"
               style={{ background: "var(--ps-surface)", color: "var(--ps-text)" }}
             >
-              Select Options
+              {product.soldOut ? "Sold Out" : "Select Options"}
             </span>
           )}
         </div>

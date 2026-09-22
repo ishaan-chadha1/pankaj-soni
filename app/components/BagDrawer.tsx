@@ -44,7 +44,7 @@ export default function BagDrawer() {
           <p className="ps-caps">
             Your Bag <span style={{ color: "var(--ps-faint)" }}>({count})</span>
           </p>
-          <button type="button" aria-label="Close bag" onClick={() => setOpen(false)}>
+          <button type="button" aria-label="Close bag" className="ps-tap" onClick={() => setOpen(false)}>
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
               <path d="M5 5l14 14M19 5L5 19" strokeLinecap="round" />
             </svg>
@@ -115,7 +115,7 @@ export default function BagDrawer() {
                           type="button"
                           aria-label="Decrease quantity"
                           onClick={() => setQty(l.slug, l.variantId, l.qty - 1)}
-                          className="px-3 py-1.5 text-[.9rem] leading-none transition-opacity hover:opacity-60"
+                          className="ps-qty px-3 py-1.5 text-[.9rem] leading-none transition-opacity hover:opacity-60"
                         >
                           −
                         </button>
@@ -124,7 +124,7 @@ export default function BagDrawer() {
                           type="button"
                           aria-label="Increase quantity"
                           onClick={() => setQty(l.slug, l.variantId, l.qty + 1)}
-                          className="px-3 py-1.5 text-[.9rem] leading-none transition-opacity hover:opacity-60"
+                          className="ps-qty px-3 py-1.5 text-[.9rem] leading-none transition-opacity hover:opacity-60"
                         >
                           +
                         </button>

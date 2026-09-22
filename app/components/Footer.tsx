@@ -70,6 +70,7 @@ export default function Footer() {
               <input
                 type="email"
                 required
+                autoComplete="email"
                 placeholder="Email address"
                 aria-label="Email address"
                 className="ps-field flex-1"

@@ -6,6 +6,7 @@ import { PRODUCTS, bySlug, category, related } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../../components/Reveal";
 import ProductCard from "../../components/ProductCard";
 import { JsonLd, breadcrumbLd, productLd } from "@/lib/seo";
+import { isPhoto, setForImage } from "@/lib/photos";
 import SplitText from "../../components/SplitText";
 import Buy from "./Buy";
 import { stagger } from "@/lib/motion";
@@ -40,6 +41,13 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
 
   const cat = category(product.category);
   const alsoLike = related(product, 4);
+  /*
+   * A generated plate is an object floating on paper and needs the margin; a
+   * photograph is already composed and the margin just shrinks it. The hero
+   * was contain-with-padding for everything, which spent about a quarter of
+   * the frame on cream around a picture that had its own background.
+   */
+  const heroIsPhoto = isPhoto(product.image);
 
   const accordions = [
     { title: "Details", body: product.details },
@@ -100,8 +108,14 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
             <ViewTransition name={`plate-${product.slug}`} share="morph">
               <img
                 src={product.image}
+                srcSet={setForImage(product.image)}
+                sizes="(max-width: 1023px) 92vw, 46vw"
                 alt={product.name}
-                className="h-full w-full object-contain p-8 sm:p-16"
+                className={
+                  heroIsPhoto
+                    ? "h-full w-full object-cover"
+                    : "h-full w-full object-contain p-8 sm:p-16"
+                }
               />
             </ViewTransition>
             <div

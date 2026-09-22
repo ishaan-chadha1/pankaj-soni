@@ -115,7 +115,7 @@ export default function BagView() {
                         type="button"
                         aria-label="Decrease quantity"
                         onClick={() => setQty(l.slug, l.variantId, l.qty - 1)}
-                        className="px-3.5 py-2 leading-none transition-opacity hover:opacity-60"
+                        className="ps-qty px-3.5 py-2 leading-none transition-opacity hover:opacity-60"
                       >
                         −
                       </button>
@@ -124,7 +124,7 @@ export default function BagView() {
                         type="button"
                         aria-label="Increase quantity"
                         onClick={() => setQty(l.slug, l.variantId, l.qty + 1)}
-                        className="px-3.5 py-2 leading-none transition-opacity hover:opacity-60"
+                        className="ps-qty px-3.5 py-2 leading-none transition-opacity hover:opacity-60"
                       >
                         +
                       </button>

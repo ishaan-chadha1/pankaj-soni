@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -20,17 +21,32 @@ const ThemeCtx = createContext<Ctx | null>(null);
 /**
  * Owns the active palette.
  *
- * ThemeScript has already written `data-theme` onto <html> before paint, so the
- * initial state is read back off the DOM rather than from localStorage — that
- * keeps this component's first render identical on server and client (both
- * produce DEFAULT_THEME) while the DOM already shows the right colours.
+ * STARTS AT THE DEFAULT ON BOTH SIDES, and adopts the real one after mount.
+ *
+ * This used to read `data-theme` off <html> in the state initialiser, on the
+ * reasoning that ThemeScript had already put the stored palette there. It had —
+ * which is exactly the problem. The server rendered Bone and the client's first
+ * render produced Sage, so the picker's own label was a text mismatch: React
+ * threw away the server HTML, re-rendered the whole document from scratch, and
+ * `data-theme` went with it. Every palette but the default reverted to Bone on
+ * reload, and the site lost its server rendering on the way.
+ *
+ * Nothing flashes. ThemeScript has already painted the page in the right
+ * colours before React runs; this state only drives the picker's own chip and
+ * checkmark, which correct themselves a frame later. Same trade CartProvider
+ * makes to read the bag out of localStorage.
  */
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeId>(() => {
-    if (typeof document === "undefined") return DEFAULT_THEME;
+  const [theme, setThemeState] = useState<ThemeId>(DEFAULT_THEME);
+
+  useEffect(() => {
     const fromDom = document.documentElement.dataset.theme;
-    return isThemeId(fromDom) ? fromDom : DEFAULT_THEME;
-  });
+    if (!isThemeId(fromDom) || fromDom === DEFAULT_THEME) return;
+    // Unavoidable setState-in-effect: the stored palette cannot be known during
+    // render without disagreeing with the server, which is the bug above.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setThemeState(fromDom);
+  }, []);
 
   const setTheme = useCallback((t: ThemeId) => {
     setThemeState(t);

@@ -199,6 +199,9 @@ export const blurForImage = (src: string) => {
   return b ? `url("${b}")` : undefined;
 };
 
+/** True for a campaign photograph, false for a generated plate. */
+export const isPhoto = (src: string) => src.startsWith("/img/campaign/");
+
 export const setForImage = (src: string) =>
   src.endsWith("-810.webp")
     ? `${src.replace("-810.webp", "-400.webp")} 400w, ${src} 810w`

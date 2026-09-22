@@ -60,7 +60,11 @@ export function productLd(p: Product) {
       lowPrice: Math.min(...prices),
       highPrice: Math.max(...prices),
       offerCount: p.variants.length,
-      availability: "https://schema.org/InStock",
+      /* A rich result that says InStock for a run that has gone is a bad
+         result for whoever clicks it, and Google penalises the mismatch. */
+      availability: p.soldOut
+        ? "https://schema.org/SoldOut"
+        : "https://schema.org/InStock",
       priceValidUntil: priceValidUntil(),
       url: abs(`/p/${p.slug}`),
       seller: { "@type": "Organization", name: "PANKAJ SONI" },

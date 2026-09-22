@@ -47,7 +47,7 @@ export default function ThemeSwitcher({ compact = false }: { compact?: boolean }
               aria-label={`${t.name} palette`}
               aria-pressed={t.id === theme}
               title={t.name}
-              className="flex h-9 w-9 overflow-hidden rounded-full transition-transform ps-t-base"
+              className="ps-swatch-chip flex h-9 w-9 overflow-hidden rounded-full transition-transform ps-t-base"
               style={{
                 outline: t.id === theme ? "1px solid var(--ps-accent)" : "1px solid var(--ps-line)",
                 outlineOffset: 3,

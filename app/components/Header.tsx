@@ -207,6 +207,9 @@ export default function Header() {
   const hoverTimer = useRef<number | null>(null);
   const bar = useRef<HTMLDivElement | null>(null);
   const shell = useRef<HTMLElement | null>(null);
+  const mobilePanel = useRef<HTMLDivElement | null>(null);
+  const searchPanel = useRef<HTMLDivElement | null>(null);
+  const returnFocus = useRef<HTMLElement | null>(null);
 
   // The home and atelier heroes are full-bleed, so the bar floats transparent
   // over them and goes solid everywhere else (and once you scroll).
@@ -235,8 +238,13 @@ export default function Header() {
    */
   useEffect(() => {
     const write = () => {
-      const h = (bar.current?.offsetHeight ?? 0) + (shell.current?.offsetHeight ?? 0);
+      const head = shell.current?.offsetHeight ?? 0;
+      const h = (bar.current?.offsetHeight ?? 0) + head;
       if (h) document.documentElement.style.setProperty("--ps-chrome", `${h}px`);
+      /* The header ALONE, which is what anything sticking below it needs: the
+         announcement scrolls away, so a bar offset by the full chrome floats
+         thirty pixels clear of the header with page showing through the gap. */
+      if (head) document.documentElement.style.setProperty("--ps-header", `${head}px`);
     };
     write();
     const ro = new ResizeObserver(write);
@@ -265,6 +273,66 @@ export default function Header() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  /*
+   * A full-screen panel takes the page with it.
+   *
+   * Both panels are always in the DOM — one translated off-screen, one at
+   * opacity 0 — which is what makes them animate. Left alone that also meant
+   * fifteen menu links and the search field stayed in the tab order and the
+   * accessibility tree while invisible, and with the menu open the page behind
+   * it still scrolled. `inert` on the closed panel takes it out of both trees;
+   * the lock, the focus move and the wrap below make the open one behave like
+   * the modal it looks like.
+   */
+  const panel = mobile ? mobilePanel : search ? searchPanel : null;
+  const panelOpen = mobile || search;
+
+  useEffect(() => {
+    if (!panelOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [panelOpen]);
+
+  useEffect(() => {
+    const el = mobile ? mobilePanel.current : search ? searchPanel.current : null;
+    if (el) {
+      returnFocus.current = document.activeElement as HTMLElement;
+      // The search field is the point of the search panel; the menu opens on
+      // its close button, which is the first thing in it either way.
+      (el.querySelector<HTMLElement>("input") ?? el.querySelector<HTMLElement>("button, a"))?.focus();
+    } else if (returnFocus.current) {
+      returnFocus.current.focus?.();
+      returnFocus.current = null;
+    }
+  }, [mobile, search]);
+
+  useEffect(() => {
+    const el = panel?.current;
+    if (!el) return;
+    const onTab = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const focusable = [...el.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, select")]
+        .filter((n) => n.offsetParent !== null || n === document.activeElement);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      // Without this, Tab walks out of an open panel into the page underneath
+      // it and focuses things nobody can see.
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onTab);
+    return () => document.removeEventListener("keydown", onTab);
+  }, [panel]);
 
   // Small delay on close so diagonal travel into the panel doesn't dismiss it.
   const enter = (label: string) => {
@@ -445,6 +513,9 @@ export default function Header() {
 
       {/* search overlay */}
       <div
+        ref={searchPanel}
+        inert={!search}
+        aria-hidden={!search}
         className="fixed inset-0 z-[70] transition-opacity ps-t-slow"
         style={{
           background: "var(--ps-surface)",
@@ -458,7 +529,7 @@ export default function Header() {
             <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
               Search the maison
             </p>
-            <button type="button" aria-label="Close search" onClick={() => setSearch(false)}>
+            <button type="button" aria-label="Close search" className="ps-tap" onClick={() => setSearch(false)}>
               {Ico.close}
             </button>
           </div>
@@ -501,6 +572,9 @@ export default function Header() {
 
       {/* mobile nav */}
       <div
+        ref={mobilePanel}
+        inert={!mobile}
+        aria-hidden={!mobile}
         className="fixed inset-0 z-[70] lg:hidden"
         style={{
           background: "var(--ps-bg)",
@@ -511,7 +585,7 @@ export default function Header() {
       >
         <div className="flex items-center justify-between px-5 py-5">
           <span className="ps-wordmark text-[.82rem]">Pankaj Soni</span>
-          <button type="button" aria-label="Close menu" onClick={() => setMobile(false)}>
+          <button type="button" aria-label="Close menu" className="ps-tap" onClick={() => setMobile(false)}>
             {Ico.close}
           </button>
         </div>
