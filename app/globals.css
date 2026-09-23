@@ -1576,7 +1576,7 @@ main {
 [data-shown="true"] > .ps-chero-panes > .ps-chero-pane {
   clip-path: inset(0 0 0 0);
 }
-.ps-chero-pane img {
+.ps-chero-pane video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1588,10 +1588,17 @@ main {
     scale 2.4s var(--e-out) calc(var(--i) * 130ms),
     opacity 0.9s ease;
 }
-[data-shown="true"] > .ps-chero-panes > .ps-chero-pane img {
+[data-shown="true"] > .ps-chero-panes > .ps-chero-pane video {
   scale: 1.02;
 }
-.ps-chero-pane img[data-loaded="true"] {
+/*
+ * The poster is painted by the <video> itself, so the element is never really
+ * empty — this only softens the handover from poster to first decoded frame.
+ * It starts at 1 rather than 0 for that reason: fading the element in would
+ * fade the POSTER in too, and the poster is the thing that is supposed to be
+ * there instantly.
+ */
+.ps-chero-pane video {
   opacity: 1;
 }
 
@@ -1614,6 +1621,30 @@ main {
   );
 }
 
+/*
+ * A scrim that belongs to the TYPE, not to the picture.
+ *
+ * The veil above grades the whole frame and is tuned for dark cloth. Two of
+ * the three films are pale — a cream courtyard and a white seamless — and the
+ * lockup is 820px wide, so it spills well past the middle pane onto both of
+ * them. An ivory headline on a lightly-darkened cream wall is unreadable. This
+ * sits under the lockup only, falls off to nothing well inside the pane edges,
+ * and means the type holds whatever the film is doing behind it.
+ */
+.ps-chero-lockup::before {
+  content: "";
+  position: absolute;
+  inset: -18% -12%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 58% at 50% 50%,
+    rgb(6 6 7 / 0.62) 0%,
+    rgb(6 6 7 / 0.46) 45%,
+    rgb(6 6 7 / 0.16) 76%,
+    transparent 100%
+  );
+}
 .ps-chero-lockup {
   position: absolute;
   z-index: 2;
@@ -1714,7 +1745,7 @@ main {
 
 @media (prefers-reduced-motion: reduce) {
   .ps-chero-pane,
-  .ps-chero-pane img,
+  .ps-chero-pane video,
   .ps-chero-eyebrow,
   .ps-chero-title,
   .ps-chero-sub,
@@ -1732,7 +1763,9 @@ main {
   .ps-chero-pane {
     clip-path: none !important;
   }
-  .ps-chero-pane img {
+  /* Without scripting the clip never plays, but the poster still paints — the
+     hero degrades to three stills rather than to nothing. */
+  .ps-chero-pane video {
     scale: 1 !important;
     opacity: 1 !important;
   }

@@ -5,6 +5,7 @@ import { Parallax } from "./components/Parallax";
 import { Curtain, FillRule } from "./components/Motif";
 import LookBook from "./components/LookBook";
 import CampaignHero from "./components/CampaignHero";
+import LegacyCampaignHero from "./components/LegacyCampaignHero";
 import Craft from "./components/Craft";
 import ProductRail from "./components/ProductRail";
 import { photo, photoSet } from "@/lib/photos";
@@ -59,6 +60,10 @@ const HOUSE = [
 ];
 
 export default function PsHome() {
+  return <HomePage />;
+}
+
+export function HomePage({ legacyHero = false }: { legacyHero?: boolean }) {
   const hero = bySlug("noir-vine-bandhgala")!;
   const rail = featured();
   const triptych = HOUSE.map((h) => ({
@@ -73,13 +78,23 @@ export default function PsHome() {
         * the opening frame of a collection is not a merchandising surface, and
         * everything below it is one.
         */}
-      <CampaignHero
-        eyebrow="Autumn Campaign — Occasion"
-        title="After Hours"
-        sub="Dressed for the hours that follow."
-        href="/c/occasion"
-        cta="Shop the Campaign"
-      />
+      {legacyHero ? (
+        <LegacyCampaignHero
+          eyebrow="Autumn Campaign — Occasion"
+          title="After Hours"
+          sub="Dressed for the hours that follow."
+          href="/c/occasion"
+          cta="Shop the Campaign"
+        />
+      ) : (
+        <CampaignHero
+          eyebrow="Autumn Campaign — Occasion"
+          title="After Hours"
+          sub="Dressed for the hours that follow."
+          href="/c/occasion"
+          cta="Shop the Campaign"
+        />
+      )}
 
       {/* Straight into the clothes. Nothing between the campaign and the
           garments — the rail is the first thing the scroll reaches. */}
