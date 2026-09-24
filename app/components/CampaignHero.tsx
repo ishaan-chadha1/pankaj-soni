@@ -177,22 +177,66 @@ function Pane({ slug, index }: { slug: string; index: number }) {
     // a src; this is what gives it one.
     window.addEventListener("resize", attach);
 
-    /* Above the fold on load, but it still pauses once scrolled past rather
-       than decoding a 720p frame every 16ms for a hero nobody is looking at. */
+    /*
+     * Above the fold on load, but it still stops once scrolled past rather than
+     * decoding a 720p frame every 16ms for a hero nobody is looking at.
+     *
+     * DELIBERATELY RELUCTANT TO PAUSE. This used to pause on
+     * `!entry.isIntersecting` at a 0.05 threshold, which is a single boolean
+     * derived from one measurement — and a pane was observed going
+     * play -> playing -> pause immediately on load and then sitting dead for
+     * the life of the page while its neighbours ran. A hero pane frozen on its
+     * first frame is far worse than a few wasted decodes, so the test is now
+     * "genuinely nothing on screen", with 200px of slack either side.
+     */
     const io = new IntersectionObserver(
       ([e]) => {
-        if (e.isIntersecting) tryPlay();
+        if (e.intersectionRatio > 0) tryPlay();
         else if (v.src) v.pause();
       },
-      { threshold: 0.05 }
+      { threshold: [0, 0.01], rootMargin: "200px 0px" }
     );
     io.observe(v);
+
+    /*
+     * A pause nobody asked for is a bug; resume it.
+     *
+     * Only the observer above is entitled to stop a pane, and it only does so
+     * when the pane is off screen. If a `pause` arrives while the element is
+     * still in the viewport it came from somewhere else — a decoder being
+     * reclaimed, a power-saving heuristic, a background throttle — and the
+     * pane would otherwise stay frozen forever. Capped, so a browser that is
+     * determined to keep it paused is allowed to win rather than being fought
+     * in a loop.
+     *
+     * CHECKED LATE, NOT ON THE EVENT. Every lap of a `loop` clip can emit
+     * seeking -> waiting -> pause -> play as it wraps to 0, and the browser
+     * resumes it by itself a few milliseconds later. Reviving on the event
+     * itself spent the whole budget on those blips within the first three
+     * laps, so by the time a real stall came there was nothing left to answer
+     * it. Only a pane that is still paused after a beat has actually stalled.
+     */
+    let revivals = 0;
+    let recheck: ReturnType<typeof setTimeout> | undefined;
+    const onPause = () => {
+      clearTimeout(recheck);
+      recheck = setTimeout(() => {
+        if (revivals >= 3 || !v.src || !v.paused || document.hidden) return;
+        const r = v.getBoundingClientRect();
+        if (r.bottom <= 0 || r.top >= window.innerHeight) return;
+        revivals += 1;
+        tryPlay();
+      }, 400);
+    };
+    v.addEventListener("pause", onPause);
 
     return () => {
       io.disconnect();
       window.removeEventListener("resize", attach);
       v.removeEventListener("loadeddata", tryPlay);
       v.removeEventListener("canplay", tryPlay);
+      v.removeEventListener("pause", onPause);
+      clearTimeout(recheck);
       /* Deliberately NOT pausing here. The observer already stops a clip that
          scrolls out of view, and pausing on teardown meant a development
          re-render killed playback between the two runs of this effect. */
