@@ -926,81 +926,19 @@ main {
   }
 }
 
-/* ── Shoppable lookbook ────────────────────────────────────────── */
-
-.ps-look {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: var(--look-aspect, 3168 / 1344);
-  /* Cinematic entry: the frame opens from a hairline at its own centre line.
-     Held here rather than on the image so the markers are unmasked with it. */
-  clip-path: inset(49% 0 49% 0);
-  transition: clip-path 1.5s cubic-bezier(0.76, 0, 0.24, 1);
-}
-.ps-look[data-reveal="true"] {
-  clip-path: inset(0 0 0 0);
-}
-
-/*
- * The image uses the individual transform properties rather than the shorthand,
- * which is the whole reason two motions can share it: `scale` settles once on
- * entry under its own transition, while `translate` tracks scroll continuously
- * off --p. Written as one `transform` they would overwrite each other.
- */
-/* The plate's scale is a variable so the marker layer can undo it — see
-   .ps-hot below. Both transition off the same value, so they stay locked
-   together through the 1.8s settle rather than only at the ends. */
-.ps-look {
-  --plate-scale: 1.15;
-}
-.ps-look[data-reveal="true"] {
-  --plate-scale: 1.06;
-}
-.ps-look img,
-.ps-look video,
-.ps-look .ps-look-hots {
-  scale: var(--plate-scale);
-  translate: 0 calc(var(--p, 0) * var(--drift, -34px));
-  transition: scale 1.8s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: translate;
-}
-/* The marker layer must not eat clicks meant for the plate; only the dots do. */
-.ps-look .ps-look-hots {
+/* ── Shoppable markers ─────────────────────────────────────────
+   See Hotspots.tsx. The layer sits in SplitFrame's unclipped overlay and
+   inherits its --plate-scale, which each marker undoes on itself. */
+.ps-shoppable {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
 }
-.ps-look .ps-look-hots .ps-hot {
+.ps-shoppable .ps-hot {
   pointer-events: auto;
-}
-
-/* Without scripting the observer never sets data-reveal, and the frame would
-   stay clipped to a hairline — the banner would simply not exist. Same guard as
-   the scroll reveals. */
-@media (scripting: none) {
-  .ps-look {
-    clip-path: none !important;
-  }
-  .ps-look {
-    --plate-scale: 1.06 !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ps-look {
-    clip-path: none;
-    transition: none;
-  }
-  .ps-look {
-    --plate-scale: 1;
-  }
-  .ps-look img,
-  .ps-look video,
-  .ps-look .ps-look-hots {
-    translate: none;
-    transition: none;
-  }
-  .ps-hot {
-    transition: none;
-  }
+  /* The plate settles with the scroll, not on a timer — a transition here
+     would leave the counter-scale trailing the picture. */
+  transition: none;
 }
 
 /*
@@ -1023,14 +961,6 @@ main {
    * because a scale about an element's own centre cannot move that element.
    */
   scale: calc(1 / var(--plate-scale, 1));
-  /*
-   * The marker's share of the subject's sway, written once per frame onto the
-   * look as --sway-x/y and scaled here by --sway-f, which is 1 at the head and
-   * 0 at the feet. Keeping the multiply in CSS means the rAF loop makes one
-   * property write for the whole frame instead of one per marker.
-   */
-  translate: calc(var(--sway-x, 0px) * var(--sway-f, 0))
-    calc(var(--sway-y, 0px) * var(--sway-f, 0));
   transition: scale 1.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1126,13 +1056,13 @@ main {
 }
 
 /* Draw on scroll-in, staggered. */
-.ps-look[data-reveal="true"] .ps-hot-line {
+.ps-shoppable[data-reveal="true"] .ps-hot-line {
   transform: scaleX(1);
   transition-delay: var(--hot-delay, 0ms);
 }
 
 /* Then retract, so six labels stop competing with the photograph. */
-.ps-look[data-settled="true"] .ps-hot-line {
+.ps-shoppable[data-settled="true"] .ps-hot-line {
   transform: scaleX(0);
   transition-delay: 0ms;
   transition-duration: 0.55s;
@@ -1211,10 +1141,10 @@ main {
 }
 /* One piece at a time: the others recede so the open leader is the only thing
    competing with the photograph. */
-.ps-look[data-focus="true"] .ps-hot:not([data-open="true"]) {
+.ps-shoppable[data-focus="true"] .ps-hot:not([data-open="true"]) {
   opacity: 0.28;
 }
-.ps-look[data-focus="true"] .ps-hot:not([data-open="true"]) .ps-hot-dot::after {
+.ps-shoppable[data-focus="true"] .ps-hot:not([data-open="true"]) .ps-hot-dot::after {
   animation: none;
 }
 .ps-hot {
@@ -1284,20 +1214,6 @@ main {
   }
 }
 
-/* A 2.36:1 frame is 142px tall on a phone — the model ends up about 15px wide
-   and the photograph is worthless. Crop to portrait instead. The markers are
-   remapped through the crop in JS (makeCropMap), so they stay on their garments
-   rather than having to be switched off. */
-@media (max-width: 767px) {
-  .ps-look {
-    aspect-ratio: 4 / 5;
-  }
-}
-@media (min-width: 768px) and (max-width: 1023px) {
-  .ps-look {
-    aspect-ratio: 16 / 10;
-  }
-}
 
 /* Narrow frame: the crop is portrait, there is no empty frame to draw a leader
    into, and the marker has to be thumb-sized. Driven by the measured aspect
@@ -2107,111 +2023,6 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
   }
 }
 
-/* ── Shoppable frame, set beside its copy ───────────────────────
-   Every other band on this page is a row of portraits. This is the one place
-   the eye gets a different shape — and it lets a 3:4 source render at about
-   700px, inside what the plate actually holds, instead of being stretched
-   across the full measure or cropped to a letterbox. */
-.ps-duet {
-  display: grid;
-  gap: clamp(2.5rem, 5vw, 5rem);
-  align-items: center;
-  padding-block: var(--band-l);
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
-}
-/* Second spread mirrors the first. `order` rather than a reversed column list,
-   so the source order stays copy-then-frame and a screen reader hears the
-   heading before the picture it belongs to, on both. */
-.ps-duet[data-flip="true"] {
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
-}
-.ps-duet[data-flip="true"] > .ps-duet-copy {
-  order: 2;
-}
-.ps-duet[data-flip="true"] > .ps-duet-frame {
-  order: 1;
-}
-/* Consecutive spreads share one interval instead of stacking two. */
-.ps-duet + .ps-duet {
-  padding-top: 0;
-}
-@media (max-width: 1023px) {
-  /*
-   * Stacked, and the frame always follows its own copy.
-   *
-   * The column reset has to be repeated for the flipped variant: the
-   * `[data-flip]` rule above is both later in the sheet and more specific than
-   * the plain `.ps-duet` single-column rule, so without this the mirrored
-   * spread kept two columns on a phone and rendered its frame 190px wide
-   * beside a copy column wrapping at six words a line.
-   */
-  .ps-duet[data-flip="true"] {
-    grid-template-columns: 1fr;
-  }
-  .ps-duet[data-flip="true"] > .ps-duet-copy,
-  .ps-duet[data-flip="true"] > .ps-duet-frame {
-    order: initial;
-  }
-  /* Stacked, consecutive spreads need their interval back. */
-  .ps-duet + .ps-duet {
-    padding-top: var(--band-m);
-  }
-}
-@media (max-width: 1023px) {
-  .ps-duet {
-    grid-template-columns: 1fr;
-  }
-}
-.ps-duet-title {
-  margin-top: 1.1rem;
-  font-size: clamp(2.3rem, 5.6vw, 3.9rem);
-  line-height: 1;
-}
-.ps-duet-body {
-  margin-top: 1.6rem;
-  max-width: 46ch;
-  font-size: 0.93rem;
-  font-weight: 300;
-  line-height: 1.75;
-  color: var(--ps-muted);
-}
-.ps-duet-list {
-  display: grid;
-  gap: 0.6rem;
-  margin-top: 2.5rem;
-  max-width: 24rem;
-}
-.ps-duet-item {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0.65rem;
-  border: 1px solid var(--ps-line);
-  transition: border-color var(--t-base) var(--ease), background var(--t-base) var(--ease);
-}
-.ps-duet-item:hover {
-  border-color: var(--ps-line-strong);
-  background: var(--ps-surface);
-}
-.ps-duet-thumb {
-  flex: 0 0 auto;
-  width: 54px;
-  height: 70px;
-}
-.ps-duet-frame {
-  position: relative;
-}
-.ps-duet-hint {
-  margin-top: 1rem;
-  font-size: 0.54rem;
-  color: var(--ps-faint);
-}
-/* The card unfurls out of the leader and must not be clipped by the column. */
-.ps-duet-frame,
-.ps-duet {
-  overflow: visible;
-}
-
 /* ── Sold out ───────────────────────────────────────────────────
    A capped run that has gone stays on the rail. Saying so is more convincing
    than quietly pulling the plate, and it is the house position in one word. */
@@ -2390,20 +2201,25 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
 /* ── Split frame ───────────────────────────────────────────────────
    See SplitFrame in Motif.tsx. The clip is a one-shot transition on
    [data-open]; --s (0 -> 1) is written from scroll and settles the
-   picture inside. */
+   picture — and any overlay — together. */
+.ps-splitwrap {
+  position: relative;
+  --plate-scale: calc(1 + var(--z) * (1 - var(--s, 0)));
+}
 .ps-split {
   position: relative;
+  height: 100%;
   overflow: hidden;
   clip-path: inset(0 50% 0 50%);
-  transition: clip-path 1.5s var(--e-inout);
+  transition: clip-path 1.5s var(--e-inout) var(--split-delay, 0ms);
 }
-.ps-split[data-open] {
+.ps-splitwrap[data-open] > .ps-split {
   clip-path: inset(0 0 0 0);
 }
 .ps-split-in {
   height: 100%;
   width: 100%;
-  scale: calc(1 + var(--z) * (1 - var(--s, 0)));
+  scale: var(--plate-scale);
 }
 .ps-split-in > img,
 .ps-split-in > video {
@@ -2412,12 +2228,26 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
   width: 100%;
   object-fit: cover;
 }
+/* Unclipped, so a marker's card can reach past the frame; scaled with the
+   picture, so each marker stays on its garment. */
+.ps-split-over {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  scale: var(--plate-scale);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease calc(var(--split-delay, 0ms) + 0.9s);
+}
+.ps-splitwrap[data-open] > .ps-split-over {
+  opacity: 1;
+}
 @media (scripting: none) {
   .ps-split {
     clip-path: none !important;
   }
-  .ps-split-in {
-    scale: 1 !important;
+  .ps-splitwrap {
+    --plate-scale: 1 !important;
   }
 }
 
@@ -2533,4 +2363,12 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
   .ps-row-line {
     width: 100%;
   }
+}
+
+/* An open card has to paint over the frame beside it. Each frame sits in a
+   Parallax layer — its own stacking context — so lift the whole layer. */
+.ps-rows .ps-row-block > *:has(.ps-hot[data-open="true"]),
+.ps-rows .ps-row-pair > *:has(.ps-hot[data-open="true"]) {
+  position: relative;
+  z-index: 30;
 }

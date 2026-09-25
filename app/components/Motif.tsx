@@ -254,6 +254,7 @@ export function ScrollFrame({
  */
 export function SplitFrame({
   children,
+  overlay,
   className,
   style,
   zoom = 0.2,
@@ -261,6 +262,11 @@ export function SplitFrame({
   at = 0.85,
 }: {
   children: ReactNode;
+  /**
+   * Drawn over the picture, carrying the same settle, but OUTSIDE the clip —
+   * for markers whose cards have to be free to reach past the frame's edge.
+   */
+  overlay?: ReactNode;
   className?: string;
   style?: CSSProperties;
   zoom?: number;
@@ -299,10 +305,13 @@ export function SplitFrame({
   return (
     <div
       ref={ref}
-      className={`ps-split ${className ?? ""}`}
-      style={{ ...style, "--z": zoom, transitionDelay: `${delay}ms` } as CSSProperties}
+      className={`ps-splitwrap ${className ?? ""}`}
+      style={{ ...style, "--z": zoom, "--split-delay": `${delay}ms` } as CSSProperties}
     >
-      <div className="ps-split-in">{children}</div>
+      <div className="ps-split">
+        <div className="ps-split-in">{children}</div>
+      </div>
+      {overlay ? <div className="ps-split-over">{overlay}</div> : null}
     </div>
   );
 }

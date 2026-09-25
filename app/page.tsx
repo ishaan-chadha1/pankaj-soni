@@ -3,7 +3,6 @@ import { CATEGORIES, EDITORIAL, bySlug, featured, money } from "@/lib/catalog";
 import { MaskLines, Reveal } from "./components/Reveal";
 import { Parallax } from "./components/Parallax";
 import { Curtain, FillRule, ScrollFrame } from "./components/Motif";
-import LookBook from "./components/LookBook";
 import CampaignHero from "./components/CampaignHero";
 import LegacyCampaignHero from "./components/LegacyCampaignHero";
 import Craft from "./components/Craft";
@@ -106,11 +105,8 @@ export function HomePage({ legacyHero = false }: { legacyHero?: boolean }) {
         href="/c/occasion"
       />
 
-      {/* The shoppable frame — every garment in it links to its listing. */}
-      <LookBook />
-
       {/* The looks, one room at a time: a pinned name and cover, the frames
-          scrolling past it. */}
+          scrolling past it, and every garment in them marked to shop. */}
       <LookRows />
 
       {/* ───────────────────────── MARQUEE ───────────────────────── */}

@@ -1,7 +1,7 @@
 /**
  * Reads back what is actually under a lookbook hotspot.
  *
- * Markers in `lib/looks.ts` are percentages of the source image, and placing
+ * Markers in `app/components/LookRows.tsx` are percentages of the source image, and placing
  * them by eye does not work — an eyeballed pass on the previous campaign put
  * three of six markers on wood panelling and one in the gap between two shoes.
  * This samples an 11px patch at each coordinate and names what it finds, so a
