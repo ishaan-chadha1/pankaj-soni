@@ -40,6 +40,30 @@ export const FILMS: Record<string, Film> = {
     "height": 1280,
     "seconds": 5.6,
     "blur": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAABQBQCdASoUACQAPt1cp02opKOiMBqoARAbiWUAz9wWbUAEjOaVEK0rONntPAZEi0WC+5AA/u1B9LLWCHW28RySxzfSoo6cZilNsXTU3lPEu5ULW+UCpJEQ0zOKvtn33mTvHjIY/0KTA+PTc2KLnynSuco0s7tPDg6OHiqDj6M7m8YesGUZTpI0AAA="
+  },
+  "film-women": {
+    "slug": "film-women",
+    "alt": "A model in a burgundy gown worked with velvet flowers, then in a grey column gown with a crystal hem.",
+    "width": 720,
+    "height": 1280,
+    "seconds": 7.8,
+    "blur": "data:image/webp;base64,UklGRt4AAABXRUJQVlA4INIAAABQBgCdASoUACQAPt1gpE4opaMiKqwBEBuJYwC7AywTmofoeJE3mytl5m1GVr+Dn8zmFMAHoG2wbCySwAD+78iIfvNTO3dZDbGEdBXi9J47sVsQZkjFSQzQihY8Swmk4z2dXNSrAOKKx6SUaeahRX1P7Gind/uHK/aDlg6oxIm3M+YkEhUuQaLiCYpEV9DSDqejadSodoSWl8I0Hs+/rbu4jPl9qgFDkceqV02Puj7EW6JUYNqI8CeNxCRw1mlKJ2suf3+LF4nLC73k0/KDhIf4AAA="
+  },
+  "film-men": {
+    "slug": "film-men",
+    "alt": "A model in a midnight dinner jacket embroidered with swirls of crystal, seated on a studio stool.",
+    "width": 720,
+    "height": 1280,
+    "seconds": 6.1,
+    "blur": "data:image/webp;base64,UklGRgABAABXRUJQVlA4IPQAAAAQBgCdASoUACQAPt1apUyopSOiKq35EBuJZQDM0YxEmIqcM/g90q/uh7MR+fy1cRIGwVo2cOghMcAA/u/UaACGxP/ApX5m6fK8vYfn5M5/4ciQ6wNstDy/CU4BWMyFkYy24RAqX3Ucfk60HAUzxECoXEk0WFI8mOsC37DNC24cZUvE1j6ZkR67nAVrKfwaa7/CYauGEEVz0Oio7gX8FZPS2/3/t7FyqxlaFwPY2oCzamMvSwfWq7BTUVaTDGNmhX28wid+2M/9l9Up+h4dC70/xPSXH2dPT08UcMF2bODIrmpKYLP6Iip3ROgiy7ut9LW3KuAA"
+  },
+  "film-occasion": {
+    "slug": "film-occasion",
+    "alt": "Hand-set black and red spiral embroidery on the collar of a white shirt, worn against a carved stone wall.",
+    "width": 720,
+    "height": 1280,
+    "seconds": 5.7,
+    "blur": "data:image/webp;base64,UklGRhABAABXRUJQVlA4IAQBAABQBgCdASoUACQAPt1srlIopaQipWgBEBuJQBhmsXnCdE+P/6UPq7jJ5S/1Db0OTTsdSWSZ39hVcZtryAD+9NNyr8dAKta8J3VJAate1ZHfnDIqWmbpoT96F779cXNyHI1WTFANfyOQVT6cw1fB43NhDQaoAHSh+4ypFdHBTRCSPxpW0dTUXC9PelNDU2Y0CwKvke6CWYkMOoGk3GGqxgYUMFzmVjTUlGDc/ZK0bjbsWA3RqLhx12UCKTbYRE6cvnLxGhat3Vsu0Nz0tqwNJ5dxiYbcpTBcd6d6Cl4lsiZ31wtdKs0Wj3LHsp9H2JDb1WUEtsWtKO/MLq4LStR+DgsrWsAAAA=="
   }
 };
 

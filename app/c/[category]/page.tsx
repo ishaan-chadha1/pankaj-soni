@@ -7,7 +7,16 @@ import { JsonLd, breadcrumbLd, itemListLd } from "@/lib/seo";
 import SplitText from "../../components/SplitText";
 import { Curtain } from "../../components/Motif";
 import CategoryGrid from "./CategoryGrid";
+import CategoryHero from "./CategoryHero";
 import { stagger } from "@/lib/motion";
+
+/* The rooms that have a film of their own open on it; the rest keep the
+   still banner until theirs is shot. */
+const FILM: Partial<Record<Category, string>> = {
+  women: "film-women",
+  men: "film-men",
+  occasion: "film-occasion",
+};
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ category: c.slug }));
@@ -51,7 +60,14 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
         ]}
       />
 
-      {/* banner */}
+      {FILM[c.slug as Category] ? (
+        <CategoryHero
+          label={c.label}
+          tagline={c.tagline}
+          film={FILM[c.slug as Category]!}
+          count={products.length}
+        />
+      ) : (
       <section className="relative flex min-h-[52svh] items-end overflow-hidden">
         <div className="absolute inset-0">
           <img src={c.image} alt="" className="h-full w-full object-cover" />
@@ -84,6 +100,7 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
           </Reveal>
         </div>
       </section>
+      )}
 
       <section className="mx-auto max-w-[1560px] px-5 pb-28 pt-8 sm:px-8">
         <CategoryGrid products={products} />

@@ -2428,3 +2428,188 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
   position: relative;
   z-index: 30;
 }
+
+/* ── Category hero ─────────────────────────────────────────────────
+   See CategoryHero.tsx. --e (0 closed -> 1 open) is written from scroll;
+   everything here is a function of it. */
+.ps-cathero {
+  --e: 0;
+  /* How far apart neighbouring letters travel when the film is fully open. */
+  --spread: 0.34em;
+  position: relative;
+  height: calc(100svh - var(--ps-chrome, 110px) + 90svh);
+}
+.ps-cathero-stage {
+  position: sticky;
+  top: var(--ps-header, 76px);
+  /* The whole chrome — announcement AND header — not the header alone. On
+     arrival both sit above the stage, and sizing it for the header only put
+     its foot, tagline and all, 30-40px below the fold. Once pinned the
+     announcement has scrolled away and the grid peeks in under the stage,
+     which is the cue to keep going. */
+  height: calc(100svh - var(--ps-chrome, 110px));
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ps-bg);
+}
+.ps-cathero-crumbs {
+  position: absolute;
+  z-index: 3;
+  top: clamp(1rem, 3vh, 2rem);
+  left: clamp(1.25rem, 3vw, 2rem);
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.54rem;
+  color: var(--ps-faint);
+}
+
+/* The name, as wide as the window allows for its length: about 0.8em a
+   letter in the display face, capped so a three-letter word stays a word. */
+/* In FRONT of the film, blended by difference: dark on the paper, the film
+   inverted where a letter crosses it. The middle letters stay legible over
+   the picture instead of being hidden behind it, and the same rule reads
+   light-on-dark in the dark palettes without a second colour. The stage is
+   isolated so the blend only ever sees the stage. */
+.ps-cathero-name {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  z-index: 2;
+  mix-blend-mode: difference;
+  translate: 0 -50%;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+  font-family: var(--font-ps-display), "Bodoni Moda", Georgia, serif;
+  font-weight: 500;
+  /* --fs is measured and written by CategoryHero; this is only the first
+     paint's estimate. While it measures, the parting is switched off. */
+  font-size: var(--fs, min(24vw, calc(80vw / var(--n))));
+  line-height: 0.8;
+  letter-spacing: 0.02em;
+  color: #fff;
+  pointer-events: none;
+}
+/* Each letter parts from the middle as the film opens, and rises in on
+   arrival. `translate` for the parting, `transform` for the arrival, so the
+   two never overwrite each other. */
+.ps-cathero-name > span {
+  display: inline-block;
+  translate: calc(var(--o) * var(--e) * var(--spread)) 0;
+  opacity: 0;
+  transform: translateY(30%);
+  transition:
+    opacity 0.9s ease calc(var(--i) * 60ms + 150ms),
+    transform 1.3s var(--e-out) calc(var(--i) * 60ms + 150ms);
+}
+[data-shown="true"] .ps-cathero-name > span {
+  opacity: 1;
+  transform: none;
+}
+.ps-cathero-name[style*="--probe"] > span {
+  translate: none;
+}
+
+/* The film: a portrait box the full height of the stage, clipped in to
+   roughly half its size while closed. */
+.ps-cathero-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin-inline: auto;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  clip-path: inset(calc(23% * (1 - var(--e))) calc(23% * (1 - var(--e))));
+}
+/* On arrival the closed box rises into place from its foot. */
+.ps-cathero-intro {
+  height: 100%;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.3s var(--e-inout) 0.35s;
+}
+[data-shown="true"] .ps-cathero-intro {
+  clip-path: inset(0 0 0 0);
+}
+.ps-cathero-intro video {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  background: var(--ps-bg-alt);
+  scale: calc(1.12 - var(--e) * 0.12);
+}
+
+.ps-cathero-foot {
+  position: absolute;
+  inset-inline: 0;
+  bottom: clamp(1rem, 4vh, 2.5rem);
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  padding-inline: clamp(1.25rem, 3vw, 2rem);
+  font-size: 0.56rem;
+  letter-spacing: 0.24em;
+  color: var(--ps-muted);
+  opacity: calc(1 - var(--e) * 2.5);
+}
+.ps-cathero-tag {
+  max-width: 26ch;
+  line-height: 1.7;
+}
+.ps-cathero-count {
+  justify-self: end;
+}
+
+/* A phone is portrait already: the box opens to the whole stage. */
+@media (max-width: 767px) {
+  .ps-cathero {
+    height: calc(100svh - var(--ps-chrome, 96px) + 70svh);
+  }
+  .ps-cathero-frame {
+    aspect-ratio: auto;
+    width: 100%;
+    clip-path: inset(calc(21% * (1 - var(--e))) calc(17% * (1 - var(--e))));
+  }
+  .ps-cathero {
+    --spread: 0.12em;
+  }
+  .ps-cathero-foot {
+    grid-template-columns: 1fr auto;
+  }
+  .ps-cathero-foot .ps-xhero-cue {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-cathero {
+    --e: 1;
+    height: auto;
+  }
+  .ps-cathero-stage {
+    position: relative;
+    top: 0;
+  }
+  .ps-cathero-name > span,
+  .ps-cathero-intro {
+    transition: none;
+  }
+}
+@media (scripting: none) {
+  .ps-cathero {
+    --e: 1 !important;
+    height: auto;
+  }
+  .ps-cathero-stage {
+    position: relative;
+    top: 0;
+  }
+  .ps-cathero-name > span {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .ps-cathero-intro {
+    clip-path: none !important;
+  }
+}

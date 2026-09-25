@@ -66,6 +66,37 @@ const FILMS = [
     seconds: 5.6,
     alt: "A model in a lilac satin column gown, then in a deep burgundy gown worked with velvet flowers.",
   },
+
+  /*
+   * One film per room, for the category heroes. Longer than the home panes —
+   * each is shown alone, full height, so it can hold three cuts rather than
+   * two. Cut points from scene detection on SNIPPET 7: 6.12, 8.08, 10.88,
+   * 14.04 · 17.64, 18.56, 19.24, 19.92, 22.0 · 23.44, 24.44, 26.76, 28.6,
+   * slate at 30.0. The 22.0 boundary is only a change of angle on the white
+   * shirt — the jacket does not arrive until 23.44, checked frame by frame,
+   * so the occasion film runs to it and the men's film starts there.
+   */
+  {
+    match: "SNIPPET 7",
+    slug: "film-women",
+    in: 6.16,
+    seconds: 7.8,
+    alt: "A model in a burgundy gown worked with velvet flowers, then in a grey column gown with a crystal hem.",
+  },
+  {
+    match: "SNIPPET 7",
+    slug: "film-men",
+    in: 23.48,
+    seconds: 6.1,
+    alt: "A model in a midnight dinner jacket embroidered with swirls of crystal, seated on a studio stool.",
+  },
+  {
+    match: "SNIPPET 7",
+    slug: "film-occasion",
+    in: 17.68,
+    seconds: 5.7,
+    alt: "Hand-set black and red spiral embroidery on the collar of a white shirt, worn against a carved stone wall.",
+  },
 ];
 
 /* 720x1280 rather than the native 1080x1920. A hero pane renders about 490 CSS
