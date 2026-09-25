@@ -1,20 +1,14 @@
 /**
  * The PANKAJ SONI house — an invented luxury maison.
  *
- * An apparel house: tailoring, occasionwear, knitwear, eyewear and leather. Every
+ * An apparel house: tailoring, occasionwear, knitwear and eveningwear. Every
  * product, price and line of copy here is original to this project. `PANKAJ
  * SONI` is used the way any couture label uses a founder's name: as a wordmark
  * for a fictional house, with no connection to, or information about, any real
  * person of that name.
  */
 
-export type Category =
-  | "women"
-  | "men"
-  | "occasion"
-  | "eyewear"
-  | "leather"
-  | "gifts";
+export type Category = "women" | "men" | "occasion";
 
 export type Variant = {
   id: string;
@@ -73,24 +67,6 @@ export const CATEGORIES: {
     label: "Occasion",
     tagline: "Everything that is worked by hand.",
     image: "/img/campaign/orbit-02-810.webp",
-  },
-  {
-    slug: "eyewear",
-    label: "Eyewear",
-    tagline: "Architecture for the face.",
-    image: "/img/p-cat-eyewear.svg",
-  },
-  {
-    slug: "leather",
-    label: "Leather Goods",
-    tagline: "Box calf, brass, and nothing to prove.",
-    image: "/img/p-cat-leather.svg",
-  },
-  {
-    slug: "gifts",
-    label: "Gifts",
-    tagline: "Presented in lacquer and grosgrain.",
-    image: "/img/p-cat-gifts.svg",
   },
 ];
 
@@ -539,209 +515,6 @@ export const PRODUCTS: Product[] = [
       "Crystal scatter across the shoulder",
       "Made in India — specialist dry clean only",
     ],
-  },
-
-  /* ─────────────  EYEWEAR  ───────────── */
-  {
-    slug: "monolith",
-    name: "Monolith",
-    line: "Eyewear",
-    category: "eyewear",
-    kicker: "Squared acetate · Grey gradient",
-    price: 490,
-    image: "/img/e-monolith.svg",
-    hover: "/img/p-cat-eyewear.svg",
-    story:
-      "A squared frame cut from a single block of Italian acetate, then tumbled for nine days. Heavy in the hand, weightless on the face.",
-    variants: [
-      { id: "black-grey", label: "Black / Grey Gradient", price: 490, swatch: "#141414" },
-      { id: "havana", label: "Havana / Bronze", price: 490, swatch: "#5b3a1e" },
-    ],
-    details: [
-      "Hand-cut Italian acetate, nine-day tumble",
-      "Category 3 lenses, 100% UVA/UVB",
-      "Titanium core wire, adjustable temples",
-      "Supplied with lacquered case and grosgrain cloth",
-    ],
-  },
-  {
-    slug: "meridian-aviator",
-    name: "Meridian",
-    line: "Eyewear",
-    category: "eyewear",
-    kicker: "Metal aviator · Gold bronze",
-    price: 545,
-    image: "/img/e-meridian.svg",
-    hover: "/img/p-cat-eyewear.svg",
-    badge: "New",
-    story:
-      "A double-bridge aviator in brushed gold with a bronze gradient. The classic silhouette, cut narrower through the temple.",
-    variants: [
-      { id: "gold-bronze", label: "Gold / Bronze", price: 545, swatch: "#8a6f3c" },
-      { id: "gunmetal", label: "Gunmetal / Grey", price: 545, swatch: "#4a4d52" },
-    ],
-    details: ["Brushed metal frame", "Category 3 lenses, 100% UVA/UVB", "Adjustable nose pads"],
-  },
-  {
-    slug: "oracle",
-    name: "Oracle",
-    line: "Eyewear",
-    category: "eyewear",
-    kicker: "Round acetate · Petrol lens",
-    price: 465,
-    image: "/img/e-oracle.svg",
-    hover: "/img/p-cat-eyewear.svg",
-    story: "A perfect circle in black acetate with a petrol-tinted lens. Unforgiving, and worth it.",
-    variants: [{ id: "black-petrol", label: "Black / Petrol", price: 465, swatch: "#1a1a1a" }],
-    details: ["Hand-cut acetate", "Category 3 lenses, 100% UVA/UVB", "Lacquered case included"],
-  },
-  {
-    slug: "vesper-cat",
-    name: "Vesper",
-    line: "Eyewear",
-    category: "eyewear",
-    kicker: "Cat-eye acetate · Rosewood",
-    price: 510,
-    image: "/img/e-vesper.svg",
-    hover: "/img/p-cat-women.svg",
-    badge: "Exclusive",
-    story:
-      "An exaggerated cat-eye, weighted at the outer corner so it lifts the whole face. Rosewood lens, black frame.",
-    variants: [{ id: "black-rose", label: "Black / Rosewood", price: 510, swatch: "#101010" }],
-    details: ["Hand-cut Italian acetate", "Category 3 lenses, 100% UVA/UVB", "Titanium core wire"],
-  },
-
-  /* ─────────────  LEATHER GOODS  ───────────── */
-  {
-    slug: "weekend-holdall",
-    name: "Weekend Holdall",
-    line: "Leather Goods",
-    category: "leather",
-    kicker: "Box calf · Brass hardware",
-    price: 2400,
-    image: "/img/p-cat-leather.svg",
-    hover: "/img/p-ed-01.svg",
-    badge: "New",
-    story:
-      "Box calf over a soft frame, so it slumps when empty and squares up when full. Two nights, one suit, and nothing you would be embarrassed to set down in a good hotel.",
-    variants: [
-      { id: "black", label: "Black", price: 2400, swatch: "#141414" },
-      { id: "chestnut", label: "Chestnut", price: 2400, swatch: "#6b4423" },
-    ],
-    details: [
-      "Box calf leather over a soft frame",
-      "Solid brass hardware, suede-lined interior",
-      "Detachable shoulder strap",
-      "Made in Italy",
-    ],
-  },
-  {
-    slug: "opera-clutch",
-    name: "Opera Clutch",
-    line: "Leather Goods",
-    category: "leather",
-    kicker: "Box calf · Brass clasp",
-    price: 1850,
-    image: "/img/p-cat-leather.svg",
-    hover: "/img/p-ed-01.svg",
-    story:
-      "Box calf over a rigid frame, with a solid brass clasp that closes with an audible click. Holds exactly what an evening requires.",
-    variants: [
-      { id: "black", label: "Black", price: 1850, swatch: "#111111" },
-      { id: "oxblood", label: "Oxblood", price: 1850, swatch: "#4d1220" },
-    ],
-    details: ["Box calf leather, rigid frame", "Solid brass clasp", "Suede-lined", "Made in Italy"],
-  },
-  {
-    slug: "document-case",
-    name: "Document Case",
-    line: "Leather Goods",
-    category: "leather",
-    kicker: "Bridle leather · Single fold",
-    price: 1650,
-    image: "/img/p-ed-02.svg",
-    hover: "/img/p-cat-leather.svg",
-    story:
-      "One piece of bridle leather folded once, stitched at two edges, and left to earn its colour. There is no lining because there is nothing a lining would improve.",
-    variants: [
-      { id: "chestnut", label: "Chestnut", price: 1650, swatch: "#6b4423" },
-      { id: "black", label: "Black", price: 1650, swatch: "#141414" },
-    ],
-    details: ["English bridle leather", "Unlined, single fold", "Made in England"],
-  },
-  {
-    slug: "woven-belt",
-    name: "Woven Belt",
-    line: "Leather Goods",
-    category: "leather",
-    kicker: "Braided calf · Brass pin",
-    price: 340,
-    image: "/img/p-cat-leather.svg",
-    hover: "/img/p-ed-02.svg",
-    story:
-      "Braided calf with no punched holes — the pin goes wherever it needs to, which is the whole argument for a woven belt.",
-    variants: [
-      { id: "85", label: "85 cm", price: 340 },
-      { id: "90", label: "90 cm", price: 340 },
-      { id: "95", label: "95 cm", price: 340 },
-    ],
-    details: ["Braided calf leather", "Solid brass pin buckle", "Made in Italy"],
-  },
-
-  /* ─────────────  GIFTS  ───────────── */
-  {
-    slug: "cashmere-scarf",
-    name: "Cashmere Scarf",
-    line: "Gifting",
-    category: "gifts",
-    kicker: "Six-ply cashmere · Hand-fringed",
-    price: 590,
-    image: "/img/p-cat-gifts.svg",
-    hover: "/img/p-ed-01.svg",
-    story:
-      "Six-ply cashmere woven wide enough to wear as a wrap, with a fringe knotted by hand rather than cut by machine.",
-    variants: [
-      { id: "camel", label: "Camel", price: 590, swatch: "#a67c4e" },
-      { id: "charcoal", label: "Charcoal", price: 590, swatch: "#3a3a3c" },
-      { id: "bone", label: "Bone", price: 590, swatch: "#ddd5c4" },
-    ],
-    details: ["Six-ply cashmere", "Hand-knotted fringe", "Made in Scotland"],
-  },
-  {
-    slug: "leather-gloves",
-    name: "Cashmere-Lined Gloves",
-    line: "Gifting",
-    category: "gifts",
-    kicker: "Nappa lamb · Cashmere lining",
-    price: 480,
-    image: "/img/p-ed-03.svg",
-    hover: "/img/p-cat-gifts.svg",
-    story:
-      "Nappa lamb cut on the stretch and lined in cashmere, so they are warm without bulk and fit closer after a week.",
-    variants: [
-      { id: "8", label: "8", price: 480 },
-      { id: "8h", label: "8½", price: 480 },
-      { id: "9", label: "9", price: 480 },
-    ],
-    details: ["Nappa lambskin, cashmere lined", "Hand-cut", "Made in Italy"],
-  },
-  {
-    slug: "silk-tie",
-    name: "Grenadine Tie",
-    line: "Gifting",
-    category: "gifts",
-    kicker: "Silk grenadine · Untipped",
-    price: 260,
-    image: "/img/p-cat-gifts.svg",
-    hover: "/img/p-ed-02.svg",
-    story:
-      "Woven grenadine silk, untipped and self-lined, so the knot has texture and the blade keeps its weight without interfacing.",
-    variants: [
-      { id: "navy", label: "Navy", price: 260, swatch: "#1e2a3a" },
-      { id: "oxblood", label: "Oxblood", price: 260, swatch: "#4d1220" },
-      { id: "forest", label: "Forest", price: 260, swatch: "#22372a" },
-    ],
-    details: ["Silk grenadine", "Untipped, self-lined", "Made in Italy"],
   },
 ];
 

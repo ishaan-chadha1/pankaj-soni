@@ -1855,8 +1855,12 @@ main {
 /* The bar slides away while the frame is still opening, and comes back the
    moment anyone tabs into it. Keyed off the hero being in the document rather
    than a flag set by script, so it is already away on the first paint — a
-   flag arrived after hydration and the bar flashed over the name on load. */
-body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
+   flag arrived after hydration and the bar flashed over the name on load.
+
+   KEYBOARD focus only (:focus-visible), not any focus. Clicking the wordmark
+   to come home leaves the mouse's focus on that link, and `:focus-within`
+   kept the whole bar pinned over the hero until something else was clicked. */
+body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
   transform: translateY(-100%);
   opacity: 0;
   pointer-events: none;
@@ -2559,6 +2563,23 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
 }
 .ps-cathero-count {
   justify-self: end;
+}
+
+/* FILL: the frame is the whole stage, and the closed state clips it back to
+   the same portrait box the default opens from — its width worked out from
+   the stage height (9/16 of it, at the 54% the 23% insets leave), so closed
+   the two variants are identical and only the open state differs. The crop
+   sits a little high, where the faces and collars are. */
+.ps-cathero[data-fill] .ps-cathero-frame {
+  aspect-ratio: auto;
+  width: 100%;
+  clip-path: inset(
+    calc(23% * (1 - var(--e)))
+    calc((100% - (100svh - var(--ps-chrome, 110px)) * 0.5625 * 0.54) / 2 * (1 - var(--e)))
+  );
+}
+.ps-cathero[data-fill] .ps-cathero-intro video {
+  object-position: 50% 18%;
 }
 
 /* A phone is portrait already: the box opens to the whole stage. */

@@ -80,7 +80,7 @@ const NEAREST: Record<string, string> = {
   poplin: "poplin-shirt",
   twill: "single-breasted-suit",
   satin: "liquid-column-gown",
-  grenadine: "silk-tie",
+  grenadine: "evening-shirt",
   gabardine: "orbit-bandhgala",
   flannel: "tidemark-sherwani",
 };

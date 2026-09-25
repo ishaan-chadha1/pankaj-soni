@@ -28,11 +28,18 @@ export default function CategoryHero({
   tagline,
   film,
   count,
+  fill = false,
 }: {
   label: string;
   tagline: string;
   film: string;
   count: number;
+  /**
+   * Open to the full banner — edge to edge — instead of to a full-height
+   * portrait. Trades the whole 9:16 frame for a landscape crop of it, upscaled
+   * on a wide window. On trial on Men only, pending a decision.
+   */
+  fill?: boolean;
 }) {
   const section = useRef<HTMLElement | null>(null);
   const stage = useRef<HTMLDivElement | null>(null);
@@ -133,6 +140,7 @@ export default function CategoryHero({
       ref={section}
       className="ps-cathero"
       data-shown={shown}
+      data-fill={fill || undefined}
       aria-label={`${label} — ${tagline}`}
     >
       <div ref={stage} className="ps-cathero-stage">

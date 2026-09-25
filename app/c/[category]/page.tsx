@@ -4,15 +4,13 @@ import { notFound } from "next/navigation";
 import { CATEGORIES, byCategory, category, type Category } from "@/lib/catalog";
 import { Reveal } from "../../components/Reveal";
 import { JsonLd, breadcrumbLd, itemListLd } from "@/lib/seo";
-import SplitText from "../../components/SplitText";
 import { Curtain } from "../../components/Motif";
 import CategoryGrid from "./CategoryGrid";
 import CategoryHero from "./CategoryHero";
 import { stagger } from "@/lib/motion";
 
-/* The rooms that have a film of their own open on it; the rest keep the
-   still banner until theirs is shot. */
-const FILM: Partial<Record<Category, string>> = {
+/* Every room opens on a film of its own. */
+const FILM: Record<Category, string> = {
   women: "film-women",
   men: "film-men",
   occasion: "film-occasion",
@@ -60,47 +58,13 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
         ]}
       />
 
-      {FILM[c.slug as Category] ? (
-        <CategoryHero
-          label={c.label}
-          tagline={c.tagline}
-          film={FILM[c.slug as Category]!}
-          count={products.length}
-        />
-      ) : (
-      <section className="relative flex min-h-[52svh] items-end overflow-hidden">
-        <div className="absolute inset-0">
-          <img src={c.image} alt="" className="h-full w-full object-cover" />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 38%, var(--ps-bg) 100%)",
-            }}
-          />
-        </div>
-
-        <div className="relative z-[2] mx-auto w-full max-w-[1560px] px-5 pb-14 sm:px-8">
-          <Reveal>
-            <nav className="ps-caps flex items-center gap-2" style={{ fontSize: ".54rem", color: "var(--ps-faint)" }}>
-              <Link href="/" className="ps-link">
-                Maison
-              </Link>
-              <span>/</span>
-              <span style={{ color: "var(--ps-accent)" }}>{c.label}</span>
-            </nav>
-          </Reveal>
-
-          <SplitText as="h1" text={c.label} delay={100} className="ps-display ps-h1 mt-6" />
-
-          <Reveal delay={300}>
-            <p className="mt-5 max-w-[46ch] text-[.95rem] font-light" style={{ color: "var(--ps-muted)" }}>
-              {c.tagline}
-            </p>
-          </Reveal>
-        </div>
-      </section>
-      )}
+      <CategoryHero
+        label={c.label}
+        tagline={c.tagline}
+        film={FILM[c.slug as Category]}
+        count={products.length}
+        fill={c.slug === "men"}
+      />
 
       <section className="mx-auto max-w-[1560px] px-5 pb-28 pt-8 sm:px-8">
         <CategoryGrid products={products} />
@@ -112,7 +76,7 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
           <p className="ps-caps mb-9" style={{ color: "var(--ps-accent)" }}>
             Continue in the house
           </p>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-5 sm:grid-cols-2">
             {CATEGORIES.filter((x) => x.slug !== c.slug).map((x, i) => (
               <Reveal key={x.slug} delay={stagger(i)}>
                 <Link href={`/c/${x.slug}`} className="group block">

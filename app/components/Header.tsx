@@ -558,7 +558,7 @@ export default function Header() {
           </div>
           <input
             className="ps-field ps-display mt-8 text-[2rem] sm:text-[2.8rem]"
-            placeholder="Tailoring, occasion, eyewear…"
+            placeholder="Tailoring, occasion, evening…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             autoComplete="off"
