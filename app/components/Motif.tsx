@@ -323,14 +323,14 @@ export function SplitFrame({
   return (
     <div
       ref={ref}
-      className={`ps-splitwrap ${className ?? ""}`}
+      className={`ps-sfwrap ${className ?? ""}`}
       data-v={variant}
       style={{ ...style, "--z": zoom, "--split-delay": `${delay}ms` } as CSSProperties}
     >
-      <div className="ps-split">
-        <div className="ps-split-in">{children}</div>
+      <div className="ps-sf">
+        <div className="ps-sf-in">{children}</div>
       </div>
-      {overlay ? <div className="ps-split-over">{overlay}</div> : null}
+      {overlay ? <div className="ps-sf-over">{overlay}</div> : null}
     </div>
   );
 }

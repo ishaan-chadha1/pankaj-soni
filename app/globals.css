@@ -2140,18 +2140,18 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
    See SplitFrame in Motif.tsx. The clip is a one-shot transition on
    [data-open]; --s (0 -> 1) is written from scroll and settles the
    picture — and any overlay — together. */
-.ps-splitwrap {
+.ps-sfwrap {
   --reveal-t: 1.5s;
   position: relative;
   --plate-scale: calc(1 + var(--z) * (1 - var(--s, 0)));
 }
-.ps-split {
+.ps-sf {
   position: relative;
   height: 100%;
   overflow: hidden;
   transition: clip-path var(--reveal-t) var(--e-inout) var(--split-delay, 0ms);
 }
-.ps-split-in {
+.ps-sf-in {
   height: 100%;
   width: 100%;
   scale: var(--plate-scale);
@@ -2162,32 +2162,32 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
 }
 
 /* The closed state of each reveal; [data-open] undoes all of them. */
-[data-v="split"] > .ps-split {
+[data-v="split"] > .ps-sf {
   clip-path: inset(0 50% 0 50%);
 }
-[data-v="rise"] > .ps-split {
+[data-v="rise"] > .ps-sf {
   clip-path: inset(100% 0 0 0);
 }
-[data-v="wipe"] > .ps-split {
+[data-v="wipe"] > .ps-sf {
   clip-path: inset(0 100% 0 0);
 }
-[data-v="wipe-r"] > .ps-split {
+[data-v="wipe-r"] > .ps-sf {
   clip-path: inset(0 0 0 100%);
 }
-[data-v="slide"] > .ps-split > .ps-split-in {
+[data-v="slide"] > .ps-sf > .ps-sf-in {
   translate: 0 102%;
 }
-[data-v="focus"] > .ps-split > .ps-split-in {
+[data-v="focus"] > .ps-sf > .ps-sf-in {
   filter: blur(14px) saturate(0.6);
   opacity: 0;
 }
-.ps-splitwrap[data-v="focus"] {
+.ps-sfwrap[data-v="focus"] {
   --reveal-t: 1.8s;
 }
-.ps-splitwrap[data-open] > .ps-split {
+.ps-sfwrap[data-open] > .ps-sf {
   clip-path: inset(0 0 0 0);
 }
-.ps-splitwrap[data-open] > .ps-split > .ps-split-in {
+.ps-sfwrap[data-open] > .ps-sf > .ps-sf-in {
   translate: 0 0;
   filter: none;
   opacity: 1;
@@ -2195,21 +2195,21 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
 
 /* A phone scrolls past frames faster than a desk does; the reveals keep up. */
 @media (max-width: 767px) {
-  .ps-splitwrap {
+  .ps-sfwrap {
     --reveal-t: 1s;
   }
-  .ps-splitwrap[data-v="focus"] {
+  .ps-sfwrap[data-v="focus"] {
     --reveal-t: 1.2s;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ps-split,
-  .ps-split-in {
+  .ps-sf,
+  .ps-sf-in {
     transition: none;
   }
 }
-.ps-split-in > img,
-.ps-split-in > video {
+.ps-sf-in > img,
+.ps-sf-in > video {
   display: block;
   height: 100%;
   width: 100%;
@@ -2217,7 +2217,7 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
 }
 /* Unclipped, so a marker's card can reach past the frame; scaled with the
    picture, so each marker stays on its garment. */
-.ps-split-over {
+.ps-sf-over {
   position: absolute;
   inset: 0;
   z-index: 3;
@@ -2228,19 +2228,19 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
      a fixed delay let a dot land on picture a wipe had not reached yet. */
   transition: opacity 0.6s ease calc(var(--split-delay, 0ms) + var(--reveal-t) * 0.9);
 }
-.ps-splitwrap[data-open] > .ps-split-over {
+.ps-sfwrap[data-open] > .ps-sf-over {
   opacity: 1;
 }
 @media (scripting: none) {
-  .ps-split {
+  .ps-sf {
     clip-path: none !important;
   }
-  .ps-split-in {
+  .ps-sf-in {
     translate: none !important;
     filter: none !important;
     opacity: 1 !important;
   }
-  .ps-splitwrap {
+  .ps-sfwrap {
     --plate-scale: 1 !important;
   }
 }
