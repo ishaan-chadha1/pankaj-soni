@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ViewTransition } from "react";
 import { notFound } from "next/navigation";
 import { PRODUCTS, bySlug, category, related } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../../components/Reveal";
@@ -105,21 +104,17 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
             the category banner, which on most pieces was a different garment. */}
         <Gallery>
           <div className="ps-media relative aspect-[4/5]">
-            {/* Matches the name on the grid card, so the plate morphs in from
-                wherever it was clicked instead of the page hard-cutting. */}
-            <ViewTransition name={`plate-${product.slug}`} share="morph">
-              <img
-                src={product.image}
-                srcSet={setForImage(product.image)}
-                sizes="(max-width: 1023px) 100vw, 46vw"
-                alt={product.name}
-                className={
-                  heroIsPhoto
-                    ? "h-full w-full object-cover"
-                    : "h-full w-full object-contain p-8 sm:p-16"
-                }
-              />
-            </ViewTransition>
+            <img
+              src={product.image}
+              srcSet={setForImage(product.image)}
+              sizes="(max-width: 1023px) 100vw, 46vw"
+              alt={product.name}
+              className={
+                heroIsPhoto
+                  ? "h-full w-full object-cover"
+                  : "h-full w-full object-contain p-8 sm:p-16"
+              }
+            />
             <div
               className="pointer-events-none absolute inset-0 -z-10"
               style={{ background: "radial-gradient(circle at 50% 42%, rgba(201,169,97,.14), transparent 65%)" }}

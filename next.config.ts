@@ -16,12 +16,14 @@ const isStatic = process.env.STATIC_EXPORT === "1";
 const nextConfig: NextConfig = {
   ...(isStatic ? { output: "export" as const, images: { unoptimized: true } } : {}),
   trailingSlash: isStatic,
-  experimental: {
-    // Enables React's <ViewTransition>, used to morph a product plate from the
-    // grid into the product page hero. Browsers without the View Transitions
-    // API just navigate normally.
-    viewTransition: true,
-  },
+  /*
+   * No `experimental.viewTransition`. It used to morph a product plate from the
+   * grid into the product page, but the PageTransition curtain now covers every
+   * navigation, so the morph played unseen underneath it — and the browser's
+   * snapshots of the page, taken while the curtain and the new page were both
+   * moving, could stick on a phone: the old page drawn over the new one, or a
+   * snapshot of the page before it had painted.
+   */
 };
 
 export default nextConfig;

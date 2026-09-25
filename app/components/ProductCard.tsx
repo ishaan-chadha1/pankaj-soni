@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, ViewTransition } from "react";
+import { useState } from "react";
 import { money, type Product } from "@/lib/catalog";
 import { blurForImage, setForImage } from "@/lib/photos";
 import { useCart } from "../CartProvider";
@@ -41,20 +41,15 @@ export default function ProductCard({
         className="ps-media ps-zoom ps-swap relative aspect-[3/4]"
         style={{ backgroundImage: blurForImage(product.image) }}
       >
-        {/* Named identity for the morph into the product page. The same name is
-            on the PDP hero, so the browser animates one object moving rather
-            than two swapping. */}
-        <ViewTransition name={`plate-${product.slug}`} share="morph">
-          <img
-            src={product.image}
-            srcSet={setForImage(product.image)}
-            sizes="(max-width: 1023px) 50vw, 33vw"
-            alt={product.name}
-            loading={priority ? "eager" : "lazy"}
-            decoding="async"
-            className="h-full w-full object-cover"
-          />
-        </ViewTransition>
+        <img
+          src={product.image}
+          srcSet={setForImage(product.image)}
+          sizes="(max-width: 1023px) 50vw, 33vw"
+          alt={product.name}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
         <img
           src={product.hover}
           srcSet={setForImage(product.hover)}
