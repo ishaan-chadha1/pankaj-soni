@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import BagDrawer from "./components/BagDrawer";
 import Preloader from "./components/Preloader";
+import PageTransition from "./components/PageTransition";
 import Cursor from "./components/Cursor";
 import ScrollProgress from "./components/ScrollProgress";
 import ThemeScript from "./components/ThemeScript";
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ThemeProvider>
           <CartProvider>
             <Preloader />
+            <PageTransition />
             <Cursor />
             <ScrollProgress />
             <Header />

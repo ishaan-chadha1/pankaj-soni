@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FillRule } from "./Motif";
-
-const WORD = "PANKAJ SONI";
+import MaisonPlate from "./MaisonPlate";
 
 /* Four beats, ~4.6s total:
  *   0.03s  letters begin rising, 85ms apart, so the wordmark assembles
@@ -19,7 +17,8 @@ const STEP = 85;
  * First-visit curtain.
  *
  * Shown once per tab (sessionStorage). At 4.6s this is a real hold, and
- * replaying it on every navigation would read as latency rather than ceremony.
+ * replaying it on every navigation would read as latency rather than ceremony
+ * — so navigations get the same plate at a faster tempo, in PageTransition.
  */
 export default function Preloader() {
   const [phase, setPhase] = useState<"hidden" | "in" | "out" | "done">("hidden");
@@ -83,42 +82,15 @@ export default function Preloader() {
         transition: "transform 1s cubic-bezier(.76,0,.24,1)",
       }}
     >
-      <div className="overflow-hidden px-6 pb-[0.14em]">
-        <p className="ps-wordmark flex justify-center text-[1.1rem] sm:text-[1.9rem]">
-          {WORD.split("").map((ch, i) => (
-            <span
-              key={i}
-              style={{
-                display: "inline-block",
-                whiteSpace: "pre",
-                transform: phase === "in" || phase === "out" ? "translateY(0)" : "translateY(110%)",
-                opacity: phase === "in" || phase === "out" ? 1 : 0,
-                transition: `transform 1s cubic-bezier(.16,1,.3,1) ${i * STEP}ms,
-                             opacity 1s ease ${i * STEP}ms`,
-              }}
-            >
-              {ch}
-            </span>
-          ))}
-        </p>
-      </div>
-
-      {/* Same object the section dividers and the checkout stepper use. */}
-      <div className="mt-9 w-[190px] sm:w-[260px]">
-        <FillRule progress={filling ? 1 : 0} duration={1900} />
-      </div>
-
-      <p
-        className="ps-caps mt-6"
-        style={{
-          fontSize: ".52rem",
-          color: "var(--ps-faint)",
-          opacity: phase === "in" || phase === "out" ? 1 : 0,
-          transition: "opacity .9s ease 1.1s",
-        }}
-      >
-        Maison — Est. 1998
-      </p>
+      <MaisonPlate
+        shown={phase === "in" || phase === "out"}
+        filling={filling}
+        caption="Maison — Est. 1998"
+        step={STEP}
+        letterMs={1000}
+        fillMs={1900}
+        captionDelay={1100}
+      />
     </div>
   );
 }
