@@ -44,6 +44,8 @@ export default function CampaignHero({
   cta: string;
 }) {
   const [shown, setShown] = useState(false);
+  const section = useRef<HTMLElement | null>(null);
+  const stage = useRef<HTMLDivElement | null>(null);
 
   /* Above the fold, so it opens on mount rather than on an observer. One frame
      of delay lets the posters paint first, so the clip-path animates over a
@@ -53,34 +55,111 @@ export default function CampaignHero({
     return () => window.clearTimeout(t);
   }, []);
 
+  /*
+   * THE FRAME OPENS WITH THE SCROLL. After maisonauge.com: the page arrives on
+   * the name set enormous with the films held in a box beneath it, and the
+   * first scroll pulls the box out to the edges until the films are the page.
+   *
+   * Normal scrolling, not a hijack. The section is taller than the window and
+   * its stage is sticky, so the scrollbar, the keyboard, find-in-page and the
+   * back button all behave exactly as they do everywhere else; this only reads
+   * how far through the section you are and writes two numbers:
+   *
+   *   --e  0 -> 1  the box opening (eased), over the first 70% of the track
+   *   --l  0 -> 1  the lockup arriving, over the last 30%
+   *
+   * THE BOX IS A CLIP, NOT A RESIZE. The films are always laid out full-bleed
+   * and the box is an inset clip-path over them, so opening it changes no
+   * layout and never asks a <video> to resize mid-decode — it is a compositor
+   * change on every frame instead of a reflow of three players.
+   */
+  useEffect(() => {
+    const el = section.current;
+    const st = stage.current;
+    if (!el || !st) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.style.setProperty("--e", "1");
+      el.style.setProperty("--l", "1");
+      el.setAttribute("data-open", "");
+      return;
+    }
+
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const clamp = (n: number) => Math.min(1, Math.max(0, n));
+
+    /* Written straight from the scroll event rather than deferred to a frame:
+       browsers already deliver scroll at most once per frame, and the work is
+       one rect read and three style writes. */
+    const write = () => {
+      // Measured from where the stage actually sticks — under the header, not
+      // at the top of the window — or the box finishes opening late, after the
+      // stage has already begun to scroll away.
+      const stick = parseFloat(getComputedStyle(st).top) || 0;
+      const track = el.offsetHeight - st.offsetHeight;
+      const p = track > 0 ? clamp((stick - el.getBoundingClientRect().top) / track) : 1;
+      el.style.setProperty("--e", ease(clamp(p / 0.7)).toFixed(4));
+      const l = clamp((p - 0.62) / 0.3);
+      el.style.setProperty("--l", l.toFixed(4));
+      el.toggleAttribute("data-open", l > 0.5);
+    };
+    write();
+    window.addEventListener("scroll", write, { passive: true });
+    window.addEventListener("resize", write);
+    return () => {
+      window.removeEventListener("scroll", write);
+      window.removeEventListener("resize", write);
+    };
+  }, []);
+
   return (
-    <section className="ps-chero" data-shown={shown} aria-label={`${title} — ${eyebrow}`}>
-      <div className="ps-chero-panes">
-        {PANES.map((slug, i) => (
-          <Pane key={slug} slug={slug} index={i} />
-        ))}
-      </div>
+    <section
+      ref={section}
+      className="ps-chero ps-xhero"
+      data-shown={shown}
+      aria-label={`${title} — ${eyebrow}`}
+    >
+      <div ref={stage} className="ps-xhero-stage">
+        {/* The name, set to the width of the window. Decorative: the heading
+            of the section is the campaign title in the lockup. */}
+        <p aria-hidden className="ps-xhero-name">
+          Pankaj Soni
+        </p>
 
-      {/* Insurance for the type, not a mood. Nothing across the top two-thirds,
-          where the eye actually goes. */}
-      <div className="ps-chero-veil" aria-hidden />
+        <div className="ps-xhero-frame">
+          <div className="ps-chero-panes">
+            {PANES.map((slug, i) => (
+              <Pane key={slug} slug={slug} index={i} />
+            ))}
+          </div>
 
-      <div className="ps-chero-lockup">
-        <p className="ps-caps ps-chero-eyebrow">{eyebrow}</p>
+          {/* Insurance for the type, not a mood. Nothing across the top
+              two-thirds, where the eye actually goes. */}
+          <div className="ps-chero-veil ps-xhero-veil" aria-hidden />
 
-        {/*
-         * The <h1> is real type, not a graphic. The reference sets its drop
-         * name as an image and pays for it in every search result; a didone at
-         * this size with the tracking opened up gets the same authority and
-         * stays selectable, translatable and indexed.
-         */}
-        <h1 className="ps-display ps-chero-title">{title}</h1>
+          <div className="ps-chero-lockup ps-xhero-lockup">
+            <p className="ps-caps ps-chero-eyebrow">{eyebrow}</p>
 
-        <p className="ps-chero-sub">{sub}</p>
+            {/*
+             * The <h1> is real type, not a graphic. The reference sets its drop
+             * name as an image and pays for it in every search result; a didone
+             * at this size with the tracking opened up gets the same authority
+             * and stays selectable, translatable and indexed.
+             */}
+            <h1 className="ps-display ps-chero-title">{title}</h1>
 
-        <Link href={href} className="ps-btn ps-btn-solid ps-chero-cta">
-          <span>{cta}</span>
-        </Link>
+            <p className="ps-chero-sub">{sub}</p>
+
+            <Link href={href} className="ps-btn ps-btn-solid ps-chero-cta">
+              <span>{cta}</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* What the closed box is — gone once it opens. */}
+        <p aria-hidden className="ps-caps ps-xhero-caption">
+          {eyebrow}
+        </p>
       </div>
     </section>
   );
