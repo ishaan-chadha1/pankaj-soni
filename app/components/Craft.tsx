@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { PHOTOS, photo, photoSet, blurOf } from "@/lib/photos";
 import { MaskLines, Reveal } from "./Reveal";
+import { SplitFrame } from "./Motif";
 import { stagger } from "@/lib/motion";
 
 /**
@@ -96,7 +97,7 @@ export default function Craft() {
           {WORK.map((w, i) => (
             <li key={w.slug}>
               <Reveal delay={stagger(i, 90)}>
-                <Plate {...w} />
+                <Plate {...w} i={i} />
               </Reveal>
             </li>
           ))}
@@ -106,7 +107,7 @@ export default function Craft() {
   );
 }
 
-function Plate({ slug, piece, note, href, zoom, focus }: Work) {
+function Plate({ slug, piece, note, href, zoom, focus, i }: Work & { i: number }) {
   const meta = PHOTOS[slug];
   const img = useRef<HTMLImageElement | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -117,6 +118,8 @@ function Plate({ slug, piece, note, href, zoom, focus }: Work) {
 
   return (
     <Link href={href} className="ps-craft-plate group">
+      {/* Splits open from its centre line, staggered across the row. */}
+      <SplitFrame zoom={0.12} delay={i * 140}>
       <span
         className="ps-craft-media"
         style={{
@@ -139,6 +142,7 @@ function Plate({ slug, piece, note, href, zoom, focus }: Work) {
           onLoad={() => setLoaded(true)}
         />
       </span>
+      </SplitFrame>
       <span className="ps-craft-piece ps-display">{piece}</span>
       <span className="ps-craft-note">{note}</span>
     </Link>

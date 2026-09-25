@@ -2386,3 +2386,151 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
     --f: 1 !important;
   }
 }
+
+/* ── Split frame ───────────────────────────────────────────────────
+   See SplitFrame in Motif.tsx. The clip is a one-shot transition on
+   [data-open]; --s (0 -> 1) is written from scroll and settles the
+   picture inside. */
+.ps-split {
+  position: relative;
+  overflow: hidden;
+  clip-path: inset(0 50% 0 50%);
+  transition: clip-path 1.5s var(--e-inout);
+}
+.ps-split[data-open] {
+  clip-path: inset(0 0 0 0);
+}
+.ps-split-in {
+  height: 100%;
+  width: 100%;
+  scale: calc(1 + var(--z) * (1 - var(--s, 0)));
+}
+.ps-split-in > img,
+.ps-split-in > video {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+@media (scripting: none) {
+  .ps-split {
+    clip-path: none !important;
+  }
+  .ps-split-in {
+    scale: 1 !important;
+  }
+}
+
+/* ── Look rows ─────────────────────────────────────────────────────
+   After the project rows on maisonauge.com. A pinned column of one sixth
+   of the window at the left, the scrolling frames at seven twelfths, and
+   one twelfth of air either side of it. */
+.ps-row {
+  display: grid;
+  grid-template-columns: 16.667vw 58.333vw;
+  gap: 8.333vw;
+  padding-left: 8.333vw;
+  padding-top: 15svh;
+  min-height: 100svh;
+}
+.ps-row + .ps-row {
+  border-top: 1px solid var(--ps-line);
+}
+.ps-row:last-child {
+  padding-bottom: 15svh;
+}
+.ps-row-pin {
+  position: sticky;
+  top: var(--ps-header, 76px);
+  height: calc(100svh - var(--ps-header, 76px));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.1rem;
+  padding-bottom: 7svh;
+  text-align: center;
+}
+.ps-row-name {
+  font-family: var(--font-ps-display), "Bodoni Moda", Georgia, serif;
+  font-size: clamp(1.4rem, 1.9vw, 2.1rem);
+  line-height: 1.05;
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  text-transform: uppercase;
+}
+.ps-row-tags {
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  color: var(--ps-muted);
+}
+.ps-row-cover {
+  display: block;
+  width: 100%;
+  margin-top: 0.9rem;
+}
+.ps-row-index {
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--ps-faint);
+}
+.ps-row-media {
+  display: flex;
+  flex-direction: column;
+  gap: 15svh;
+}
+.ps-row-block-pair {
+  padding-top: 15svh;
+}
+.ps-row-pair {
+  display: flex;
+  gap: 8vw;
+}
+.ps-row-pair > * {
+  flex: 1;
+}
+/* The second of the pair sits a step higher, so the two never line up. */
+.ps-row-step {
+  transform: translateY(-15svh);
+}
+.ps-row-line {
+  width: 71%;
+  margin-top: 2.2rem;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ps-text);
+}
+
+/* A phone has no room for a pinned column: cover, name, then the frames. */
+@media (max-width: 767px) {
+  .ps-row {
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+    padding: 5rem 1.25rem 0;
+  }
+  .ps-row-pin {
+    position: static;
+    height: auto;
+    padding-bottom: 0;
+  }
+  .ps-row-cover {
+    width: 70%;
+  }
+  .ps-row-media {
+    gap: 4rem;
+  }
+  .ps-row-block-pair {
+    padding-top: 0;
+  }
+  .ps-row-pair {
+    gap: 1rem;
+  }
+  .ps-row-step {
+    transform: translateY(-2.5rem);
+  }
+  .ps-row-line {
+    width: 100%;
+  }
+}

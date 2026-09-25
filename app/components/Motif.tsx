@@ -238,3 +238,71 @@ export function ScrollFrame({
     </div>
   );
 }
+
+/**
+ * A picture that splits open from its centre line — maisonauge.com's reveal.
+ *
+ * Two motions on different clocks, which is what makes it read as a cut and
+ * not a fade:
+ *   - the CLIP plays once: the frame arrives as a vertical hairline and opens
+ *     outward to both edges when it is well into the window
+ *   - the PICTURE is tied to the scroll: it starts pushed in and settles to
+ *     scale as the frame travels up, so it keeps moving after the cut
+ *
+ * `delay` staggers the cut in a row of frames. Under reduced motion or
+ * without scripting it renders open and at scale.
+ */
+export function SplitFrame({
+  children,
+  className,
+  style,
+  zoom = 0.2,
+  delay = 0,
+  at = 0.85,
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+  zoom?: number;
+  delay?: number;
+  /** How far down the window the frame's top must rise before it opens. */
+  at?: number;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.setAttribute("data-open", "");
+      el.style.setProperty("--s", "1");
+      return;
+    }
+
+    const write = () => {
+      const vh = window.innerHeight;
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * at && r.bottom > 0) el.setAttribute("data-open", "");
+      const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.75)));
+      el.style.setProperty("--s", p.toFixed(4));
+    };
+
+    window.addEventListener("scroll", write, { passive: true });
+    window.addEventListener("resize", write);
+    write();
+    return () => {
+      window.removeEventListener("scroll", write);
+      window.removeEventListener("resize", write);
+    };
+  }, [at]);
+
+  return (
+    <div
+      ref={ref}
+      className={`ps-split ${className ?? ""}`}
+      style={{ ...style, "--z": zoom, transitionDelay: `${delay}ms` } as CSSProperties}
+    >
+      <div className="ps-split-in">{children}</div>
+    </div>
+  );
+}

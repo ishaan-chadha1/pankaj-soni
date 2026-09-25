@@ -7,6 +7,7 @@ import LookBook from "./components/LookBook";
 import CampaignHero from "./components/CampaignHero";
 import LegacyCampaignHero from "./components/LegacyCampaignHero";
 import Craft from "./components/Craft";
+import LookRows from "./components/LookRows";
 import ProductRail from "./components/ProductRail";
 import { photo, photoSet } from "@/lib/photos";
 import { stagger } from "@/lib/motion";
@@ -107,6 +108,10 @@ export function HomePage({ legacyHero = false }: { legacyHero?: boolean }) {
 
       {/* The shoppable frame — every garment in it links to its listing. */}
       <LookBook />
+
+      {/* The looks, one room at a time: a pinned name and cover, the frames
+          scrolling past it. */}
+      <LookRows />
 
       {/* ───────────────────────── MARQUEE ───────────────────────── */}
       <div className="overflow-hidden py-5" style={{ borderTop: "1px solid var(--ps-line)", borderBottom: "1px solid var(--ps-line)" }}>
