@@ -2091,3 +2091,38 @@ main {
     min-height: 44px;
   }
 }
+
+/* ── Header nav (AOI-style single row) ─────────────────────────── */
+
+.ps-nav-item {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.6rem;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--ps-text);
+}
+.ps-nav-item[aria-current="page"] {
+  color: var(--ps-accent);
+}
+
+/* The Shop panel's middle and right columns swap per category. */
+@keyframes ps-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ps-menu-in {
+  animation: ps-menu-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps-menu-in {
+    animation: none;
+  }
+}

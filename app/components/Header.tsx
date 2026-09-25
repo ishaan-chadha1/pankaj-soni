@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { PRODUCTS, money } from "@/lib/catalog";
+import { CATEGORIES, PRODUCTS, money } from "@/lib/catalog";
 import { useCart } from "../CartProvider";
 import ThemeSwitcher from "./ThemeSwitcher";
 
@@ -12,7 +12,8 @@ type MenuDef = {
   label: string;
   href: string;
   cols: MenuCol[];
-  feature?: { image: string; eyebrow: string; title: string; href: string };
+  /** The two frames the Shop panel shows while this category is hovered. */
+  plates: [string, string];
 };
 
 const MENU: MenuDef[] = [
@@ -39,12 +40,7 @@ const MENU: MenuDef[] = [
         ],
       },
     ],
-    feature: {
-      image: "/img/campaign/nocturne-gown-02-810.webp",
-      eyebrow: "Ready-to-Wear",
-      title: "An unbroken line",
-      href: "/p/liquid-column-gown",
-    },
+    plates: ["/img/campaign/nocturne-gown-02-810.webp", "/img/campaign/vapour-gown-01-810.webp"],
   },
   {
     label: "Men",
@@ -69,12 +65,7 @@ const MENU: MenuDef[] = [
         ],
       },
     ],
-    feature: {
-      image: "/img/campaign/noir-vine-02-810.webp",
-      eyebrow: "Occasion",
-      title: "Two hundred hours on the sleeve",
-      href: "/p/noir-vine-bandhgala",
-    },
+    plates: ["/img/campaign/silver-seam-01-810.webp", "/img/campaign/noir-vine-02-810.webp"],
   },
   {
     label: "Occasion",
@@ -97,12 +88,7 @@ const MENU: MenuDef[] = [
         ],
       },
     ],
-    feature: {
-      image: "/img/campaign/tidemark-detail-810.webp",
-      eyebrow: "Occasion",
-      title: "Broken only at the hem",
-      href: "/p/tidemark-sherwani",
-    },
+    plates: ["/img/campaign/tidemark-detail-810.webp", "/img/campaign/orbit-02-810.webp"],
   },
   {
     label: "Eyewear",
@@ -125,12 +111,7 @@ const MENU: MenuDef[] = [
         ],
       },
     ],
-    feature: {
-      image: "/img/p-cat-eyewear.svg",
-      eyebrow: "Eyewear",
-      title: "Architecture for the face",
-      href: "/c/eyewear",
-    },
+    plates: ["/img/p-cat-eyewear.svg", "/img/campaign/duet-02-810.webp"],
   },
   {
     label: "Leather",
@@ -146,12 +127,7 @@ const MENU: MenuDef[] = [
         ],
       },
     ],
-    feature: {
-      image: "/img/campaign/duet-01-810.webp",
-      eyebrow: "Leather Goods",
-      title: "Box calf, brass, nothing to prove",
-      href: "/c/leather",
-    },
+    plates: ["/img/campaign/duet-01-810.webp", "/img/p-cat-leather.svg"],
   },
   {
     label: "Gifts",
@@ -166,6 +142,7 @@ const MENU: MenuDef[] = [
         ],
       },
     ],
+    plates: ["/img/p-cat-gifts.svg", "/img/campaign/midnight-swirl-01-810.webp"],
   },
 ];
 
@@ -200,7 +177,9 @@ export default function Header() {
   const { count, setOpen: setBag, ready } = useCart();
 
   const [solid, setSolid] = useState(false);
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [shopOpen, setShopOpen] = useState(false);
+  /** Which category the Shop panel is showing. Survives close, so it reopens where you left it. */
+  const [active, setActive] = useState(MENU[0].label);
   const [mobile, setMobile] = useState(false);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
@@ -258,7 +237,7 @@ export default function Header() {
   const [lastPath, setLastPath] = useState(pathname);
   if (lastPath !== pathname) {
     setLastPath(pathname);
-    setOpenMenu(null);
+    setShopOpen(false);
     setMobile(false);
     setSearch(false);
   }
@@ -266,7 +245,7 @@ export default function Header() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      setOpenMenu(null);
+      setShopOpen(false);
       setMobile(false);
       setSearch(false);
     };
@@ -335,16 +314,29 @@ export default function Header() {
   }, [panel]);
 
   // Small delay on close so diagonal travel into the panel doesn't dismiss it.
-  const enter = (label: string) => {
+  const openedAt = useRef(0);
+  const enter = () => {
     if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
-    setOpenMenu(label);
+    if (!shopOpen) openedAt.current = performance.now();
+    setShopOpen(true);
+  };
+  /* A pointer reaches Shop before it clicks it, so hover has already opened the
+     panel by then — a plain toggle would shut it again on the click that was
+     meant to open it. A click that lands just after the hover opened it keeps
+     it open; any other click (keyboard, touch, a second click) toggles. */
+  const clickShop = () => {
+    if (performance.now() - openedAt.current < 600) return;
+    setShopOpen((o) => !o);
   };
   const leave = () => {
     if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
-    hoverTimer.current = window.setTimeout(() => setOpenMenu(null), 160);
+    hoverTimer.current = window.setTimeout(() => setShopOpen(false), 160);
   };
 
-  const opaque = solid || !overHero || !!openMenu;
+  const opaque = solid || !overHero || shopOpen;
+  const shown = MENU.find((m) => m.label === active) ?? MENU[0];
+  const tagline = CATEGORIES.find((c) => `/c/${c.slug}` === shown.href)?.tagline;
+  const picks = shown.cols.flatMap((c) => c.links).filter((l) => !l.href.startsWith("/c/")).slice(0, 4);
 
   const results = q.trim()
     ? PRODUCTS.filter((p) =>
@@ -367,6 +359,18 @@ export default function Header() {
         <span>Complimentary shipping and returns — alterations for the life of the piece</span>
       </div>
 
+      {/* Dims the page under an open Shop panel. Never takes the pointer, so
+          leaving the header still closes it. */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-40 hidden lg:block"
+        style={{
+          background: "rgba(10,10,10,.38)",
+          opacity: shopOpen ? 1 : 0,
+          transition: "opacity .6s cubic-bezier(.16,1,.3,1)",
+        }}
+      />
+
       <header
         ref={shell}
         className="sticky top-0 z-50 transition-all ps-t-slow"
@@ -378,24 +382,45 @@ export default function Header() {
         }}
         onMouseLeave={leave}
       >
-        <div className="mx-auto grid max-w-[1560px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 py-4 sm:px-8 lg:py-5">
+        {/*
+         * ONE ROW, EVEN RHYTHM. Every item sits in an equal column, three either
+         * side of the wordmark, so the bar reads as a ruled line rather than a
+         * cluster of links. The six categories live behind Shop instead of
+         * crowding the row.
+         */}
+        <div className="mx-auto grid max-w-[1560px] grid-cols-[1fr_auto_1fr] items-center gap-6 px-5 py-4 sm:px-8 lg:py-[1.45rem]">
           {/* left */}
-          <nav className="hidden items-center gap-7 lg:flex">
-            {MENU.map((m) => (
-              <Link
-                key={m.label}
-                href={m.href}
-                onMouseEnter={() => enter(m.label)}
-                onFocus={() => enter(m.label)}
-                className="ps-caps ps-link"
-                style={{
-                  color: openMenu === m.label ? "var(--ps-accent)" : "var(--ps-text)",
-                  transition: "color .5s var(--ease)",
-                }}
+          <nav aria-label="Primary" className="ps-nav hidden grid-cols-3 items-center lg:grid">
+            <button
+              type="button"
+              aria-expanded={shopOpen}
+              aria-controls="ps-shop-panel"
+              onMouseEnter={enter}
+              onFocus={enter}
+              onClick={clickShop}
+              className="ps-nav-item flex items-center gap-2 justify-self-start"
+              style={{ color: shopOpen ? "var(--ps-accent)" : undefined }}
+            >
+              Shop
+              <svg
+                width="8"
+                height="8"
+                viewBox="0 0 10 10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                aria-hidden
+                style={{ transform: shopOpen ? "rotate(180deg)" : "none", transition: "transform .5s var(--ease)" }}
               >
-                {m.label}
-              </Link>
-            ))}
+                <path d="M1.5 3.5L5 7l3.5-3.5" />
+              </svg>
+            </button>
+            <Link href="/world" className="ps-nav-item ps-link justify-self-start" aria-current={pathname === "/world" ? "page" : undefined}>
+              The Maison
+            </Link>
+            <Link href="/about" className="ps-nav-item ps-link justify-self-start" aria-current={pathname === "/about" ? "page" : undefined}>
+              About
+            </Link>
           </nav>
 
           <button
@@ -416,98 +441,135 @@ export default function Header() {
           </Link>
 
           {/* right */}
-          <div className="flex items-center justify-end gap-5 sm:gap-6">
-            <div className="hidden lg:block">
-              <ThemeSwitcher />
+          <div className="ps-nav flex items-center justify-end lg:grid lg:grid-cols-3">
+            {/* Wrapped: `.ps-link` sets display, which would beat a `hidden` on the link itself. */}
+            <div className="hidden justify-self-start lg:block">
+              <Link href="/atelier" className="ps-nav-item ps-link" aria-current={pathname === "/atelier" ? "page" : undefined}>
+                {/* The article goes below xl, where the column is too narrow to hold it. */}
+                <span className="hidden xl:inline">The </span>Cloth Room
+              </Link>
             </div>
-            <button
-              type="button"
-              aria-label="Search"
-              onClick={() => setSearch(true)}
-              className="ps-tap opacity-80 transition-opacity ps-t-base hover:opacity-100"
-            >
-              {Ico.search}
-            </button>
-            <Link
-              href="/world"
-              aria-label="Account"
-              className="ps-tap hidden opacity-80 transition-opacity ps-t-base hover:opacity-100 sm:block"
-            >
-              {Ico.user}
-            </Link>
-            <button
-              type="button"
-              aria-label={`Bag, ${count} items`}
-              onClick={() => setBag(true)}
-              className="ps-tap relative opacity-80 transition-opacity ps-t-base hover:opacity-100"
-            >
-              {Ico.bag}
-              {ready && count > 0 ? (
-                <span
-                  className="absolute -right-2 -top-1.5 flex h-[15px] min-w-[15px] items-center justify-center rounded-full px-1 text-[9px] font-normal"
-                  style={{ background: "var(--ps-accent)", color: "var(--ps-bg)" }}
-                >
-                  {count}
-                </span>
-              ) : null}
-            </button>
+            <div className="hidden justify-self-start lg:block">
+              <Link href="/contact" className="ps-nav-item ps-link" aria-current={pathname === "/contact" ? "page" : undefined}>
+                Contact
+              </Link>
+            </div>
+
+            <div className="flex items-center justify-end gap-5 lg:justify-self-end lg:gap-6">
+              <button
+                type="button"
+                aria-label="Search"
+                onClick={() => setSearch(true)}
+                className="ps-tap ps-nav-item flex items-center gap-2 opacity-80 transition-opacity ps-t-base hover:opacity-100"
+              >
+                <span className="hidden xl:inline">Search</span>
+                {Ico.search}
+              </button>
+              <div className="hidden lg:block">
+                <ThemeSwitcher />
+              </div>
+              <Link
+                href="/world"
+                aria-label="Account"
+                className="ps-tap hidden opacity-80 transition-opacity ps-t-base hover:opacity-100 sm:block lg:hidden xl:block"
+              >
+                {Ico.user}
+              </Link>
+              <button
+                type="button"
+                aria-label={`Bag, ${count} items`}
+                onClick={() => setBag(true)}
+                className="ps-tap relative opacity-80 transition-opacity ps-t-base hover:opacity-100"
+              >
+                {Ico.bag}
+                {ready && count > 0 ? (
+                  <span
+                    className="absolute -right-2 -top-1.5 flex h-[15px] min-w-[15px] items-center justify-center rounded-full px-1 text-[9px] font-normal"
+                    style={{ background: "var(--ps-accent)", color: "var(--ps-bg)" }}
+                  >
+                    {count}
+                  </span>
+                ) : null}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* mega menu */}
+        {/*
+         * THE SHOP PANEL. A plain list of the rooms on the left; whichever one
+         * the pointer is on fills the middle with its line and a few pieces, and
+         * the right with two frames. Nothing to read until you point at it.
+         */}
         <div
+          id="ps-shop-panel"
+          inert={!shopOpen}
           className="absolute inset-x-0 top-full hidden overflow-hidden lg:block"
           style={{
-            maxHeight: openMenu ? 520 : 0,
+            maxHeight: shopOpen ? 560 : 0,
             transition: "max-height .8s cubic-bezier(.16,1,.3,1)",
           }}
-          onMouseEnter={() => openMenu && enter(openMenu)}
+          onMouseEnter={enter}
         >
-          {MENU.filter((m) => m.label === openMenu).map((m) => (
-            <div
-              key={m.label}
-              style={{
-                background: "var(--ps-surface)",
-                backdropFilter: "blur(20px)",
-                borderBottom: "1px solid var(--ps-line)",
-              }}
-            >
-              <div className="mx-auto flex max-w-[1560px] gap-16 px-8 py-14">
-                {m.cols.map((c) => (
-                  <div key={c.title} className="min-w-[190px]">
-                    <p className="ps-caps mb-5" style={{ color: "var(--ps-accent)", fontSize: ".56rem" }}>
-                      {c.title}
-                    </p>
-                    <ul className="space-y-3">
-                      {c.links.map((l) => (
-                        <li key={l.label + l.href}>
-                          <Link
-                            href={l.href}
-                            className="ps-link text-[.86rem] font-light"
-                            style={{ color: "var(--ps-muted)" }}
-                          >
-                            {l.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+          <div style={{ background: "var(--ps-surface)", borderBottom: "1px solid var(--ps-line)" }}>
+            <div className="mx-auto grid max-w-[1560px] grid-cols-[minmax(170px,1fr)_minmax(240px,1.2fr)_2.2fr] gap-12 px-8 py-12">
+              <ul className="space-y-[1.05rem]">
+                {MENU.map((m) => {
+                  const on = m.label === active;
+                  return (
+                    <li key={m.label}>
+                      <Link
+                        href={m.href}
+                        onMouseEnter={() => setActive(m.label)}
+                        onFocus={() => setActive(m.label)}
+                        className="ps-nav-item flex items-center gap-3"
+                        style={{ color: on ? "var(--ps-text)" : "var(--ps-muted)", transition: "color .4s var(--ease)" }}
+                      >
+                        <span
+                          aria-hidden
+                          className="inline-block h-px"
+                          style={{
+                            width: on ? 18 : 0,
+                            background: "var(--ps-accent)",
+                            transition: "width .5s cubic-bezier(.16,1,.3,1)",
+                          }}
+                        />
+                        {m.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
 
-                {m.feature ? (
-                  <Link href={m.feature.href} className="group ml-auto block w-[300px]">
-                    <div className="ps-media ps-zoom aspect-[4/3]">
-                      <img src={m.feature.image} alt="" loading="lazy" decoding="async" />
-                    </div>
-                    <p className="ps-caps mt-4" style={{ color: "var(--ps-accent)", fontSize: ".56rem" }}>
-                      {m.feature.eyebrow}
-                    </p>
-                    <p className="ps-display mt-1.5 text-[1.2rem]">{m.feature.title}</p>
-                  </Link>
+              <div key={shown.label} className="ps-menu-in">
+                <p className="ps-caps-lg">{shown.label}</p>
+                {tagline ? (
+                  <p className="ps-display mt-4 text-[1.35rem] leading-snug" style={{ color: "var(--ps-muted)" }}>
+                    {tagline}
+                  </p>
                 ) : null}
+                <ul className="mt-7 space-y-2.5">
+                  {picks.map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="ps-link text-[.84rem] font-light" style={{ color: "var(--ps-muted)" }}>
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <Link href={shown.href} className="ps-nav-item ps-link mt-8 inline-block" style={{ color: "var(--ps-accent)" }}>
+                  Shop all {shown.label}
+                </Link>
               </div>
+
+              <Link key={`p-${shown.label}`} href={shown.href} className="ps-menu-in grid grid-cols-2 gap-3" tabIndex={-1} aria-hidden>
+                {shown.plates.map((src) => (
+                  <span key={src} className="ps-media ps-zoom aspect-[4/5]">
+                    <img src={src} alt="" loading="lazy" decoding="async" />
+                  </span>
+                ))}
+              </Link>
             </div>
-          ))}
+          </div>
         </div>
       </header>
 
