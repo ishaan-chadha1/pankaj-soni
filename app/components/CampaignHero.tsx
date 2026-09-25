@@ -30,6 +30,8 @@ import { FILMS, filmMp4, filmPoster, filmBlur } from "@/lib/films";
 /** Left, centre, right. See the note above on why the dark one is in the middle. */
 const PANES = ["film-sash", "film-coral", "film-column"] as const;
 
+const NAME = ["Pankaj", "Soni"];
+
 export default function CampaignHero({
   eyebrow,
   title,
@@ -82,6 +84,7 @@ export default function CampaignHero({
       el.style.setProperty("--e", "1");
       el.style.setProperty("--l", "1");
       el.setAttribute("data-open", "");
+      el.setAttribute("data-past", "");
       return;
     }
 
@@ -102,6 +105,9 @@ export default function CampaignHero({
       const l = clamp((p - 0.62) / 0.3);
       el.style.setProperty("--l", l.toFixed(4));
       el.toggleAttribute("data-open", l > 0.5);
+      // The header stays out of the way until the films have the whole window
+      // (`.ps-header` in globals.css keys off this).
+      el.toggleAttribute("data-past", p >= 0.97);
     };
     write();
     window.addEventListener("scroll", write, { passive: true });
@@ -123,7 +129,20 @@ export default function CampaignHero({
         {/* The name, set to the width of the window. Decorative: the heading
             of the section is the campaign title in the lockup. */}
         <p aria-hidden className="ps-xhero-name">
-          Pankaj Soni
+          {/* Letters rise into place on arrival, the entry curtain's gesture.
+              Grouped by word so a phone can still break the name in two. */}
+          {NAME.map((word, w) => (
+            <span key={word}>
+              {w > 0 ? " " : null}
+              <span className="ps-xhero-word">
+                {[...word].map((ch, i) => (
+                  <span key={i} style={{ ["--i" as string]: w * 7 + i }}>
+                    {ch}
+                  </span>
+                ))}
+              </span>
+            </span>
+          ))}
         </p>
 
         <div className="ps-xhero-frame">
@@ -157,9 +176,11 @@ export default function CampaignHero({
         </div>
 
         {/* What the closed box is — gone once it opens. */}
-        <p aria-hidden className="ps-caps ps-xhero-caption">
-          {eyebrow}
-        </p>
+        <div aria-hidden className="ps-caps ps-xhero-caption">
+          <span>{eyebrow}</span>
+          <span className="ps-xhero-cue">Scroll</span>
+          <span>Maison — Est. 1998</span>
+        </div>
       </div>
     </section>
   );

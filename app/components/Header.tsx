@@ -193,6 +193,15 @@ export default function Header() {
   // The home and atelier heroes are full-bleed, so the bar floats transparent
   // over them and goes solid everywhere else (and once you scroll).
   const overHero = pathname === "/" || pathname === "/atelier";
+  /*
+   * The home page opens on its own name at the size of the window, so the bar
+   * gets out of the way: it floats over the page instead of sitting above it,
+   * and slides away while the hero's frame is still opening (see `.ps-header`
+   * in globals.css). The
+   * announcement is dropped there for the same reason — two names and a
+   * banner above the fold is what made the first cut read as busy.
+   */
+  const home = pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 30);
@@ -354,6 +363,9 @@ export default function Header() {
           background: "var(--ps-invert-bg)",
           color: "var(--ps-invert-text)",
           fontSize: ".56rem",
+          // Hidden rather than unmounted, so the chrome measurement below keeps
+          // observing it and picks it back up on the next page.
+          display: home ? "none" : undefined,
         }}
       >
         <span>Complimentary shipping and returns — alterations for the life of the piece</span>
@@ -373,7 +385,7 @@ export default function Header() {
 
       <header
         ref={shell}
-        className="sticky top-0 z-50 transition-all ps-t-slow"
+        className={`ps-header ${home ? "fixed inset-x-0 top-0" : "sticky top-0"} z-50 transition-all ps-t-slow`}
         style={{
           background: opaque ? "color-mix(in srgb, var(--ps-bg) 88%, transparent)" : "transparent",
           backdropFilter: opaque ? "blur(16px) saturate(140%)" : "none",
@@ -443,13 +455,13 @@ export default function Header() {
           {/* right */}
           <div className="ps-nav flex items-center justify-end lg:grid lg:grid-cols-3">
             {/* Wrapped: `.ps-link` sets display, which would beat a `hidden` on the link itself. */}
-            <div className="hidden justify-self-start lg:block">
+            <div className="hidden items-center justify-self-start lg:flex">
               <Link href="/atelier" className="ps-nav-item ps-link" aria-current={pathname === "/atelier" ? "page" : undefined}>
                 {/* The article goes below xl, where the column is too narrow to hold it. */}
                 <span className="hidden xl:inline">The </span>Cloth Room
               </Link>
             </div>
-            <div className="hidden justify-self-start lg:block">
+            <div className="hidden items-center justify-self-start lg:flex">
               <Link href="/contact" className="ps-nav-item ps-link" aria-current={pathname === "/contact" ? "page" : undefined}>
                 Contact
               </Link>

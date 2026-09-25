@@ -163,3 +163,78 @@ export function RisingWord({
     </span>
   );
 }
+
+/**
+ * A frame that opens with the scroll — the home hero's cut, for any picture.
+ *
+ * The picture enters as an inset box with its contents pushed in slightly,
+ * and as it travels up the window the box widens to its full edges while the
+ * picture settles back to scale. Tied to scroll position rather than played
+ * once, so it reads as the page being cut open by the reader's own hand.
+ *
+ * `inset` is the closed box as [vertical %, horizontal %]. Progress runs from
+ * the frame's top edge meeting the bottom of the window (closed) to it
+ * reaching `end` of the way down (open). Under reduced motion it renders open.
+ */
+export function ScrollFrame({
+  children,
+  className,
+  style,
+  inset = [10, 14],
+  zoom = 0.14,
+  end = 0.2,
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+  inset?: [number, number];
+  zoom?: number;
+  end?: number;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.style.setProperty("--f", "1");
+      return;
+    }
+
+    const write = () => {
+      const vh = window.innerHeight;
+      const top = el.getBoundingClientRect().top;
+      const p = Math.min(1, Math.max(0, (vh - top) / (vh * (1 - end))));
+      // Ease out: most of the opening happens early, then it settles.
+      el.style.setProperty("--f", (1 - Math.pow(1 - p, 3)).toFixed(4));
+    };
+
+    // One rect read per scroll per frame on the page — cheap enough that
+    // gating it behind an observer only added a way for it to miss a frame.
+    window.addEventListener("scroll", write, { passive: true });
+    window.addEventListener("resize", write);
+    write();
+
+    return () => {
+      window.removeEventListener("scroll", write);
+      window.removeEventListener("resize", write);
+    };
+  }, [end]);
+
+  return (
+    <div
+      ref={ref}
+      className={`ps-sframe ${className ?? ""}`}
+      style={
+        {
+          ...style,
+          "--fy": `${inset[0]}%`,
+          "--fx": `${inset[1]}%`,
+          "--z": zoom,
+        } as CSSProperties
+      }
+    >
+      <div className="ps-sframe-in">{children}</div>
+    </div>
+  );
+}

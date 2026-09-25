@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CATEGORIES, EDITORIAL, bySlug, featured, money } from "@/lib/catalog";
 import { MaskLines, Reveal } from "./components/Reveal";
 import { Parallax } from "./components/Parallax";
-import { Curtain, FillRule } from "./components/Motif";
+import { Curtain, FillRule, ScrollFrame } from "./components/Motif";
 import LookBook from "./components/LookBook";
 import CampaignHero from "./components/CampaignHero";
 import LegacyCampaignHero from "./components/LegacyCampaignHero";
@@ -133,15 +133,17 @@ export function HomePage({ legacyHero = false }: { legacyHero?: boolean }) {
       <section className="relative overflow-hidden">
         <div className="ps-band-l mx-auto grid max-w-[1560px] items-center gap-14 px-5 sm:px-8 lg:grid-cols-2 lg:gap-24">
           <Parallax speed={0.14} className="relative">
-            <div className="ps-media aspect-[3/4]">
-              <img
-                src={photo("noir-vine-02")}
-                alt="Close study of the crystal vine embroidery on the shoulder of a black bandhgala."
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover"
-              />
-            </div>
+            <ScrollFrame inset={[12, 16]}>
+              <div className="ps-media aspect-[3/4]">
+                <img
+                  src={photo("noir-vine-02")}
+                  alt="Close study of the crystal vine embroidery on the shoulder of a black bandhgala."
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </ScrollFrame>
           </Parallax>
 
           <div>
@@ -211,7 +213,8 @@ export function HomePage({ legacyHero = false }: { legacyHero?: boolean }) {
             {triptych.map((c, i) => (
               <Reveal key={c.slug} delay={stagger(i)}>
                 <Link href={`/c/${c.slug}`} className="group block">
-                  <Curtain className="ps-media ps-zoom aspect-[3/4.1]" delay={stagger(i)}>
+                  <ScrollFrame inset={[9, 12]} end={0.35}>
+                  <div className="ps-media ps-zoom aspect-[3/4.1]">
                     <img src={photo(c.plate)} alt="" loading="lazy" decoding="async" />
                     <div
                       className="absolute inset-x-0 bottom-0 p-7"
@@ -230,7 +233,8 @@ export function HomePage({ legacyHero = false }: { legacyHero?: boolean }) {
                         Discover
                       </span>
                     </div>
-                  </Curtain>
+                  </div>
+                  </ScrollFrame>
                 </Link>
               </Reveal>
             ))}
@@ -240,19 +244,23 @@ export function HomePage({ legacyHero = false }: { legacyHero?: boolean }) {
 
       {/* ───────────────────────── CAMPAIGN ───────────────────────── */}
       <section className="ps-closer relative flex items-center overflow-hidden">
-        <Parallax speed={0.22} className="absolute inset-0">
-          <img
-            src={photo("duet-03")}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover"
-            style={{ objectPosition: "60% 22%" }}
-          />
-        </Parallax>
-        {/* Reads from the left, where the frame is empty seamless, and clears
-            before it reaches the figures on the right. */}
-        <div className="ps-closer-veil absolute inset-0" />
+        {/* The hero's cut again: the campaign plate arrives as a box and is
+            pulled out to the edges as the section rises. */}
+        <ScrollFrame className="absolute inset-0" inset={[14, 18]} zoom={0.18} end={0.05}>
+          <Parallax speed={0.22} className="absolute inset-0">
+            <img
+              src={photo("duet-03")}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+              style={{ objectPosition: "60% 22%" }}
+            />
+          </Parallax>
+          {/* Reads from the left, where the frame is empty seamless, and clears
+              before it reaches the figures on the right. */}
+          <div className="ps-closer-veil absolute inset-0" />
+        </ScrollFrame>
 
         <div className="relative z-[2] mx-auto w-full max-w-[1560px] px-5 sm:px-8">
           <div className="max-w-[640px]">
