@@ -5,8 +5,8 @@ const COLS = [
   {
     title: "The Maison",
     links: [
-      { label: "Our Story", href: "/world" },
-      { label: "The Atelier", href: "/world" },
+      { label: "Our Story", href: "/about" },
+      { label: "The Atelier", href: "/about" },
       { label: "The Cloth Room", href: "/atelier" },
       { label: "Sustainability", href: "/world" },
       { label: "Careers", href: "/world" },
@@ -26,11 +26,11 @@ const COLS = [
   {
     title: "Client Services",
     links: [
-      { label: "Contact the Maison", href: "/world" },
+      { label: "Contact the Maison", href: "/contact" },
       { label: "Shipping & Returns", href: "/world" },
       { label: "Engraving", href: "/world" },
       { label: "Restoration", href: "/world" },
-      { label: "Book an Appointment", href: "/world" },
+      { label: "Book an Appointment", href: "/contact" },
     ],
   },
   {

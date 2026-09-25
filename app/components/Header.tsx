@@ -606,6 +606,12 @@ export default function Header() {
           <Link href="/world" className="ps-caps mt-6 block py-2" style={{ color: "var(--ps-muted)" }}>
             The Maison
           </Link>
+          <Link href="/about" className="ps-caps block py-2" style={{ color: "var(--ps-muted)" }}>
+            About
+          </Link>
+          <Link href="/contact" className="ps-caps block py-2" style={{ color: "var(--ps-muted)" }}>
+            Contact
+          </Link>
 
           <div className="mt-10 pt-8" style={{ borderTop: "1px solid var(--ps-line)" }}>
             <ThemeSwitcher compact />
