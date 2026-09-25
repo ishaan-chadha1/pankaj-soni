@@ -341,10 +341,13 @@ export default function Header() {
         onMouseLeave={leave}
       >
         {/*
-         * ONE ROW, EVEN RHYTHM. Every item sits in an equal column, three either
-         * side of the wordmark, so the bar reads as a ruled line rather than a
-         * cluster of links. The six categories live behind Shop instead of
-         * crowding the row.
+         * ONE ROW, EVEN RHYTHM. Three equal columns either side of the
+         * wordmark, and the two sides MIRROR: the outermost items are pinned
+         * to the edges (Shop, the utilities) and the four in between are
+         * centred in their columns, so About and the Cloth Room sit the same
+         * distance from the name. Starting every item at its column's left
+         * edge looked tidy in code and read lopsided on screen — the right
+         * side hugged the wordmark while the left stood a column away.
          */}
         <div className="mx-auto grid max-w-[1560px] grid-cols-[1fr_auto_1fr] items-center gap-6 px-5 py-4 sm:px-8 lg:py-[1.45rem]">
           {/* left */}
@@ -373,10 +376,10 @@ export default function Header() {
                 <path d="M1.5 3.5L5 7l3.5-3.5" />
               </svg>
             </button>
-            <Link href="/world" className="ps-nav-item ps-link justify-self-start" aria-current={pathname === "/world" ? "page" : undefined}>
+            <Link href="/world" className="ps-nav-item ps-link justify-self-center" aria-current={pathname === "/world" ? "page" : undefined}>
               The Maison
             </Link>
-            <Link href="/about" className="ps-nav-item ps-link justify-self-start" aria-current={pathname === "/about" ? "page" : undefined}>
+            <Link href="/about" className="ps-nav-item ps-link justify-self-center" aria-current={pathname === "/about" ? "page" : undefined}>
               About
             </Link>
           </nav>
@@ -401,13 +404,13 @@ export default function Header() {
           {/* right */}
           <div className="ps-nav flex items-center justify-end lg:grid lg:grid-cols-3">
             {/* Wrapped: `.ps-link` sets display, which would beat a `hidden` on the link itself. */}
-            <div className="hidden items-center justify-self-start lg:flex">
+            <div className="hidden items-center justify-self-center lg:flex">
               <Link href="/atelier" className="ps-nav-item ps-link" aria-current={pathname === "/atelier" ? "page" : undefined}>
                 {/* The article goes below xl, where the column is too narrow to hold it. */}
                 <span className="hidden xl:inline">The </span>Cloth Room
               </Link>
             </div>
-            <div className="hidden items-center justify-self-start lg:flex">
+            <div className="hidden items-center justify-self-center lg:flex">
               <Link href="/contact" className="ps-nav-item ps-link" aria-current={pathname === "/contact" ? "page" : undefined}>
                 Contact
               </Link>
