@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CATEGORIES, EDITORIAL, bySlug, featured, money } from "@/lib/catalog";
 import { MaskLines, Reveal } from "./components/Reveal";
 import { Parallax } from "./components/Parallax";
-import { Curtain, FillRule, ScrollFrame } from "./components/Motif";
+import { Curtain, FillRule, ScrollFrame, SplitFrame } from "./components/Motif";
 import CampaignHero from "./components/CampaignHero";
 import LegacyCampaignHero from "./components/LegacyCampaignHero";
 import Craft from "./components/Craft";
@@ -214,7 +214,7 @@ export function HomePage({ legacyHero = false }: { legacyHero?: boolean }) {
             {triptych.map((c, i) => (
               <Reveal key={c.slug} delay={stagger(i)}>
                 <Link href={`/c/${c.slug}`} className="group block">
-                  <ScrollFrame inset={[9, 12]} end={0.35}>
+                  <SplitFrame variant="rise" zoom={0.14} delay={stagger(i)}>
                   <div className="ps-media ps-zoom aspect-[3/4.1]">
                     <img src={photo(c.plate)} alt="" loading="lazy" decoding="async" />
                     <div
@@ -235,7 +235,7 @@ export function HomePage({ legacyHero = false }: { legacyHero?: boolean }) {
                       </span>
                     </div>
                   </div>
-                  </ScrollFrame>
+                  </SplitFrame>
                 </Link>
               </Reveal>
             ))}

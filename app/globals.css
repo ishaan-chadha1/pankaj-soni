@@ -2203,6 +2203,7 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
    [data-open]; --s (0 -> 1) is written from scroll and settles the
    picture — and any overlay — together. */
 .ps-splitwrap {
+  --reveal-t: 1.5s;
   position: relative;
   --plate-scale: calc(1 + var(--z) * (1 - var(--s, 0)));
 }
@@ -2210,16 +2211,64 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
   position: relative;
   height: 100%;
   overflow: hidden;
-  clip-path: inset(0 50% 0 50%);
-  transition: clip-path 1.5s var(--e-inout) var(--split-delay, 0ms);
-}
-.ps-splitwrap[data-open] > .ps-split {
-  clip-path: inset(0 0 0 0);
+  transition: clip-path var(--reveal-t) var(--e-inout) var(--split-delay, 0ms);
 }
 .ps-split-in {
   height: 100%;
   width: 100%;
   scale: var(--plate-scale);
+  transition:
+    translate var(--reveal-t) var(--e-out) var(--split-delay, 0ms),
+    filter var(--reveal-t) ease var(--split-delay, 0ms),
+    opacity calc(var(--reveal-t) * 0.8) ease var(--split-delay, 0ms);
+}
+
+/* The closed state of each reveal; [data-open] undoes all of them. */
+[data-v="split"] > .ps-split {
+  clip-path: inset(0 50% 0 50%);
+}
+[data-v="rise"] > .ps-split {
+  clip-path: inset(100% 0 0 0);
+}
+[data-v="wipe"] > .ps-split {
+  clip-path: inset(0 100% 0 0);
+}
+[data-v="wipe-r"] > .ps-split {
+  clip-path: inset(0 0 0 100%);
+}
+[data-v="slide"] > .ps-split > .ps-split-in {
+  translate: 0 102%;
+}
+[data-v="focus"] > .ps-split > .ps-split-in {
+  filter: blur(14px) saturate(0.6);
+  opacity: 0;
+}
+.ps-splitwrap[data-v="focus"] {
+  --reveal-t: 1.8s;
+}
+.ps-splitwrap[data-open] > .ps-split {
+  clip-path: inset(0 0 0 0);
+}
+.ps-splitwrap[data-open] > .ps-split > .ps-split-in {
+  translate: 0 0;
+  filter: none;
+  opacity: 1;
+}
+
+/* A phone scrolls past frames faster than a desk does; the reveals keep up. */
+@media (max-width: 767px) {
+  .ps-splitwrap {
+    --reveal-t: 1s;
+  }
+  .ps-splitwrap[data-v="focus"] {
+    --reveal-t: 1.2s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps-split,
+  .ps-split-in {
+    transition: none;
+  }
 }
 .ps-split-in > img,
 .ps-split-in > video {
@@ -2237,7 +2286,9 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
   scale: var(--plate-scale);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.6s ease calc(var(--split-delay, 0ms) + 0.9s);
+  /* Only once the reveal has all but finished, whichever way it travels —
+     a fixed delay let a dot land on picture a wipe had not reached yet. */
+  transition: opacity 0.6s ease calc(var(--split-delay, 0ms) + var(--reveal-t) * 0.9);
 }
 .ps-splitwrap[data-open] > .ps-split-over {
   opacity: 1;
@@ -2245,6 +2296,11 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:focus-within) {
 @media (scripting: none) {
   .ps-split {
     clip-path: none !important;
+  }
+  .ps-split-in {
+    translate: none !important;
+    filter: none !important;
+    opacity: 1 !important;
   }
   .ps-splitwrap {
     --plate-scale: 1 !important;

@@ -252,6 +252,19 @@ export function ScrollFrame({
  * `delay` staggers the cut in a row of frames. Under reduced motion or
  * without scripting it renders open and at scale.
  */
+/**
+ * How a frame arrives. One gesture per part of the page, so a long scroll —
+ * and especially a phone, where everything stacks — never repeats the same
+ * reveal frame after frame.
+ *
+ *   split   opens from its centre line (the reference's cut)
+ *   rise    wiped upward from the foot, like the page-transition curtain
+ *   wipe    wiped left to right; `wipe-r` right to left
+ *   slide   the frame holds still and the picture slides up into it
+ *   focus   arrives soft and faint and pulls into focus
+ */
+export type RevealKind = "split" | "rise" | "wipe" | "wipe-r" | "slide" | "focus";
+
 export function SplitFrame({
   children,
   overlay,
@@ -260,8 +273,10 @@ export function SplitFrame({
   zoom = 0.2,
   delay = 0,
   at = 0.85,
+  variant = "split",
 }: {
   children: ReactNode;
+  variant?: RevealKind;
   /**
    * Drawn over the picture, carrying the same settle, but OUTSIDE the clip —
    * for markers whose cards have to be free to reach past the frame's edge.
@@ -288,7 +303,10 @@ export function SplitFrame({
     const write = () => {
       const vh = window.innerHeight;
       const r = el.getBoundingClientRect();
-      if (r.top < vh * at && r.bottom > 0) el.setAttribute("data-open", "");
+      // A phone opens sooner: at the usual threshold a stacked page spends
+      // most of its scroll waiting on frames that have not started yet.
+      const threshold = window.innerWidth < 768 ? Math.max(at, 0.95) : at;
+      if (r.top < vh * threshold && r.bottom > 0) el.setAttribute("data-open", "");
       const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.75)));
       el.style.setProperty("--s", p.toFixed(4));
     };
@@ -306,6 +324,7 @@ export function SplitFrame({
     <div
       ref={ref}
       className={`ps-splitwrap ${className ?? ""}`}
+      data-v={variant}
       style={{ ...style, "--z": zoom, "--split-delay": `${delay}ms` } as CSSProperties}
     >
       <div className="ps-split">

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Parallax } from "./Parallax";
-import { SplitFrame } from "./Motif";
+import { SplitFrame, type RevealKind } from "./Motif";
 import { Reveal } from "./Reveal";
 import { ShopFrame, type Hotspot } from "./Hotspots";
 import { PHOTOS, photo, photoSet } from "@/lib/photos";
@@ -101,6 +101,10 @@ const LOOKS: Look[] = [
   },
 ];
 
+/* Each row's wide frame arrives differently, so three rows do not read as the
+   same row printed three times. */
+const WIDE_REVEAL: RevealKind[] = ["split", "wipe", "wipe-r"];
+
 export default function LookRows() {
   return (
     <section aria-label="The looks" className="ps-rows">
@@ -114,7 +118,7 @@ export default function LookRows() {
               <p className="ps-caps ps-row-tags">{l.tags}</p>
             </Reveal>
             <Link href={l.href} className="ps-row-cover" aria-label={`${l.name} — view the look`}>
-              <SplitFrame className="aspect-[2/3]" zoom={0.18}>
+              <SplitFrame className="aspect-[2/3]" zoom={0.18} variant="rise">
                 <img
                   src={photo(l.cover)}
                   srcSet={photoSet(l.cover)}
@@ -136,6 +140,7 @@ export default function LookRows() {
                 <SplitFrame
                   className="aspect-[1.65/1]"
                   zoom={0.22}
+                  variant={WIDE_REVEAL[i % WIDE_REVEAL.length]}
                   overlay={<ShopFrame id={`${l.name}-wide`} hotspots={l.wide.hots} focus={l.wide.focus} />}
                 >
                   <Link href={l.href} tabIndex={-1} aria-hidden className="block h-full w-full">
@@ -164,7 +169,8 @@ export default function LookRows() {
                     <SplitFrame
                       className="aspect-[0.77/1]"
                       zoom={0.2}
-                      delay={j * 160}
+                      variant="slide"
+                      delay={j * 220}
                       overlay={hots.length ? <ShopFrame id={`${l.name}-${slug}`} hotspots={hots} /> : undefined}
                     >
                       <Link href={l.href} tabIndex={-1} aria-hidden className="block h-full w-full">

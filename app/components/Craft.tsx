@@ -118,8 +118,9 @@ function Plate({ slug, piece, note, href, zoom, focus, i }: Work & { i: number }
 
   return (
     <Link href={href} className="ps-craft-plate group">
-      {/* Splits open from its centre line, staggered across the row. */}
-      <SplitFrame zoom={0.12} delay={i * 140}>
+      {/* Pulls into focus, staggered across the row — the one soft reveal on
+          the page, kept for its one dark band. */}
+      <SplitFrame zoom={0.12} delay={i * 160} variant="focus">
       <span
         className="ps-craft-media"
         style={{
