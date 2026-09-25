@@ -9,6 +9,7 @@ import { JsonLd, breadcrumbLd, productLd } from "@/lib/seo";
 import { isPhoto, setForImage } from "@/lib/photos";
 import SplitText from "../../components/SplitText";
 import Buy from "./Buy";
+import Gallery from "./Gallery";
 import { stagger } from "@/lib/motion";
 
 export function generateStaticParams() {
@@ -99,9 +100,10 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
       </div>
 
       {/* ── main ── */}
-      <section className="mx-auto grid max-w-[1560px] gap-12 px-5 py-10 sm:px-8 lg:grid-cols-[1.15fr_1fr] lg:gap-20 lg:py-14">
-        {/* gallery */}
-        <div className="space-y-5">
+      <section className="mx-auto grid max-w-[1560px] gap-8 px-5 py-10 sm:px-8 lg:grid-cols-[1.15fr_1fr] lg:gap-20 lg:py-14">
+        {/* gallery — the product's own frames only. The third tile used to be
+            the category banner, which on most pieces was a different garment. */}
+        <Gallery>
           <div className="ps-media relative aspect-[4/5]">
             {/* Matches the name on the grid card, so the plate morphs in from
                 wherever it was clicked instead of the page hard-cutting. */}
@@ -109,7 +111,7 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
               <img
                 src={product.image}
                 srcSet={setForImage(product.image)}
-                sizes="(max-width: 1023px) 92vw, 46vw"
+                sizes="(max-width: 1023px) 100vw, 46vw"
                 alt={product.name}
                 className={
                   heroIsPhoto
@@ -131,16 +133,20 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
               </span>
             ) : null}
           </div>
-
-          <div className="grid grid-cols-2 gap-5">
-            <div className="ps-media ps-zoom aspect-square">
-              <img src={product.hover} alt="" loading="lazy" decoding="async" />
+          {product.hover && product.hover !== product.image ? (
+            <div className="ps-media relative aspect-[4/5]">
+              <img
+                src={product.hover}
+                srcSet={setForImage(product.hover)}
+                sizes="(max-width: 1023px) 100vw, 46vw"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className={isPhoto(product.hover) ? "h-full w-full object-cover" : "h-full w-full object-contain p-8 sm:p-16"}
+              />
             </div>
-            <div className="ps-media ps-zoom aspect-square">
-              <img src={cat?.image ?? "/img/p-ed-01.svg"} alt="" loading="lazy" decoding="async" />
-            </div>
-          </div>
-        </div>
+          ) : null}
+        </Gallery>
 
         {/* buy column */}
         <div className="lg:sticky lg:top-[110px] lg:h-fit lg:pt-4">
@@ -203,8 +209,8 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
       {/* ── notes pyramid ── */}
       {product.spec ? (
         <section style={{ background: "var(--ps-bg-alt)", borderTop: "1px solid var(--ps-line)" }}>
-          <div className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
-            <div className="mb-14 text-center">
+          <div className="mx-auto max-w-[1560px] px-5 py-16 sm:px-8 md:py-24">
+            <div className="mb-10 text-center md:mb-14">
               <Reveal>
                 <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
                   How it is made
@@ -218,18 +224,22 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
               />
             </div>
 
-            <div className="mx-auto grid max-w-[1100px] gap-10 md:grid-cols-3">
+            <div className="mx-auto grid max-w-[1100px] md:grid-cols-3 md:gap-10">
               {(["cloth", "cut", "finish"] as const).map((k, i) => (
                 <Reveal key={k} delay={stagger(i)}>
-                  <div className="text-center">
-                    <p className="ps-display text-[2.6rem] leading-none" style={{ color: "var(--ps-faint)" }}>
-                      0{i + 1}
-                    </p>
-                    <p className="ps-caps mt-4" style={{ color: "var(--ps-accent)" }}>
-                      {k === "cloth" ? "Cloth" : k === "cut" ? "Cut" : "Finish"}
-                    </p>
-                    <hr className="ps-rule mx-auto my-6 w-16" />
-                    <ul className="space-y-2 text-[.9rem] font-light" style={{ color: "var(--ps-muted)" }}>
+                  {/* A row on a phone — number and name left, the list right —
+                      rather than three centred stacks a screen and a half tall. */}
+                  <div className="ps-spec">
+                    <div className="ps-spec-head">
+                      <p className="ps-display text-[2rem] leading-none md:text-[2.6rem]" style={{ color: "var(--ps-faint)" }}>
+                        0{i + 1}
+                      </p>
+                      <p className="ps-caps mt-2 md:mt-4" style={{ color: "var(--ps-accent)" }}>
+                        {k === "cloth" ? "Cloth" : k === "cut" ? "Cut" : "Finish"}
+                      </p>
+                    </div>
+                    <hr className="ps-rule mx-auto my-6 hidden w-16 md:block" />
+                    <ul className="space-y-2 text-[.88rem] font-light md:text-[.9rem]" style={{ color: "var(--ps-muted)" }}>
                       {product.spec![k].map((n: string) => (
                         <li key={n}>{n}</li>
                       ))}

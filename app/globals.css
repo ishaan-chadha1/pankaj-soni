@@ -2634,3 +2634,111 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
     clip-path: none !important;
   }
 }
+
+/* ── Product gallery ───────────────────────────────────────────────
+   See Gallery.tsx. A stack on a desk; a full-bleed swipe on a phone. */
+.ps-gallery-track {
+  display: grid;
+  gap: 1.25rem;
+}
+.ps-gallery-nav {
+  display: none;
+}
+@media (max-width: 1023px) {
+  .ps-gallery {
+    /* Out to the screen edges through the section's gutter. */
+    margin-inline: -1.25rem;
+    margin-top: -1rem;
+  }
+  .ps-gallery-track {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .ps-gallery-track::-webkit-scrollbar {
+    display: none;
+  }
+  .ps-gallery-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+  }
+  .ps-gallery-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1.25rem 0;
+  }
+  .ps-gallery-count {
+    font-size: 0.54rem;
+    color: var(--ps-faint);
+  }
+  .ps-gallery-bars {
+    display: flex;
+    gap: 6px;
+  }
+  .ps-gallery-bars button {
+    width: 22px;
+    height: 2px;
+    padding: 0;
+    background: var(--ps-line-strong);
+    transition: background 0.4s var(--ease), width 0.4s var(--ease);
+  }
+  .ps-gallery-bars button[data-on="true"] {
+    width: 36px;
+    background: var(--ps-text);
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .ps-gallery {
+    margin-inline: -2rem;
+  }
+  .ps-gallery-nav {
+    padding-inline: 2rem;
+  }
+}
+
+/* ── Cloth, cut and finish ─────────────────────────────────────────
+   Three centred stacks on a desk; on a phone each is a row, number and
+   name at the left and the list beside it. */
+.ps-spec {
+  text-align: center;
+}
+@media (max-width: 767px) {
+  .ps-spec {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 1rem;
+    padding-block: 1.4rem;
+    border-top: 1px solid var(--ps-line);
+    text-align: left;
+  }
+}
+
+/* ── Sticky buy bar (phones) ─────────────────────────────────────── */
+.ps-buybar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem calc(0.75rem + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--ps-bg) 94%, transparent);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--ps-line);
+  translate: 0 110%;
+  transition: translate 0.55s var(--e-out);
+}
+.ps-buybar[data-on="true"] {
+  translate: 0 0;
+}
+@media (min-width: 1024px) {
+  .ps-buybar {
+    display: none;
+  }
+}

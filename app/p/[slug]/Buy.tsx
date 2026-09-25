@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { money, type Product } from "@/lib/catalog";
 import { useCart } from "../../CartProvider";
 
@@ -19,6 +20,32 @@ export default function Buy({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
 
   const variant = product.variants.find((v) => v.id === variantId)!;
+
+  /*
+   * On a phone the button scrolls away under the details and the notes, and
+   * the page then has no way to buy until you scroll all the way back. A slim
+   * bar takes over once the real button is off screen — and only then, so
+   * the two are never on screen together.
+   */
+  const cta = useRef<HTMLDivElement | null>(null);
+  const [barOn, setBarOn] = useState(false);
+  // Portalled to <body>: this component sits inside reveal wrappers that
+  // animate `transform`, and a transformed ancestor would pin a fixed bar to
+  // itself instead of to the screen.
+  const [host, setHost] = useState<HTMLElement | null>(null);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- <body> only exists on the client
+  useEffect(() => setHost(document.body), []);
+  useEffect(() => {
+    const el = cta.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      // Off screen ABOVE the fold only: before you have reached it, the bar
+      // would be announcing a button that is about to arrive anyway.
+      setBarOn(!e.isIntersecting && e.boundingClientRect.top < 0);
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const shades = product.variants.some((v) => v.swatch);
 
   /*
@@ -89,7 +116,7 @@ export default function Buy({ product }: { product: Product }) {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-2.5">
               {product.variants.map((v) => (
                 <button
                   key={v.id}
@@ -112,7 +139,7 @@ export default function Buy({ product }: { product: Product }) {
         </div>
       ) : null}
 
-      <div className="mt-10 flex items-stretch gap-3">
+      <div ref={cta} className="mt-10 flex items-stretch gap-3">
         <div className="flex items-center" style={{ border: "1px solid var(--ps-line-strong)" }}>
           <button
             type="button"
@@ -156,6 +183,29 @@ export default function Buy({ product }: { product: Product }) {
           <span>Add Engraving — Complimentary</span>
         </button>
       )}
+
+      {host
+        ? createPortal(
+            <div className="ps-buybar" data-on={barOn} aria-hidden={!barOn} inert={!barOn}>
+              <div className="min-w-0 flex-1">
+                <p className="ps-display truncate text-[1rem] leading-tight">{product.name}</p>
+                <p className="mt-0.5 text-[.74rem]" style={{ color: "var(--ps-muted)" }}>
+                  {product.soldOut ? "Price on Request" : money(variant.price)}
+                  {product.variants.length > 1 ? ` · ${variant.label}` : ""}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={onAdd}
+                disabled={product.soldOut}
+                className="ps-btn ps-btn-solid shrink-0 !px-6 !py-3"
+              >
+                <span>{product.soldOut ? "Sold Out" : added ? "Added" : "Add to Bag"}</span>
+              </button>
+            </div>,
+            host
+          )
+        : null}
 
       <ul className="mt-9 space-y-2.5 text-[.78rem] font-light" style={{ color: "var(--ps-muted)" }}>
         <li className="flex gap-3">
