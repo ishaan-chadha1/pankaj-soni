@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EDITORIAL } from "@/lib/catalog";
+import { EDITORIAL, bySlug, money } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../components/Reveal";
 import { HeroPlate, Parallax } from "../components/Parallax";
-import { Curtain, FillRule } from "../components/Motif";
+import { Curtain, FillRule, ScrollFrame } from "../components/Motif";
 import { stagger } from "@/lib/motion";
+import LookRows from "../components/LookRows";
+import { photo } from "@/lib/photos";
 
 export const metadata: Metadata = {
   title: "The Maison",
@@ -51,6 +53,8 @@ const SERVICES = [
 ];
 
 export default function WorldPage() {
+  const hero = bySlug("noir-vine-bandhgala")!;
+
   return (
     <>
       <section className="relative flex min-h-[80svh] items-center justify-center overflow-hidden">
@@ -132,6 +136,88 @@ export default function WorldPage() {
           </div>
         </section>
       ))}
+
+      {/* ───────────────────────── SIGNATURE (moved from the landing) ───────────────────────── */}
+      <section className="relative overflow-hidden">
+        <div className="ps-band-l mx-auto grid max-w-[1560px] items-center gap-14 px-5 sm:px-8 lg:grid-cols-2 lg:gap-24">
+          <Parallax speed={0.14} className="relative">
+            <ScrollFrame inset={[12, 16]}>
+              <div className="ps-media aspect-[3/4]">
+                <img
+                  src={photo("noir-vine-02")}
+                  alt="Close study of the crystal vine embroidery on the shoulder of a black bandhgala."
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </ScrollFrame>
+          </Parallax>
+
+          <div>
+            <Reveal>
+              <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
+                The Signature — {hero.line}
+              </p>
+            </Reveal>
+
+            <MaskLines
+              as="h2"
+              className="ps-display mt-6 text-[2.8rem] leading-[0.98] sm:text-[4.2rem]"
+              delay={80}
+              lines={["Noir", <span key="vine" className="ps-display-i">Vine</span>]}
+            />
+
+            <Reveal delay={220}>
+              <p className="mt-8 max-w-[52ch] text-[.95rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
+                {hero.story}
+              </p>
+            </Reveal>
+
+            {hero.spec ? (
+              <Reveal delay={320}>
+                <dl className="mt-12 grid gap-8 sm:grid-cols-3">
+                  {(["cloth", "cut", "finish"] as const).map((k) => (
+                    <div key={k} style={{ borderTop: "1px solid var(--ps-line)" }} className="pt-4">
+                      <dt className="ps-caps mb-3" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
+                        {k === "cloth" ? "Cloth" : k === "cut" ? "Cut" : "Finish"}
+                      </dt>
+                      <dd className="space-y-1.5 text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>
+                        {hero.spec![k].map((n: string) => (
+                          <p key={n}>{n}</p>
+                        ))}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </Reveal>
+            ) : null}
+
+            <Reveal delay={420} className="mt-12 flex flex-wrap items-center gap-7">
+              <Link href={`/p/${hero.slug}`} className="ps-btn ps-btn-solid">
+                <span>{hero.soldOut ? "View the Piece" : `From ${money(hero.variants[0].price)}`}</span>
+              </Link>
+              <Link href="/atelier" className="ps-caps ps-link ps-link-on">
+                Compose Your Own
+              </Link>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* The looks, one room at a time: a pinned name and cover, the frames
+          scrolling past it, and every garment in them marked to shop. */}
+      <section style={{ borderTop: "1px solid var(--ps-line)" }}>
+        <div className="mx-auto max-w-[1560px] px-5 pt-24 sm:px-8 lg:pt-32">
+          <Reveal>
+            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
+              The Looks
+            </p>
+          </Reveal>
+          <MaskLines as="h2" className="ps-display ps-h2 mt-5" lines={["Three rooms, marked to shop"]} />
+        </div>
+        <LookRows />
+      </section>
 
       {/* services */}
       <section>

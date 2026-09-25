@@ -9,13 +9,11 @@ const WORD = "PANKAJ SONI";
  * The house plate — the wordmark rising letter by letter over a hairline, with
  * a caption beneath.
  *
- * ONE OBJECT, TWO TEMPOS. The first-visit Preloader plays it slowly as a piece
- * of ceremony; the PageTransition plays the same plate fast between routes.
- * Only the timings differ, so the curtain a visitor meets on arrival is
- * recognisably the one that carries them from page to page.
+ * Played once, on a tab's first visit, by the Preloader. Navigations between
+ * pages have no curtain.
  *
  * Purely presentational: the parent owns the clock and the surface the plate
- * sits on (the Preloader lifts it, the transition wipes it). This only knows
+ * sits on (the Preloader lifts it away). This only knows
  * whether the letters are up and whether the rule is drawn.
  */
 export default function MaisonPlate({

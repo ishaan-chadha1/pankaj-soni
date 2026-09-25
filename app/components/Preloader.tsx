@@ -17,8 +17,7 @@ const STEP = 85;
  * First-visit curtain.
  *
  * Shown once per tab (sessionStorage). At 4.6s this is a real hold, and
- * replaying it on every navigation would read as latency rather than ceremony
- * — so navigations get the same plate at a faster tempo, in PageTransition.
+ * replaying it on every navigation would read as latency rather than ceremony.
  */
 export default function Preloader() {
   const [phase, setPhase] = useState<"hidden" | "in" | "out" | "done">("hidden");

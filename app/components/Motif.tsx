@@ -132,39 +132,6 @@ export function Curtain({
 }
 
 /**
- * The wordmark assembling letter by letter — the entry curtain's signature,
- * reused wherever the house name is set large.
- */
-export function RisingWord({
-  text,
-  className,
-  delay = 0,
-  step = 55,
-  style,
-}: {
-  text: string;
-  className?: string;
-  delay?: number;
-  step?: number;
-  style?: CSSProperties;
-}) {
-  const { setRef, seen } = useInView<HTMLSpanElement>("-6% 0px");
-
-  return (
-    <span ref={setRef} className={`ps-rising ${className ?? ""}`} data-shown={seen} style={style}>
-      <span className="sr-only">{text}</span>
-      <span aria-hidden="true">
-        {[...text].map((ch, i) => (
-          <span key={i} style={{ transitionDelay: `${delay + i * step}ms` }}>
-            {ch === " " ? " " : ch}
-          </span>
-        ))}
-      </span>
-    </span>
-  );
-}
-
-/**
  * A frame that opens with the scroll — the home hero's cut, for any picture.
  *
  * The picture enters as an inset box with its contents pushed in slightly,

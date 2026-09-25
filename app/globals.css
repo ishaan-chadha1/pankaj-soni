@@ -622,27 +622,6 @@ body {
   }
 }
 
-/* ── Marquee ───────────────────────────────────────────────────── */
-
-.ps-marquee {
-  display: flex;
-  width: max-content;
-  animation: ps-slide 44s linear infinite;
-}
-@keyframes ps-slide {
-  to {
-    transform: translateX(-50%);
-  }
-}
-.ps-marquee-slow {
-  animation-duration: 90s;
-}
-@media (prefers-reduced-motion: reduce) {
-  .ps-marquee {
-    animation: none;
-  }
-}
-
 /* ── Form controls ─────────────────────────────────────────────── */
 
 .ps-field {
@@ -811,10 +790,9 @@ body {
 }
 
 /* ── Page enter ────────────────────────────────────────────────
-   None on <main>. It used to fade up on every route, but the PageTransition
-   curtain is the entrance now, and the fade restarting under it left <main>
-   at opacity 0 for the browser to snapshot — and a transformed <main> is a
-   containing block that re-anchors every position:fixed element inside it. */
+   None. Navigations cut straight to the next page — no fade on <main> and no
+   curtain between routes. (A transformed <main> would also re-anchor every
+   position:fixed element inside it.) */
 
 /* ── Touch targets ─────────────────────────────────────────────── */
 
@@ -1639,135 +1617,15 @@ body {
   }
 }
 
-/* ── The expanding hero ─────────────────────────────────────────
-   After maisonauge.com. The section is a scroll track: one stage tall plus
-   the distance the box takes to open. The stage sticks under the header while
-   the track scrolls past, and CampaignHero writes two numbers onto the
-   section as it goes:
-
-     --e  the box opening, 0 closed -> 1 full-bleed
-     --l  the lockup arriving, after the box is nearly open
-
-   Everything below is a pure function of those two. */
-.ps-chero.ps-xhero {
-  --e: 0;
-  --l: 0;
-  /* The header floats over the home page and is away during the hero, so the
-     stage has the whole window. */
-  height: 210svh;
-  min-height: 0;
-  max-height: none;
-  /* Sticky needs every ancestor to leave overflow alone. */
-  overflow: visible;
-  background: var(--ps-bg);
-}
-.ps-xhero-stage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: hidden;
-  /* The closed box, as a share of the stage. 78% by 62% of a laptop window
-     lands on roughly the 2.2:1 the reference opens on. */
-  --bw: 78%;
-  --bh: 62%;
-}
-
-/* The name, as wide as the window, behind the box. */
-.ps-xhero-name {
-  position: absolute;
-  inset-inline: 0;
-  top: clamp(0.5rem, 2.4vh, 2rem);
-  z-index: 0;
-  font-family: var(--font-ps-display), "Bodoni Moda", Georgia, serif;
-  font-weight: 500;
-  text-transform: uppercase;
-  text-align: center;
-  white-space: nowrap;
-  font-size: 11.2vw;
-  line-height: 0.82;
-  letter-spacing: 0.01em;
-  color: var(--ps-text);
-  /* Eases up and back as the box swallows it, so it recedes rather than
-     simply being covered. */
-  transform: translateY(calc(var(--e) * -6%)) scale(calc(1 - var(--e) * 0.04));
-  transform-origin: 50% 0;
-}
-.ps-xhero-word {
-  display: inline-block;
-  white-space: nowrap;
-}
-.ps-xhero-word > span {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(38%);
-  transition:
-    opacity 0.9s ease calc(var(--i) * 55ms + 120ms),
-    transform 1.3s var(--e-out) calc(var(--i) * 55ms + 120ms);
-}
-[data-shown="true"] .ps-xhero-word > span {
-  opacity: 1;
-  transform: none;
-}
-
-/* The films are always full-bleed; the box is a clip over them. Sat a little
-   below centre (62/38) so it overlaps the foot of the name, as the reference
-   does. */
-.ps-xhero-frame {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: var(--ps-invert-bg);
-  clip-path: inset(
-    calc((100% - var(--bh)) * 0.62 * (1 - var(--e)))
-    calc((100% - var(--bw)) * 0.5 * (1 - var(--e)))
-    calc((100% - var(--bh)) * 0.38 * (1 - var(--e)))
-    calc((100% - var(--bw)) * 0.5 * (1 - var(--e)))
-  );
-}
-.ps-xhero-frame .ps-chero-panes {
-  height: 100%;
-}
-/* The grade only arrives with the full frame; a small box needs none. */
-.ps-xhero-veil {
-  opacity: var(--e);
-}
-.ps-xhero-lockup {
-  opacity: var(--l);
-  translate: 0 calc((1 - var(--l)) * 28px);
-}
-/* Invisible type must not take clicks meant for the picture... */
-.ps-xhero:not([data-open]) .ps-xhero-lockup {
-  pointer-events: none;
-}
-/* ...but a keyboard user tabbing to the button has to be able to see it. */
-.ps-xhero-lockup:focus-within {
-  opacity: 1;
-  translate: none;
-}
-
-.ps-xhero-caption {
-  position: absolute;
-  inset-inline: 0;
-  bottom: clamp(1rem, 4.5vh, 2.75rem);
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  padding-inline: clamp(1.25rem, 3vw, 2rem);
-  font-size: 0.58rem;
-  letter-spacing: 0.26em;
-  color: var(--ps-text);
-  opacity: calc(1 - var(--e) * 4);
-}
-.ps-xhero-caption > :last-child {
-  justify-self: end;
-}
+/* ── Scroll cue ──────────────────────────────────────────────────
+   A word with a hairline that keeps dropping beneath it. Used under the
+   category heroes. */
 /* A hairline that keeps dropping, under the word. */
-.ps-xhero-cue {
+.ps-cue {
   position: relative;
   padding-bottom: 1.6rem;
 }
-.ps-xhero-cue::after {
+.ps-cue::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -1797,89 +1655,9 @@ body {
   }
 }
 
-/* The bar slides away while the frame is still opening, and comes back the
-   moment anyone tabs into it. Keyed off the hero being in the document rather
-   than a flag set by script, so it is already away on the first paint — a
-   flag arrived after hydration and the bar flashed over the name on load.
-
-   KEYBOARD focus only (:focus-visible), not any focus. Clicking the wordmark
-   to come home leaves the mouse's focus on that link, and `:focus-within`
-   kept the whole bar pinned over the hero until something else was clicked. */
-body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
-  transform: translateY(-100%);
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* A phone shows one portrait pane, so the closed box is portrait too. */
-@media (max-width: 767px) {
-  .ps-chero.ps-xhero {
-    height: 190svh;
-  }
-  .ps-xhero-stage {
-    --bw: 74%;
-    --bh: 60%;
-  }
-  .ps-xhero-caption {
-    grid-template-columns: 1fr;
-    justify-items: center;
-  }
-  .ps-xhero-caption > :first-child,
-  .ps-xhero-caption > :last-child {
-    display: none;
-  }
-  /* Two lines on a phone: one line of eleven letters is 40px tall there and
-     reads as a caption, which is the opposite of the point. */
-  .ps-xhero-name {
-    top: clamp(1rem, 3vh, 1.75rem);
-    font-size: 21vw;
-    line-height: 0.86;
-    white-space: normal;
-  }
-}
-
-/* Reduced motion and no scripting both get the finished frame: the films at
-   full bleed with the lockup over them, and no track to scroll through. */
 @media (prefers-reduced-motion: reduce) {
-  .ps-xhero-word > span {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-  .ps-xhero-cue::after {
+  .ps-cue::after {
     animation: none;
-  }
-  .ps-chero.ps-xhero {
-    --e: 1;
-    --l: 1;
-    height: auto;
-  }
-  .ps-xhero-stage {
-    position: relative;
-    top: 0;
-  }
-}
-@media (scripting: none) {
-  body .ps-header {
-    transform: none !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-  .ps-chero.ps-xhero {
-    --e: 1 !important;
-    --l: 1 !important;
-    height: auto;
-  }
-  .ps-xhero-lockup {
-    pointer-events: auto !important;
-  }
-  .ps-xhero-word > span {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  .ps-xhero-stage {
-    position: relative;
-    top: 0;
   }
 }
 
@@ -1918,9 +1696,14 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+/* Two up on a phone too: one plate a row made the band 2,700px — three
+   screens of the same gesture on the landing's one dark moment. */
 @media (max-width: 519px) {
   .ps-craft-grid {
-    grid-template-columns: 1fr;
+    gap: 1.25rem 0.75rem;
+  }
+  .ps-craft-piece {
+    font-size: 1.02rem;
   }
 }
 .ps-craft-plate {
@@ -1990,52 +1773,6 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
    just makes it look badly exposed. */
 .ps-plate[data-sold="true"] .ps-plate-media img {
   filter: saturate(0.55) contrast(0.94) brightness(1.04);
-}
-
-/* ── Closing campaign band ──────────────────────────────────────
-   A duet frame run full-bleed under the closing line. The source is a 3:4
-   portrait, so at this width it is cropped hard — `object-position` holds the
-   crop on the figures at the right of frame and lets the empty seamless on the
-   left carry the type. */
-.ps-closer {
-  min-height: clamp(520px, 78svh, 860px);
-  padding-block: var(--band-l);
-}
-.ps-closer-veil {
-  /* Reads from the left, where the frame is empty, and has cleared before it
-     reaches the figures. A flat scrim across the whole plate would grey out
-     the one part of the picture worth showing. */
-  background: linear-gradient(
-    96deg,
-    color-mix(in srgb, var(--ps-bg) 94%, transparent) 0%,
-    color-mix(in srgb, var(--ps-bg) 88%, transparent) 30%,
-    color-mix(in srgb, var(--ps-bg) 52%, transparent) 54%,
-    transparent 78%
-  );
-}
-@media (max-width: 767px) {
-  /* No room to set type beside the figures; the veil goes vertical and the
-     copy sits under them. */
-  .ps-closer-veil {
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      color-mix(in srgb, var(--ps-bg) 62%, transparent) 42%,
-      color-mix(in srgb, var(--ps-bg) 93%, transparent) 72%
-    );
-  }
-  .ps-closer {
-    align-items: flex-end;
-  }
-}
-
-/* Journal entries are set as type. The rule at the top is the only graphic,
-   and it thickens on hover — the whole affordance in one line. */
-.ps-journal {
-  transition: border-color var(--t-base) var(--ease);
-}
-.ps-journal:hover {
-  border-top-color: var(--ps-accent);
 }
 
 /* ── Sticky filter bar ──────────────────────────────────────────
@@ -2543,7 +2280,7 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
   .ps-cathero-foot {
     grid-template-columns: 1fr auto;
   }
-  .ps-cathero-foot .ps-xhero-cue {
+  .ps-cathero-foot .ps-cue {
     display: none;
   }
 }
@@ -2685,5 +2422,39 @@ body:has(.ps-xhero:not([data-past])) .ps-header:not(:has(:focus-visible)) {
 @media (min-width: 1024px) {
   .ps-buybar {
     display: none;
+  }
+}
+
+/* Under its own heading on the Maison page, the first row does not need the
+   full 15svh of air a row opening a page would. */
+.ps-rows > .ps-row:first-child {
+  padding-top: 5svh;
+}
+
+/* ── The rooms (landing) ───────────────────────────────────────────
+   Three across on a desk; on a phone a swipe, each room most of the width
+   with the next one showing at the edge — one screen, not three. */
+.ps-rooms {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (max-width: 767px) {
+  .ps-rooms {
+    display: flex;
+    gap: 0.75rem;
+    margin-inline: -1.25rem;
+    padding-inline: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.25rem;
+    scrollbar-width: none;
+  }
+  .ps-rooms::-webkit-scrollbar {
+    display: none;
+  }
+  .ps-rooms > * {
+    flex: 0 0 78%;
+    scroll-snap-align: start;
   }
 }

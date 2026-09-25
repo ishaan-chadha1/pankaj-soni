@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { RisingWord } from "./Motif";
 import { Monogram } from "./Brand";
 
 const COLS = [
@@ -127,24 +126,9 @@ export default function Footer() {
 
       <hr className="ps-rule" />
 
-      {/* the house mark, then the oversized wordmark */}
-      <div className="overflow-hidden px-5 pt-14 sm:px-8">
-        <Monogram className="mx-auto mb-8 h-14 w-auto sm:h-16" title="Pankaj Soni" />
-        <p
-          className="ps-wordmark w-full text-center leading-none"
-          style={{
-            /* Sized to the width it actually has: the tracked name runs about
-               8.4em, and a plain vw size ignored the page gutters, so on a phone
-               and a tablet the last letters were clipped at "SONI". */
-            fontSize: "clamp(1.5rem, calc((100vw - 4.5rem) / 8.9), 11rem)",
-            color: "transparent",
-            WebkitTextStroke: "1px var(--ps-line-strong)",
-            letterSpacing: "0.14em",
-            textIndent: "0.14em",
-          }}
-        >
-          <RisingWord text="Pankaj Soni" step={70} />
-        </p>
+      {/* the house mark */}
+      <div className="px-5 pt-14 sm:px-8">
+        <Monogram className="mx-auto h-14 w-auto sm:h-16" title="Pankaj Soni" />
       </div>
 
       <div className="mx-auto flex max-w-[1560px] flex-col items-center justify-between gap-4 px-5 py-10 sm:flex-row sm:px-8">

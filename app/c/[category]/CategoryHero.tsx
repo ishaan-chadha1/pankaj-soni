@@ -191,7 +191,7 @@ export default function CategoryHero({
 
         <div className="ps-caps ps-cathero-foot">
           <p className="ps-cathero-tag">{tagline}</p>
-          <span aria-hidden className="ps-xhero-cue">
+          <span aria-hidden className="ps-cue">
             Scroll
           </span>
           <span className="ps-cathero-count">

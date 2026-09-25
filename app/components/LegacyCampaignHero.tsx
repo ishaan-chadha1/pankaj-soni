@@ -16,7 +16,8 @@ export default function LegacyCampaignHero({
 }: {
   eyebrow: string;
   title: string;
-  sub: string;
+  /** Optional line under the title. */
+  sub?: string;
   href: string;
   cta: string;
 }) {
@@ -40,7 +41,7 @@ export default function LegacyCampaignHero({
       <div className="ps-chero-lockup">
         <p className="ps-caps ps-chero-eyebrow">{eyebrow}</p>
         <h1 className="ps-display ps-chero-title">{title}</h1>
-        <p className="ps-chero-sub">{sub}</p>
+        {sub ? <p className="ps-chero-sub">{sub}</p> : null}
         <Link href={href} className="ps-btn ps-btn-solid ps-chero-cta">
           <span>{cta}</span>
         </Link>
