@@ -82,9 +82,6 @@ export default function ThemeSwitcher({ compact = false }: { compact?: boolean }
             <span key={i} className="h-full flex-1" style={{ background: c }} />
           ))}
         </span>
-        <span className="ps-caps hidden xl:inline" style={{ fontSize: ".56rem" }}>
-          {active.name}
-        </span>
       </button>
 
       <div

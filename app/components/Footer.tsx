@@ -134,7 +134,10 @@ export default function Footer() {
         <p
           className="ps-wordmark w-full text-center leading-none"
           style={{
-            fontSize: "clamp(2.2rem, 11.2vw, 11rem)",
+            /* Sized to the width it actually has: the tracked name runs about
+               8.4em, and a plain vw size ignored the page gutters, so on a phone
+               and a tablet the last letters were clipped at "SONI". */
+            fontSize: "clamp(1.5rem, calc((100vw - 4.5rem) / 8.9), 11rem)",
             color: "transparent",
             WebkitTextStroke: "1px var(--ps-line-strong)",
             letterSpacing: "0.14em",

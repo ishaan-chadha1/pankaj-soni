@@ -90,60 +90,6 @@ const MENU: MenuDef[] = [
     ],
     plates: ["/img/campaign/tidemark-detail-810.webp", "/img/campaign/orbit-02-810.webp"],
   },
-  {
-    label: "Eyewear",
-    href: "/c/eyewear",
-    cols: [
-      {
-        title: "Silhouettes",
-        links: [
-          { label: "Monolith", href: "/p/monolith" },
-          { label: "Meridian", href: "/p/meridian-aviator" },
-          { label: "Oracle", href: "/p/oracle" },
-          { label: "Vesper", href: "/p/vesper-cat" },
-        ],
-      },
-      {
-        title: "Shop",
-        links: [
-          { label: "All Eyewear", href: "/c/eyewear" },
-          { label: "Optical", href: "/c/eyewear" },
-        ],
-      },
-    ],
-    plates: ["/img/p-cat-eyewear.svg", "/img/campaign/duet-02-810.webp"],
-  },
-  {
-    label: "Leather",
-    href: "/c/leather",
-    cols: [
-      {
-        title: "Leather Goods",
-        links: [
-          { label: "Weekend Holdall", href: "/p/weekend-holdall" },
-          { label: "Opera Clutch", href: "/p/opera-clutch" },
-          { label: "Document Case", href: "/p/document-case" },
-          { label: "Woven Belt", href: "/p/woven-belt" },
-        ],
-      },
-    ],
-    plates: ["/img/campaign/duet-01-810.webp", "/img/p-cat-leather.svg"],
-  },
-  {
-    label: "Gifts",
-    href: "/c/gifts",
-    cols: [
-      {
-        title: "Gifting",
-        links: [
-          { label: "Cashmere Scarf", href: "/p/cashmere-scarf" },
-          { label: "Cashmere-Lined Gloves", href: "/p/leather-gloves" },
-          { label: "Grenadine Tie", href: "/p/silk-tie" },
-        ],
-      },
-    ],
-    plates: ["/img/p-cat-gifts.svg", "/img/campaign/midnight-swirl-01-810.webp"],
-  },
 ];
 
 const Ico = {
