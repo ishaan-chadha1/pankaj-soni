@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RisingWord } from "./Motif";
+import { Monogram } from "./Brand";
 
 const COLS = [
   {
@@ -126,8 +127,9 @@ export default function Footer() {
 
       <hr className="ps-rule" />
 
-      {/* oversized wordmark */}
+      {/* the house mark, then the oversized wordmark */}
       <div className="overflow-hidden px-5 pt-14 sm:px-8">
+        <Monogram className="mx-auto mb-8 h-14 w-auto sm:h-16" title="Pankaj Soni" />
         <p
           className="ps-wordmark w-full text-center leading-none"
           style={{

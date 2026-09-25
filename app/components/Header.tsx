@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { CATEGORIES, PRODUCTS, money } from "@/lib/catalog";
 import { useCart } from "../CartProvider";
 import ThemeSwitcher from "./ThemeSwitcher";
+import { Monogram } from "./Brand";
 
 type MenuCol = { title: string; links: { label: string; href: string }[] };
 type MenuDef = {
@@ -349,7 +350,7 @@ export default function Header() {
          * edge looked tidy in code and read lopsided on screen — the right
          * side hugged the wordmark while the left stood a column away.
          */}
-        <div className="mx-auto grid max-w-[1560px] grid-cols-[1fr_auto_1fr] items-center gap-6 px-5 py-4 sm:px-8 lg:py-[1.45rem]">
+        <div className="mx-auto grid max-w-[1560px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 py-4 sm:gap-6 sm:px-8 lg:py-[1.45rem]">
           {/* left */}
           <nav aria-label="Primary" className="ps-nav hidden grid-cols-3 items-center lg:grid">
             <button
@@ -395,9 +396,24 @@ export default function Header() {
           </button>
 
           {/* wordmark */}
-          <Link href="/" aria-label="Pankaj Soni — home" className="justify-self-center">
-            <span className="ps-wordmark block text-[.82rem] sm:text-[1.02rem] lg:text-[1.18rem]">
-              Pankaj Soni
+          {/*
+           * PANKAJ · mark · SONI. Three columns, the outer two equal, so the
+           * mark sits on the page's centre line — the axis the mirrored nav is
+           * built around — even though PANKAJ is two letters longer than SONI.
+           * Each word drops the wordmark's tracking on the side facing the mark
+           * (see .ps-wordmark-l / -r), so the two gaps read equal.
+           */}
+          <Link
+            href="/"
+            aria-label="Pankaj Soni — home"
+            className="ps-lockup grid grid-cols-[1fr_auto_1fr] items-center justify-self-center"
+          >
+            <span aria-hidden className="ps-wordmark ps-wordmark-l justify-self-end text-[.82rem] sm:text-[1.02rem] lg:text-[1.18rem]">
+              Pankaj
+            </span>
+            <Monogram className="mx-2.5 h-[22px] w-auto sm:mx-3.5 sm:h-[26px] lg:h-[30px]" />
+            <span aria-hidden className="ps-wordmark ps-wordmark-r justify-self-start text-[.82rem] sm:text-[1.02rem] lg:text-[1.18rem]">
+              Soni
             </span>
           </Link>
 
@@ -607,7 +623,11 @@ export default function Header() {
         }}
       >
         <div className="flex items-center justify-between px-5 py-5">
-          <span className="ps-wordmark text-[.82rem]">Pankaj Soni</span>
+          <span className="flex items-center">
+            <span className="ps-wordmark ps-wordmark-l text-[.82rem]">Pankaj</span>
+            <Monogram className="mx-2.5 h-[22px] w-auto" />
+            <span className="ps-wordmark ps-wordmark-r text-[.82rem]">Soni</span>
+          </span>
           <button type="button" aria-label="Close menu" className="ps-tap" onClick={() => setMobile(false)}>
             {Ico.close}
           </button>

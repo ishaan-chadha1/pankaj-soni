@@ -333,6 +333,17 @@ body {
   /* the tracking adds a phantom space after the last glyph */
   text-indent: 0.34em;
 }
+/* Split around the monogram. Tracking puts a phantom space after every
+   glyph, so the word LEFT of the mark pulls it back in and neither word
+   carries the balancing indent — otherwise the gap after PANKAJ is a full
+   letter-space wider than the one before SONI. */
+.ps-wordmark-l {
+  text-indent: 0;
+  margin-right: -0.34em;
+}
+.ps-wordmark-r {
+  text-indent: 0;
+}
 
 .ps-accent {
   color: var(--ps-accent);
