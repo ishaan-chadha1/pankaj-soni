@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { PHOTOS, photo, photoSet, blurOf } from "@/lib/photos";
 import { MaskLines, Reveal } from "./Reveal";
+import { ShopFrame } from "./Hotspots";
+import { CRAFT_HOTS } from "@/lib/hotspots";
 import { stagger } from "@/lib/motion";
 
 /**
@@ -115,7 +117,9 @@ function Plate({ slug, piece, note, href, zoom, focus }: Work) {
     if (img.current?.complete) setLoaded(true);
   }, []);
 
+  const hots = CRAFT_HOTS[slug];
   return (
+    <div className="relative">
     <Link href={href} className="ps-craft-plate group">
       <span
         className="ps-craft-media"
@@ -142,5 +146,13 @@ function Plate({ slug, piece, note, href, zoom, focus }: Work) {
       <span className="ps-craft-piece ps-display">{piece}</span>
       <span className="ps-craft-note">{note}</span>
     </Link>
+    {/* Markers over the plate — beside the link, so a dot opens its card
+        rather than following the link — zoomed with the plate. */}
+    {hots ? (
+      <div className="ps-craft-hots" style={{ ["--craft-zoom" as string]: zoom ?? 1 }}>
+        <ShopFrame id={`craft-${slug}`} hotspots={hots} />
+      </div>
+    ) : null}
+    </div>
   );
 }

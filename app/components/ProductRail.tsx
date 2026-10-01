@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { ShopFrame } from "./Hotspots";
+import { PLATE_HOTS } from "@/lib/hotspots";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { money, type Product } from "@/lib/catalog";
 import { blurForImage, setForImage } from "@/lib/photos";
@@ -197,6 +199,14 @@ export default function ProductRail({
                     decoding="async"
                   />
                 </Link>
+
+                {/* Markers on the garment. Beside the link, not in it, so a dot
+                    opens its card instead of following the link. */}
+                {PLATE_HOTS[p.image] ? (
+                  <div className="ps-plate-hots">
+                    <ShopFrame id={`rail-${copy}-${p.slug}`} hotspots={PLATE_HOTS[p.image]} />
+                  </div>
+                ) : null}
 
                 {/* A capped run that has gone stays on the rail. Saying so is
                     more convincing than quietly removing the plate. */}

@@ -625,6 +625,363 @@ body {
   }
 }
 
+/* ── Shoppable markers ─────────────────────────────────────────
+   See Hotspots.tsx. The layer sits in SplitFrame's unclipped overlay and
+   inherits its --plate-scale, which each marker undoes on itself. */
+.ps-shoppable {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ps-shoppable .ps-hot {
+  pointer-events: auto;
+  /* The plate settles with the scroll, not on a timer — a transition here
+     would leave the counter-scale trailing the picture. */
+  transition: none;
+}
+
+/*
+ * The anchor sits exactly on the coordinate and is deliberately NOT transformed:
+ * a transform makes an element the containing block for its fixed-position
+ * descendants, which threw the mobile sheet to -1237px instead of pinning it to
+ * the viewport. The dot centres itself instead.
+ */
+.ps-hot {
+  position: absolute;
+  z-index: 3;
+  /*
+   * Undo the plate's scale.
+   *
+   * The wrapper is scaled so that a marker's POSITION tracks the image — that
+   * is the whole point of putting them in it. But scaling the wrapper also
+   * enlarges everything drawn inside: labels go soft, the arm renders 6% longer
+   * than clampArms measured it, and the product card grows. Counter-scaling
+   * here nets the contents back to 1 while leaving the position transformed,
+   * because a scale about an element's own centre cannot move that element.
+   */
+  scale: calc(1 / var(--plate-scale, 1));
+  transition: scale 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Arm: line + label share one rotation, so the label lands at the line's end. */
+.ps-hot-arm {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+.ps-hot-line {
+  display: block;
+  width: var(--arm);
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.95);
+  /* An ink hairline on both sides of the ivory, for the same reason the ring
+     has two edges: the leader crosses from cloth onto seamless and has to
+     survive the handover. */
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.35),
+    0 1px 4px rgba(0, 0, 0, 0.3);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.7s var(--ease);
+}
+
+/*
+ * The label is for assistive tech only.
+ *
+ * Printed on the frame it landed wherever the leader happened to end — over the
+ * framed picture, across the lamp — and a row of pale chips on a photograph
+ * reads as a diagram, not a campaign. The name belongs in the card, which is
+ * what the marker opens.
+ */
+/* Carries the card at the leader's end. The arm is pointer-transparent so the
+   line never eats a hover, so the card has to re-enable events for itself. */
+.ps-hot-anchor {
+  position: absolute;
+  top: 0;
+  pointer-events: auto;
+  z-index: 6;
+  /*
+   * A ZERO-SIZE POINT at the end of the leader, and nothing else.
+   *
+   * It used to be the card's own box, counter-rotating with
+   * `rotate(-Ndeg) translate(0, -50%)`. That is fine while the leader points
+   * roughly east — but the two markers on a portrait frame point in opposite
+   * directions, and at N=187deg the counter-rotation is very nearly a 180deg
+   * flip, which mirrors the -50% that was supposed to centre the card. The
+   * card landed a full card-height (176px) above the line it was meant to hang
+   * off, while its twin at N=7deg sat correctly. Same code, opposite sign.
+   *
+   * Giving the anchor no size makes the rotation a pure spin about the leader's
+   * endpoint — no displacement to mirror. The card then centres itself inside
+   * an anchor whose net rotation is zero (arm +N, anchor -N), so a plain
+   * translateY(-50%) means what it says.
+   */
+  width: 0;
+  height: 0;
+  transform-origin: left center;
+}
+
+/* Hangs off the anchor point: left edge on it when the card opens right, right
+   edge on it when it opens left. The vertical nudge that rescues a card from
+   the top or bottom of the frame rides here too, in plain screen pixels,
+   rather than being appended to a transform the rotation would mangle. */
+.ps-hot-anchor > .ps-hot-card {
+  position: absolute;
+  top: 0;
+  transform: translateY(calc(-50% + var(--nudge-y, 0px)));
+}
+.ps-hot-anchor > .ps-hot-card[data-side="right"] {
+  left: 0;
+}
+.ps-hot-anchor > .ps-hot-card[data-side="left"] {
+  right: 0;
+}
+
+.ps-hot-label {
+  position: absolute;
+  /* Same pivot correction as the anchor above. */
+  transform-origin: left center;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Draw on scroll-in, staggered. */
+.ps-shoppable[data-reveal="true"] .ps-hot-line {
+  transform: scaleX(1);
+  transition-delay: var(--hot-delay, 0ms);
+}
+
+/* Then retract, so six labels stop competing with the photograph. */
+.ps-shoppable[data-settled="true"] .ps-hot-line {
+  transform: scaleX(0);
+  transition-delay: 0ms;
+  transition-duration: 0.55s;
+}
+
+/* Hover, focus or an open card always wins over the settled state. */
+.ps-hot:hover .ps-hot-line,
+.ps-hot:focus-within .ps-hot-line,
+.ps-hot[data-open="true"] .ps-hot-line {
+  transform: scaleX(1);
+  transition-delay: 0ms;
+}
+
+.ps-hot-dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  /* centre on the anchor point, rather than transforming the anchor itself */
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  display: block;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  /*
+   * A FROSTED LENS, not a hairline ring.
+   *
+   * The previous mark was a 19px ivory ring with a pinprick centre, drawn on
+   * the assumption that the photography underneath was warm walnut and cream
+   * cloth. This campaign is black crepe under hand-set silver crystal, and an
+   * ivory hairline laid over beadwork is indistinguishable from the beadwork —
+   * on the shoulder of the Noir Vine it simply disappeared.
+   *
+   * Three layers now carry it on ANY ground: a bright pinprick, a translucent
+   * dark disc that the photograph shows through blurred, and a ring that is
+   * ivory on its inside edge and ink on its outside. Whichever way the picture
+   * goes, one of the two edges is in contrast with it.
+   */
+  background:
+    radial-gradient(circle, #fff 0 3.1px, transparent 3.3px),
+    rgba(14, 13, 12, 0.34);
+  backdrop-filter: blur(2px) saturate(0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.34),
+    0 3px 14px rgba(0, 0, 0, 0.45);
+  transition: transform 0.45s var(--ease), background 0.45s var(--ease),
+    border-color 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}.ps-hot-dot::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  animation: ps-hot-pulse 3s var(--ease) infinite;
+  animation-delay: var(--hot-delay, 0ms);
+  pointer-events: none;
+}
+/* Barely there. At full strength this read as a ripple sitting on the model's
+   face; it only needs to say "live", not draw attention to itself. */
+@keyframes ps-hot-pulse {
+  0% { transform: scale(0.8); opacity: 0; }
+  22% { opacity: 0.75; }
+  100% { transform: scale(1.75); opacity: 0; }
+}
+
+.ps-hot-dot:hover,
+.ps-hot-dot:focus-visible,
+.ps-hot[data-open="true"] .ps-hot-dot {
+  transform: translate(-50%, -50%) scale(1.28);
+  background: radial-gradient(circle, #fff 0 3px, rgba(255, 255, 255, 0.22) 3.2px);
+  border-color: #fff;
+}
+/* One piece at a time: the others recede so the open leader is the only thing
+   competing with the photograph. */
+.ps-shoppable[data-focus="true"] .ps-hot:not([data-open="true"]) {
+  opacity: 0.28;
+}
+.ps-shoppable[data-focus="true"] .ps-hot:not([data-open="true"]) .ps-hot-dot::after {
+  animation: none;
+}
+.ps-hot {
+  transition: opacity 0.5s var(--ease);
+}
+
+.ps-hot-card {
+  position: relative;
+  width: 268px;
+  max-width: min(268px, 82vw);
+  background: var(--ps-surface);
+  border: 1px solid var(--ps-line);
+  box-shadow: 0 26px 64px -26px rgba(0, 0, 0, 0.38);
+  padding: 0.9rem;
+  /* Unfurls from the point the line stops, after the line has drawn. */
+  transform-origin: var(--card-origin, left center);
+  animation: ps-hot-unfurl 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+}
+/* An animation on `transform` outranks the positioning transform above, so the
+   pinned card fades and slides on `opacity` and `translate` instead — separate
+   properties, which compose with the transform rather than replacing it. */
+.ps-hot-anchor > .ps-hot-card {
+  animation-name: ps-hot-unfurl-pinned;
+}
+/* A pip where the leader meets the card, so the two read as one object. */
+.ps-hot-card[data-side]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.16);
+}
+.ps-hot-card[data-side="right"]::before {
+  left: -3px;
+}
+.ps-hot-card[data-side="left"]::before {
+  right: -3px;
+}
+/* The sheet has no leader to meet. */
+.ps-hot-card[data-narrow="true"]::before {
+  display: none;
+}
+@keyframes ps-hot-unfurl-pinned {
+  from {
+    opacity: 0;
+    translate: var(--unfurl-from, -12px) 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes ps-hot-unfurl {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateX(var(--unfurl-from, -10px));
+  }
+}
+
+@keyframes ps-hot-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+
+/* Narrow frame: the crop is portrait, there is no empty frame to draw a leader
+   into, and the marker has to be thumb-sized. Driven by the measured aspect
+   rather than a media query, so a narrow frame on a wide screen behaves too. */
+.ps-hot[data-narrow="true"] .ps-hot-arm {
+  display: none;
+}
+/* A pearl, not a badge: paper-filled with a hairline of accent around it, so it
+   reads as a piece of jewellery resting on the photograph rather than a numbered
+   sticker stamped over it. The touch target is carried by ::before, so the mark
+   stays small while the thumb target does not. */
+.ps-hot[data-narrow="true"] .ps-hot-dot {
+  width: 28px;
+  height: 28px;
+}
+.ps-hot[data-narrow="true"] .ps-hot-dot::after {
+  inset: -8px;
+}
+/* Thumb target well beyond the visible dot: 15px of jewellery, 45px of target.
+   Shrinking the mark without growing this took the tap area down to 37px. */
+.ps-hot[data-narrow="true"] .ps-hot-dot::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+}
+.ps-hot[data-narrow="true"][data-open="true"] .ps-hot-dot {
+  transform: translate(-50%, -50%) scale(1.22);
+}
+
+/* Narrow frame: the card becomes a sheet pinned to the bottom of the viewport
+   rather than a callout that would not fit beside the dot. */
+.ps-hot-card[data-narrow="true"] {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  top: auto;
+  width: auto;
+  max-width: none;
+  transform: none;
+  z-index: 120;
+  animation-name: ps-hot-sheet-in;
+  box-shadow: 0 -10px 50px -12px rgba(0, 0, 0, 0.34);
+}
+.ps-hot-card[data-narrow="true"][data-v] {
+  top: auto;
+  bottom: 12px;
+  transform: none;
+}
+@keyframes ps-hot-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-hot-line {
+    transition: none !important;
+  }
+  .ps-hot-dot::after {
+    animation: none;
+  }
+  .ps-hot-card {
+    animation: none;
+  }
+}
+
 /* ── Form controls ─────────────────────────────────────────────── */
 
 .ps-field {
@@ -1924,4 +2281,31 @@ body {
   .ps-timeline > li {
     flex-basis: calc((100% - 3 * 1.75rem) / 3.4);
   }
+}
+
+/* Marker layers over the landing's pictures. Each sits beside its link (a
+   dot inside an <a> would follow the link), positioned over the picture. */
+.ps-plate-hots {
+  position: absolute;
+  inset: 0 0 auto 0;
+  aspect-ratio: 2 / 3;
+  z-index: 3;
+  pointer-events: none;
+}
+.ps-craft-hots {
+  position: absolute;
+  inset: 0 0 auto 0;
+  aspect-ratio: 3 / 4;
+  z-index: 3;
+  pointer-events: none;
+  /* Same zoom as the plate it marks, so each dot stays on its garment; the
+     markers undo it on themselves (see .ps-hot). */
+  --plate-scale: var(--craft-zoom, 1);
+  scale: var(--craft-zoom, 1);
+}
+/* The zoomed marker layers reach past their plates (and the window on a
+   phone); the band trims them. Cards on a phone are a sheet, so nothing that
+   matters is cut. */
+.ps-craft {
+  overflow-x: clip;
 }
