@@ -49,6 +49,11 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
    */
   const heroIsPhoto = isPhoto(product.image);
 
+  // The carousel's run after the first frame: the piece's frames, repeated to
+  // five in all until it has more angles of its own.
+  const frames = [product.image, product.hover].filter((f, i, a) => f && a.indexOf(f) === i);
+  const extra = Array.from({ length: 4 }, (_, i) => frames[(i + 1) % frames.length]);
+
   const accordions = [
     { title: "Details", body: product.details },
     ...(product.composition
@@ -128,19 +133,21 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
               </span>
             ) : null}
           </div>
-          {product.hover && product.hover !== product.image ? (
-            <div className="ps-media relative aspect-[4/5]">
+          {/* PLACEHOLDER: each piece has two frames today, so they repeat to
+              give the carousel a run of five. Replace with the real angles. */}
+          {extra.map((src, i) => (
+            <div key={`${src}-${i}`} className="ps-media relative aspect-[4/5]">
               <img
-                src={product.hover}
-                srcSet={setForImage(product.hover)}
+                src={src}
+                srcSet={setForImage(src)}
                 sizes="(max-width: 1023px) 100vw, 46vw"
                 alt=""
                 loading="lazy"
                 decoding="async"
-                className={isPhoto(product.hover) ? "h-full w-full object-cover" : "h-full w-full object-contain p-8 sm:p-16"}
+                className={isPhoto(src) ? "h-full w-full object-cover" : "h-full w-full object-contain p-8 sm:p-16"}
               />
             </div>
-          ) : null}
+          ))}
         </Gallery>
 
         {/* buy column */}

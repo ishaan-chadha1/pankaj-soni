@@ -13,7 +13,6 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "photos": "node scripts/photos.mjs",
-    "probe": "node scripts/probe-hotspots.mjs",
     "films": "node scripts/films.mjs",
     "logo": "node scripts/logo.mjs"
   },

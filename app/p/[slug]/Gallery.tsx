@@ -8,10 +8,9 @@ import { Children, useEffect, useRef, useState, type ReactNode } from "react";
  * ON A PHONE, ONE SCREEN OF PICTURE, NOT THREE. The gallery used to stack a
  * 4:5 plate and two squares above the name, so the first thing a phone showed
  * was roughly 1,300px of photographs before the piece had a name or a price.
- * Below `lg` it is now a single full-bleed frame you swipe through — native
- * scroll-snap, no library — with a counter, and the name follows straight on.
- *
- * On a desk the frames simply stack, and the buy column pins beside them.
+ * It is a single frame you move through — native scroll-snap, no library —
+ * with a counter and bars: a full-bleed swipe on a phone, arrows on a desk
+ * beside the pinned buy column.
  */
 export default function Gallery({ children }: { children: ReactNode }) {
   const track = useRef<HTMLDivElement | null>(null);
@@ -55,6 +54,35 @@ export default function Gallery({ children }: { children: ReactNode }) {
           </div>
         ))}
       </div>
+
+      {count > 1 ? (
+        <>
+          <button
+            type="button"
+            className="ps-gallery-arrow"
+            data-dir="prev"
+            aria-label="Previous image"
+            disabled={index === 0}
+            onClick={() => go(index - 1)}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+              <path d="M15 5l-7 7 7 7" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="ps-gallery-arrow"
+            data-dir="next"
+            aria-label="Next image"
+            disabled={index === count - 1}
+            onClick={() => go(index + 1)}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </>
+      ) : null}
 
       {count > 1 ? (
         <div className="ps-gallery-nav" aria-hidden>

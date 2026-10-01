@@ -1,308 +1,190 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EDITORIAL, bySlug, money } from "@/lib/catalog";
 import { MaskLines, Reveal } from "../components/Reveal";
-import { HeroPlate, Parallax } from "../components/Parallax";
-import { Curtain, FillRule, ScrollFrame } from "../components/Motif";
+import { HeroPlate } from "../components/Parallax";
+import { Monogram } from "../components/Brand";
+import { photo, photoSet } from "@/lib/photos";
 import { stagger } from "@/lib/motion";
-import LookRows from "../components/LookRows";
-import { photo } from "@/lib/photos";
 
 export const metadata: Metadata = {
   title: "The Maison",
   description:
-    "Inside the house of PANKAJ SONI — the shoulder, the maturation room, and the case for making fewer things.",
+    "The house of PANKAJ SONI — its origins in Mumbai, its story since 1998, what it makes and the vision behind it.",
   alternates: { canonical: "/world" },
 };
 
-const CHAPTERS = [
-  {
-    n: "I",
-    title: "The Shoulder",
-    body: [
-      "Every jacket the house makes is drafted from one shoulder: extended by a centimetre, softly padded, and cut high in the armhole so the body of the jacket stays still while the arm moves.",
-      "It is the least visible decision in the collection and the only one that is never up for discussion.",
-    ],
-    image: "/img/p-ed-02.svg",
-  },
-  {
-    n: "II",
-    title: "Eleven Weeks",
-    body: [
-      "Cloth is bought a season before it is cut and left to rest on the roll. Nothing is done to it in that time. The fibres simply stop fighting the loom.",
-      "It is the reason a jacket cut in March still hangs true in November.",
-    ],
-    image: "/img/p-ed-01.svg",
-  },
-  {
-    n: "III",
-    title: "Fewer Things",
-    body: [
-      "Editions are capped at nine hundred. Ready-to-wear is cut in a single run and not repeated. We are asked constantly to make more, and we have declined every time.",
-      "Scarcity is not a marketing position here. It is what happens when the finishing is done by the same eleven people.",
-    ],
-    image: "/img/p-ed-03.svg",
-  },
+/*
+ * THE MAISON, IN FOUR PARTS: Origins · Timeline · About the brand · Visionary.
+ *
+ * PLACEHOLDER COPY throughout, written in the house voice so the page reads
+ * as finished. Replace with the real history, dates, principles and the
+ * founder's own words and portrait before launch.
+ */
+
+const TIMELINE = [
+  { year: "1998", line: "A single room on Colaba Causeway. Four tailors, one embroiderer and a book of appointments.", plate: "noir-vine-01" },
+  { year: "2006", line: "The first occasion collection — twenty-two pieces, every one embroidered by hand in the house.", plate: "nocturne-gown-01" },
+  { year: "2014", line: "Tailoring moves to an atelier in Italy, so the cloth and the cut sit in the same place.", plate: "silver-seam-01" },
+  { year: "2021", line: "Editions capped at nine hundred. The house stops saying yes to more.", plate: "orbit-01" },
+  { year: "Today", line: "Five rooms, by appointment — Mumbai, New Delhi, Paris, Milan and New York.", plate: "duet-01" },
 ];
 
-const SERVICES = [
-  ["Private Appointment", "An hour with a consultant, in any boutique or by video, at no charge."],
-  ["Alterations", "Complimentary for the life of any tailored piece bought from the maison."],
-  ["The Atelier Fitting", "Three fittings on every occasion piece before it leaves the house."],
-  ["Restoration", "Embroidery re-set and cloth re-finished, for as long as the piece is worn."],
+const PRINCIPLES = [
+  { t: "Cloth first", d: "Every collection begins at the mill, not the sketchbook. The cloth decides what it wants to become.", plate: "silver-seam-detail" },
+  { t: "By hand", d: "Embroidery is set by the same hands that drew it. Nothing is outsourced, and nothing is rushed.", plate: "midnight-swirl-detail" },
+  { t: "Fewer things", d: "Ready-to-wear is cut in a single run and never repeated. Scarcity is a consequence, not a strategy.", plate: "vapour-gown-detail" },
 ];
 
-export default function WorldPage() {
-  const hero = bySlug("noir-vine-bandhgala")!;
+function Eyebrow({ n, children }: { n: string; children: string }) {
+  return (
+    <Reveal>
+      <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
+        {n} — {children}
+      </p>
+    </Reveal>
+  );
+}
 
+export default function MaisonPage() {
   return (
     <>
-      <section className="relative flex min-h-[80svh] items-center justify-center overflow-hidden">
-        <HeroPlate src="/img/p-hero-02.svg" />
-        <div className="relative z-[2] mx-auto max-w-[960px] px-6 text-center">
+      {/* hero */}
+      <section className="relative flex min-h-[78svh] items-end overflow-hidden">
+        <HeroPlate src={photo("duet-02")} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.5) 100%)" }} />
+        <div className="relative z-[2] mx-auto w-full max-w-[1560px] px-5 pb-16 sm:px-8 lg:pb-24" style={{ color: "#faf7f1" }}>
           <Reveal>
-            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-              The Maison — Since 1998
-            </p>
+            <p className="ps-caps">Since 1998</p>
           </Reveal>
+          <MaskLines as="h1" className="ps-display mt-6 text-[3.4rem] leading-none sm:text-[6rem]" delay={120} lines={["The Maison"]} />
+        </div>
+      </section>
+
+      {/* 01 — origins */}
+      <section className="ps-band-l">
+        <div className="mx-auto grid max-w-[1560px] items-center gap-12 px-5 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:gap-24">
+          <div>
+            <Eyebrow n="01">Origins</Eyebrow>
+            <Reveal delay={120}>
+              <p className="ps-display mt-8 text-[1.7rem] leading-[1.35] sm:text-[2.4rem]">
+                It began in 1998, in one room in Mumbai, with a conviction that a garment should be finished
+                by the people who began it.
+              </p>
+            </Reveal>
+            <Reveal delay={240}>
+              <p className="mt-8 max-w-[56ch] text-[.95rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
+                Four tailors and one embroiderer worked from a book of appointments, and every piece that left
+                the room had been fitted, finished and pressed by hand. The room has grown; the conviction has
+                not moved.
+              </p>
+            </Reveal>
+          </div>
+          <Reveal delay={160}>
+            <div className="ps-media aspect-[4/5]">
+              <img src={photo("noir-vine-02")} srcSet={photoSet("noir-vine-02")} sizes="(max-width: 1023px) 92vw, 44vw" alt="" loading="lazy" decoding="async" />
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* 02 — timeline / storyline */}
+      <section className="ps-alt ps-band-l">
+        <div className="mx-auto max-w-[1560px] px-5 sm:px-8">
+          <Eyebrow n="02">Timeline</Eyebrow>
+          <MaskLines as="h2" className="ps-display ps-h2 mt-5" lines={["The story so far"]} />
+          <ol className="ps-timeline mt-12">
+            {TIMELINE.map((t, i) => (
+              <li key={t.year}>
+                <Reveal delay={stagger(i)}>
+                  <div className="ps-media aspect-[4/5]">
+                    <img src={photo(t.plate)} srcSet={photoSet(t.plate)} sizes="(max-width: 767px) 78vw, 26vw" alt="" loading="lazy" decoding="async" />
+                  </div>
+                  <p className="ps-display mt-5 text-[2.2rem] leading-none" style={{ color: "var(--ps-accent)" }}>
+                    {t.year}
+                  </p>
+                  <p className="mt-3 max-w-[34ch] text-[.88rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
+                    {t.line}
+                  </p>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 03 — about the brand */}
+      <section className="ps-band-l">
+        <div className="mx-auto max-w-[1560px] px-5 sm:px-8">
+          <Eyebrow n="03">About the brand</Eyebrow>
           <MaskLines
-            as="h1"
-            className="ps-display mt-8 text-[2.8rem] leading-[1] sm:text-[5rem]"
-            delay={150}
-            lines={["We make fewer", "things, and we", <span key="finish" className="ps-display-i">finish them.</span>]}
+            as="h2"
+            className="ps-display ps-h2 mt-5 max-w-[18ch]"
+            lines={["Occasionwear and tailoring,", <span key="i" className="ps-display-i">made slowly.</span>]}
           />
-        </div>
-      </section>
-
-      {/* manifesto */}
-      <section className="ps-alt">
-        <div className="mx-auto max-w-[880px] px-5 py-24 text-center sm:px-8 lg:py-32">
-          <Reveal>
-            <p
-              className="ps-display text-[1.5rem] leading-[1.45] sm:text-[2.1rem]"
-              style={{ letterSpacing: "-0.01em" }}
-            >
-              A house is not a logo applied to objects. It is a set of decisions taken
-              early, defended quietly, and repeated until they look inevitable.
-            </p>
-          </Reveal>
-          <Reveal delay={200}>
-            <p className="ps-caps mt-10" style={{ color: "var(--ps-faint)" }}>
-              The House Position
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* chapters */}
-      {CHAPTERS.map((c, i) => (
-        <section
-          key={c.n}
-          style={{ background: i % 2 ? "var(--ps-bg-alt)" : "var(--ps-bg)", borderTop: "1px solid var(--ps-line)" }}
-        >
-          <div
-            className={`mx-auto grid max-w-[1560px] items-center gap-14 px-5 py-24 sm:px-8 lg:grid-cols-2 lg:gap-24 lg:py-32 ${
-              i % 2 ? "lg:[&>*:first-child]:order-2" : ""
-            }`}
-          >
-            <Parallax speed={0.12}>
-              <Curtain className="ps-media ps-zoom ps-tint aspect-[4/5]">
-                <img src={c.image} alt="" loading="lazy" decoding="async" />
-              </Curtain>
-            </Parallax>
-
-            <div>
-              <Reveal>
-                <p className="ps-display text-[3rem] leading-none" style={{ color: "var(--ps-faint)" }}>
-                  {c.n}
+          <div className="mt-14 grid gap-12 md:grid-cols-3">
+            {PRINCIPLES.map((p, i) => (
+              <Reveal key={p.t} delay={stagger(i)}>
+                <div className="ps-media aspect-[4/5]">
+                  <img src={photo(p.plate)} srcSet={photoSet(p.plate)} sizes="(max-width: 767px) 92vw, 31vw" alt="" loading="lazy" decoding="async" />
+                </div>
+                <h3 className="ps-display mt-6 text-[1.7rem] leading-tight">{p.t}</h3>
+                <p className="mt-3 max-w-[42ch] text-[.88rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
+                  {p.d}
                 </p>
               </Reveal>
-              <MaskLines
-            as="h2"
-                className="ps-display mt-5 text-[2.4rem] leading-none sm:text-[3.4rem]"
-                delay={80}
-                lines={[c.title]}
-              />
-              <div className="mt-8 space-y-5">
-                {c.body.map((p, j) => (
-                  <Reveal key={j} delay={200 + j * 100}>
-                    <p className="max-w-[54ch] text-[.95rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
-                      {p}
-                    </p>
-                  </Reveal>
-                ))}
-              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 04 — visionary */}
+      <section className="ps-invert ps-band-l">
+        <div className="mx-auto grid max-w-[1560px] items-center gap-12 px-5 sm:px-8 lg:grid-cols-[1fr_1.15fr] lg:gap-24">
+          {/* PLACEHOLDER portrait — swap for the founder's photograph. */}
+          <Reveal>
+            <div
+              className="flex aspect-[4/5] flex-col items-center justify-center gap-6"
+              style={{ background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.12)" }}
+            >
+              <Monogram className="h-24 w-auto opacity-80" />
+              <p className="ps-caps" style={{ fontSize: ".55rem", color: "rgba(246,242,234,.5)" }}>
+                Portrait to come
+              </p>
             </div>
-          </div>
-        </section>
-      ))}
-
-      {/* ───────────────────────── SIGNATURE (moved from the landing) ───────────────────────── */}
-      <section className="relative overflow-hidden">
-        <div className="ps-band-l mx-auto grid max-w-[1560px] items-center gap-14 px-5 sm:px-8 lg:grid-cols-2 lg:gap-24">
-          <Parallax speed={0.14} className="relative">
-            <ScrollFrame inset={[12, 16]}>
-              <div className="ps-media aspect-[3/4]">
-                <img
-                  src={photo("noir-vine-02")}
-                  alt="Close study of the crystal vine embroidery on the shoulder of a black bandhgala."
-                  loading="lazy"
-                  decoding="async"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </ScrollFrame>
-          </Parallax>
-
+          </Reveal>
           <div>
-            <Reveal>
-              <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-                The Signature — {hero.line}
-              </p>
+            <Eyebrow n="04">Visionary</Eyebrow>
+            <Reveal delay={120}>
+              <blockquote className="ps-display mt-8 text-[1.8rem] leading-[1.3] sm:text-[2.6rem]">
+                &ldquo;I would rather make one thing that is finished than a hundred that are almost.&rdquo;
+              </blockquote>
             </Reveal>
-
-            <MaskLines
-              as="h2"
-              className="ps-display mt-6 text-[2.8rem] leading-[0.98] sm:text-[4.2rem]"
-              delay={80}
-              lines={["Noir", <span key="vine" className="ps-display-i">Vine</span>]}
-            />
-
             <Reveal delay={220}>
-              <p className="mt-8 max-w-[52ch] text-[.95rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
-                {hero.story}
+              <p className="ps-caps mt-8" style={{ color: "var(--ps-accent)" }}>
+                Pankaj Soni — Founder &amp; Creative Director
               </p>
             </Reveal>
-
-            {hero.spec ? (
-              <Reveal delay={320}>
-                <dl className="mt-12 grid gap-8 sm:grid-cols-3">
-                  {(["cloth", "cut", "finish"] as const).map((k) => (
-                    <div key={k} style={{ borderTop: "1px solid var(--ps-line)" }} className="pt-4">
-                      <dt className="ps-caps mb-3" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
-                        {k === "cloth" ? "Cloth" : k === "cut" ? "Cut" : "Finish"}
-                      </dt>
-                      <dd className="space-y-1.5 text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>
-                        {hero.spec![k].map((n: string) => (
-                          <p key={n}>{n}</p>
-                        ))}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </Reveal>
-            ) : null}
-
-            <Reveal delay={420} className="mt-12 flex flex-wrap items-center gap-7">
-              <Link href={`/p/${hero.slug}`} className="ps-btn ps-btn-solid">
-                <span>{hero.soldOut ? "View the Piece" : `From ${money(hero.variants[0].price)}`}</span>
-              </Link>
+            <Reveal delay={300}>
+              <p className="mt-8 max-w-[56ch] text-[.95rem] font-light leading-relaxed" style={{ opacity: 0.72 }}>
+                Trained as a tailor before he ever drew a collection, he still begins every season at the cutting
+                table. The house&rsquo;s silhouettes, its embroidery and its refusal to make more than it can finish
+                by hand all start with him.
+              </p>
             </Reveal>
           </div>
         </div>
       </section>
 
-      {/* The looks, one room at a time: a pinned name and cover, the frames
-          scrolling past it, and every garment in them marked to shop. */}
-      <section style={{ borderTop: "1px solid var(--ps-line)" }}>
-        <div className="mx-auto max-w-[1560px] px-5 pt-24 sm:px-8 lg:pt-32">
-          <Reveal>
-            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-              The Looks
-            </p>
-          </Reveal>
-          <MaskLines as="h2" className="ps-display ps-h2 mt-5" lines={["Three rooms, marked to shop"]} />
-        </div>
-        <LookRows />
-      </section>
-
-      {/* services */}
-      <section>
-        <FillRule accent={false} duration={1600} />
-        <div className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
+      {/* close */}
+      <section className="ps-band">
+        <div className="mx-auto max-w-[880px] px-5 text-center sm:px-8">
           <MaskLines
             as="h2"
-            className="ps-display ps-h2 mb-16"
-            lines={["Client Services"]}
+            className="ps-display text-[2.2rem] leading-[1.05] sm:text-[3.2rem]"
+            lines={["See it for", <span key="i" className="ps-display-i">yourself.</span>]}
           />
-          <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-            {SERVICES.map(([t, d], i) => (
-              <Reveal key={t} delay={stagger(i)}>
-                <div className="pt-5" style={{ borderTop: "1px solid var(--ps-line)" }}>
-                  <h3 className="ps-caps-lg">{t}</h3>
-                  <p className="mt-3 text-[.84rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
-                    {d}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* journal */}
-      <section style={{ borderTop: "1px solid var(--ps-line)" }}>
-        <div className="mx-auto max-w-[1560px] px-5 py-24 sm:px-8">
-          <MaskLines as="h2" className="ps-display ps-h2 mb-14" lines={["From the Journal"]} />
-          <div className="grid gap-10 md:grid-cols-3">
-            {EDITORIAL.map((e, i) => (
-              <Reveal key={e.slug} delay={stagger(i)}>
-                <article className="group">
-                  <div className="ps-media ps-zoom aspect-[4/3]">
-                    <img src={e.image} alt="" loading="lazy" decoding="async" />
-                  </div>
-                  <p className="ps-caps mt-5" style={{ fontSize: ".55rem", color: "var(--ps-accent)" }}>
-                    {e.eyebrow}
-                  </p>
-                  <h3 className="ps-display mt-2.5 text-[1.6rem] leading-tight">{e.title}</h3>
-                  <p className="mt-3 text-[.84rem] font-light leading-relaxed" style={{ color: "var(--ps-muted)" }}>
-                    {e.excerpt}
-                  </p>
-                </article>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* boutiques */}
-      <section className="relative flex min-h-[70svh] items-center overflow-hidden">
-        <Parallax speed={0.26} className="absolute inset-0 scale-110">
-          <img src="/img/p-hero-01.svg" alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
-        </Parallax>
-        <div className="absolute inset-0" style={{ background: "rgba(255,255,255,.48)" }} />
-        <div className="relative z-[2] mx-auto w-full max-w-[1560px] px-5 sm:px-8">
-          <Reveal>
-            <p className="ps-caps" style={{ color: "var(--ps-accent)" }}>
-              Boutiques
-            </p>
-          </Reveal>
-          <MaskLines
-            as="h2"
-            className="ps-display mt-6 text-[2.4rem] leading-none sm:text-[3.8rem]"
-            delay={100}
-            lines={["Five rooms,", <span key="appt" className="ps-display-i">by appointment.</span>]}
-          />
-          <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
-            {[
-              ["Mumbai", "Colaba Causeway"],
-              ["New Delhi", "Chanakyapuri"],
-              ["Paris", "Rue Saint-Honoré"],
-              ["Milan", "Via Montenapoleone"],
-              ["New York", "Madison Avenue"],
-            ].map(([city, street], i) => (
-              <Reveal key={city} delay={stagger(i)}>
-                <div className="pt-4" style={{ borderTop: "1px solid var(--ps-line-strong)" }}>
-                  <p className="ps-display text-[1.5rem]">{city}</p>
-                  <p className="mt-1.5 text-[.8rem] font-light" style={{ color: "var(--ps-muted)" }}>
-                    {street}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal delay={500}>
-            <Link href="/contact" className="ps-btn ps-btn-solid mt-14">
+          <Reveal delay={200} className="mt-12">
+            <Link href="/contact" className="ps-btn ps-btn-solid">
               <span>Book an Appointment</span>
             </Link>
           </Reveal>

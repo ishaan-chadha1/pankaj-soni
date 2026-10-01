@@ -75,7 +75,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Belt-and-braces with the `scripting: none` block in globals.css, for
             browsers that do not support that media feature. */}
         <noscript>
-          <style>{`.ps-rise,.ps-mask>span{opacity:1!important;transform:none!important}.ps-sf{clip-path:none!important}`}</style>
+          <style>{`.ps-rise,.ps-mask>span{opacity:1!important;transform:none!important}`}</style>
         </noscript>
       </head>
       <body className="ps-root ps-grain">

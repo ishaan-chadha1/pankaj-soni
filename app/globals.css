@@ -852,363 +852,6 @@ body {
   }
 }
 
-/* ── Shoppable markers ─────────────────────────────────────────
-   See Hotspots.tsx. The layer sits in SplitFrame's unclipped overlay and
-   inherits its --plate-scale, which each marker undoes on itself. */
-.ps-shoppable {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.ps-shoppable .ps-hot {
-  pointer-events: auto;
-  /* The plate settles with the scroll, not on a timer — a transition here
-     would leave the counter-scale trailing the picture. */
-  transition: none;
-}
-
-/*
- * The anchor sits exactly on the coordinate and is deliberately NOT transformed:
- * a transform makes an element the containing block for its fixed-position
- * descendants, which threw the mobile sheet to -1237px instead of pinning it to
- * the viewport. The dot centres itself instead.
- */
-.ps-hot {
-  position: absolute;
-  z-index: 3;
-  /*
-   * Undo the plate's scale.
-   *
-   * The wrapper is scaled so that a marker's POSITION tracks the image — that
-   * is the whole point of putting them in it. But scaling the wrapper also
-   * enlarges everything drawn inside: labels go soft, the arm renders 6% longer
-   * than clampArms measured it, and the product card grows. Counter-scaling
-   * here nets the contents back to 1 while leaving the position transformed,
-   * because a scale about an element's own centre cannot move that element.
-   */
-  scale: calc(1 / var(--plate-scale, 1));
-  transition: scale 1.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Arm: line + label share one rotation, so the label lands at the line's end. */
-.ps-hot-arm {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform-origin: left center;
-  pointer-events: none;
-}
-
-.ps-hot-line {
-  display: block;
-  width: var(--arm);
-  height: 1.5px;
-  background: rgba(255, 255, 255, 0.95);
-  /* An ink hairline on both sides of the ivory, for the same reason the ring
-     has two edges: the leader crosses from cloth onto seamless and has to
-     survive the handover. */
-  box-shadow:
-    0 0 0 0.5px rgba(0, 0, 0, 0.35),
-    0 1px 4px rgba(0, 0, 0, 0.3);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.7s var(--ease);
-}
-
-/*
- * The label is for assistive tech only.
- *
- * Printed on the frame it landed wherever the leader happened to end — over the
- * framed picture, across the lamp — and a row of pale chips on a photograph
- * reads as a diagram, not a campaign. The name belongs in the card, which is
- * what the marker opens.
- */
-/* Carries the card at the leader's end. The arm is pointer-transparent so the
-   line never eats a hover, so the card has to re-enable events for itself. */
-.ps-hot-anchor {
-  position: absolute;
-  top: 0;
-  pointer-events: auto;
-  z-index: 6;
-  /*
-   * A ZERO-SIZE POINT at the end of the leader, and nothing else.
-   *
-   * It used to be the card's own box, counter-rotating with
-   * `rotate(-Ndeg) translate(0, -50%)`. That is fine while the leader points
-   * roughly east — but the two markers on a portrait frame point in opposite
-   * directions, and at N=187deg the counter-rotation is very nearly a 180deg
-   * flip, which mirrors the -50% that was supposed to centre the card. The
-   * card landed a full card-height (176px) above the line it was meant to hang
-   * off, while its twin at N=7deg sat correctly. Same code, opposite sign.
-   *
-   * Giving the anchor no size makes the rotation a pure spin about the leader's
-   * endpoint — no displacement to mirror. The card then centres itself inside
-   * an anchor whose net rotation is zero (arm +N, anchor -N), so a plain
-   * translateY(-50%) means what it says.
-   */
-  width: 0;
-  height: 0;
-  transform-origin: left center;
-}
-
-/* Hangs off the anchor point: left edge on it when the card opens right, right
-   edge on it when it opens left. The vertical nudge that rescues a card from
-   the top or bottom of the frame rides here too, in plain screen pixels,
-   rather than being appended to a transform the rotation would mangle. */
-.ps-hot-anchor > .ps-hot-card {
-  position: absolute;
-  top: 0;
-  transform: translateY(calc(-50% + var(--nudge-y, 0px)));
-}
-.ps-hot-anchor > .ps-hot-card[data-side="right"] {
-  left: 0;
-}
-.ps-hot-anchor > .ps-hot-card[data-side="left"] {
-  right: 0;
-}
-
-.ps-hot-label {
-  position: absolute;
-  /* Same pivot correction as the anchor above. */
-  transform-origin: left center;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* Draw on scroll-in, staggered. */
-.ps-shoppable[data-reveal="true"] .ps-hot-line {
-  transform: scaleX(1);
-  transition-delay: var(--hot-delay, 0ms);
-}
-
-/* Then retract, so six labels stop competing with the photograph. */
-.ps-shoppable[data-settled="true"] .ps-hot-line {
-  transform: scaleX(0);
-  transition-delay: 0ms;
-  transition-duration: 0.55s;
-}
-
-/* Hover, focus or an open card always wins over the settled state. */
-.ps-hot:hover .ps-hot-line,
-.ps-hot:focus-within .ps-hot-line,
-.ps-hot[data-open="true"] .ps-hot-line {
-  transform: scaleX(1);
-  transition-delay: 0ms;
-}
-
-.ps-hot-dot {
-  position: absolute;
-  left: 0;
-  top: 0;
-  /* centre on the anchor point, rather than transforming the anchor itself */
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  display: block;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  cursor: pointer;
-  /*
-   * A FROSTED LENS, not a hairline ring.
-   *
-   * The previous mark was a 19px ivory ring with a pinprick centre, drawn on
-   * the assumption that the photography underneath was warm walnut and cream
-   * cloth. This campaign is black crepe under hand-set silver crystal, and an
-   * ivory hairline laid over beadwork is indistinguishable from the beadwork —
-   * on the shoulder of the Noir Vine it simply disappeared.
-   *
-   * Three layers now carry it on ANY ground: a bright pinprick, a translucent
-   * dark disc that the photograph shows through blurred, and a ring that is
-   * ivory on its inside edge and ink on its outside. Whichever way the picture
-   * goes, one of the two edges is in contrast with it.
-   */
-  background:
-    radial-gradient(circle, #fff 0 3.1px, transparent 3.3px),
-    rgba(14, 13, 12, 0.34);
-  backdrop-filter: blur(2px) saturate(0.85);
-  border: 1.5px solid rgba(255, 255, 255, 0.97);
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.34),
-    0 3px 14px rgba(0, 0, 0, 0.45);
-  transition: transform 0.45s var(--ease), background 0.45s var(--ease),
-    border-color 0.45s var(--ease), box-shadow 0.45s var(--ease);
-}.ps-hot-dot::after {
-  content: "";
-  position: absolute;
-  inset: -8px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
-  opacity: 0;
-  animation: ps-hot-pulse 3s var(--ease) infinite;
-  animation-delay: var(--hot-delay, 0ms);
-  pointer-events: none;
-}
-/* Barely there. At full strength this read as a ripple sitting on the model's
-   face; it only needs to say "live", not draw attention to itself. */
-@keyframes ps-hot-pulse {
-  0% { transform: scale(0.8); opacity: 0; }
-  22% { opacity: 0.75; }
-  100% { transform: scale(1.75); opacity: 0; }
-}
-
-.ps-hot-dot:hover,
-.ps-hot-dot:focus-visible,
-.ps-hot[data-open="true"] .ps-hot-dot {
-  transform: translate(-50%, -50%) scale(1.28);
-  background: radial-gradient(circle, #fff 0 3px, rgba(255, 255, 255, 0.22) 3.2px);
-  border-color: #fff;
-}
-/* One piece at a time: the others recede so the open leader is the only thing
-   competing with the photograph. */
-.ps-shoppable[data-focus="true"] .ps-hot:not([data-open="true"]) {
-  opacity: 0.28;
-}
-.ps-shoppable[data-focus="true"] .ps-hot:not([data-open="true"]) .ps-hot-dot::after {
-  animation: none;
-}
-.ps-hot {
-  transition: opacity 0.5s var(--ease);
-}
-
-.ps-hot-card {
-  position: relative;
-  width: 268px;
-  max-width: min(268px, 82vw);
-  background: var(--ps-surface);
-  border: 1px solid var(--ps-line);
-  box-shadow: 0 26px 64px -26px rgba(0, 0, 0, 0.38);
-  padding: 0.9rem;
-  /* Unfurls from the point the line stops, after the line has drawn. */
-  transform-origin: var(--card-origin, left center);
-  animation: ps-hot-unfurl 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
-}
-/* An animation on `transform` outranks the positioning transform above, so the
-   pinned card fades and slides on `opacity` and `translate` instead — separate
-   properties, which compose with the transform rather than replacing it. */
-.ps-hot-anchor > .ps-hot-card {
-  animation-name: ps-hot-unfurl-pinned;
-}
-/* A pip where the leader meets the card, so the two read as one object. */
-.ps-hot-card[data-side]::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 5px;
-  height: 5px;
-  margin-top: -2.5px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.16);
-}
-.ps-hot-card[data-side="right"]::before {
-  left: -3px;
-}
-.ps-hot-card[data-side="left"]::before {
-  right: -3px;
-}
-/* The sheet has no leader to meet. */
-.ps-hot-card[data-narrow="true"]::before {
-  display: none;
-}
-@keyframes ps-hot-unfurl-pinned {
-  from {
-    opacity: 0;
-    translate: var(--unfurl-from, -12px) 0;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-@keyframes ps-hot-unfurl {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateX(var(--unfurl-from, -10px));
-  }
-}
-
-@keyframes ps-hot-fade {
-  from {
-    opacity: 0;
-  }
-}
-
-
-/* Narrow frame: the crop is portrait, there is no empty frame to draw a leader
-   into, and the marker has to be thumb-sized. Driven by the measured aspect
-   rather than a media query, so a narrow frame on a wide screen behaves too. */
-.ps-hot[data-narrow="true"] .ps-hot-arm {
-  display: none;
-}
-/* A pearl, not a badge: paper-filled with a hairline of accent around it, so it
-   reads as a piece of jewellery resting on the photograph rather than a numbered
-   sticker stamped over it. The touch target is carried by ::before, so the mark
-   stays small while the thumb target does not. */
-.ps-hot[data-narrow="true"] .ps-hot-dot {
-  width: 28px;
-  height: 28px;
-}
-.ps-hot[data-narrow="true"] .ps-hot-dot::after {
-  inset: -8px;
-}
-/* Thumb target well beyond the visible dot: 15px of jewellery, 45px of target.
-   Shrinking the mark without growing this took the tap area down to 37px. */
-.ps-hot[data-narrow="true"] .ps-hot-dot::before {
-  content: "";
-  position: absolute;
-  inset: -12px;
-  border-radius: 50%;
-}
-.ps-hot[data-narrow="true"][data-open="true"] .ps-hot-dot {
-  transform: translate(-50%, -50%) scale(1.22);
-}
-
-/* Narrow frame: the card becomes a sheet pinned to the bottom of the viewport
-   rather than a callout that would not fit beside the dot. */
-.ps-hot-card[data-narrow="true"] {
-  position: fixed;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  top: auto;
-  width: auto;
-  max-width: none;
-  transform: none;
-  z-index: 120;
-  animation-name: ps-hot-sheet-in;
-  box-shadow: 0 -10px 50px -12px rgba(0, 0, 0, 0.34);
-}
-.ps-hot-card[data-narrow="true"][data-v] {
-  top: auto;
-  bottom: 12px;
-  transform: none;
-}
-@keyframes ps-hot-sheet-in {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ps-hot-line {
-    transition: none !important;
-  }
-  .ps-hot-dot::after {
-    animation: none;
-  }
-  .ps-hot-card {
-    animation: none;
-  }
-}
-
 /* ── The loom ──────────────────────────────────────────────────── */
 
 /*
@@ -1867,257 +1510,6 @@ body {
   }
 }
 
-/* ── Scroll frame ──────────────────────────────────────────────────
-   See ScrollFrame in Motif.tsx. --f is written from scroll, 0 closed -> 1
-   open. Starts closed only once scripting is known to run. */
-.ps-sframe {
-  --f: 0;
-  clip-path: inset(
-    calc(var(--fy) * (1 - var(--f))) calc(var(--fx) * (1 - var(--f)))
-  );
-}
-.ps-sframe-in {
-  height: 100%;
-  width: 100%;
-  scale: calc(1 + var(--z) * (1 - var(--f)));
-}
-@media (scripting: none) {
-  .ps-sframe {
-    --f: 1 !important;
-  }
-}
-
-/* ── Split frame ───────────────────────────────────────────────────
-   See SplitFrame in Motif.tsx. The clip is a one-shot transition on
-   [data-open]; --s (0 -> 1) is written from scroll and settles the
-   picture — and any overlay — together. */
-.ps-sfwrap {
-  --reveal-t: 1.5s;
-  position: relative;
-  --plate-scale: calc(1 + var(--z) * (1 - var(--s, 0)));
-}
-.ps-sf {
-  position: relative;
-  height: 100%;
-  overflow: hidden;
-  transition: clip-path var(--reveal-t) var(--e-inout) var(--split-delay, 0ms);
-}
-.ps-sf-in {
-  height: 100%;
-  width: 100%;
-  scale: var(--plate-scale);
-  transition:
-    translate var(--reveal-t) var(--e-out) var(--split-delay, 0ms),
-    filter var(--reveal-t) ease var(--split-delay, 0ms),
-    opacity calc(var(--reveal-t) * 0.8) ease var(--split-delay, 0ms);
-}
-
-/* The closed state of each reveal; [data-open] undoes all of them. */
-[data-v="split"] > .ps-sf {
-  clip-path: inset(0 50% 0 50%);
-}
-[data-v="rise"] > .ps-sf {
-  clip-path: inset(100% 0 0 0);
-}
-[data-v="wipe"] > .ps-sf {
-  clip-path: inset(0 100% 0 0);
-}
-[data-v="wipe-r"] > .ps-sf {
-  clip-path: inset(0 0 0 100%);
-}
-[data-v="slide"] > .ps-sf > .ps-sf-in {
-  translate: 0 102%;
-}
-[data-v="focus"] > .ps-sf > .ps-sf-in {
-  filter: blur(14px) saturate(0.6);
-  opacity: 0;
-}
-.ps-sfwrap[data-v="focus"] {
-  --reveal-t: 1.8s;
-}
-.ps-sfwrap[data-open] > .ps-sf {
-  clip-path: inset(0 0 0 0);
-}
-.ps-sfwrap[data-open] > .ps-sf > .ps-sf-in {
-  translate: 0 0;
-  filter: none;
-  opacity: 1;
-}
-
-/* A phone scrolls past frames faster than a desk does; the reveals keep up. */
-@media (max-width: 767px) {
-  .ps-sfwrap {
-    --reveal-t: 1s;
-  }
-  .ps-sfwrap[data-v="focus"] {
-    --reveal-t: 1.2s;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ps-sf,
-  .ps-sf-in {
-    transition: none;
-  }
-}
-.ps-sf-in > img,
-.ps-sf-in > video {
-  display: block;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
-/* Unclipped, so a marker's card can reach past the frame; scaled with the
-   picture, so each marker stays on its garment. */
-.ps-sf-over {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  scale: var(--plate-scale);
-  pointer-events: none;
-  opacity: 0;
-  /* Only once the reveal has all but finished, whichever way it travels —
-     a fixed delay let a dot land on picture a wipe had not reached yet. */
-  transition: opacity 0.6s ease calc(var(--split-delay, 0ms) + var(--reveal-t) * 0.9);
-}
-.ps-sfwrap[data-open] > .ps-sf-over {
-  opacity: 1;
-}
-@media (scripting: none) {
-  .ps-sf {
-    clip-path: none !important;
-  }
-  .ps-sf-in {
-    translate: none !important;
-    filter: none !important;
-    opacity: 1 !important;
-  }
-  .ps-sfwrap {
-    --plate-scale: 1 !important;
-  }
-}
-
-/* ── Look rows ─────────────────────────────────────────────────────
-   After the project rows on maisonauge.com. A pinned column of one sixth
-   of the window at the left, the scrolling frames at seven twelfths, and
-   one twelfth of air either side of it. */
-.ps-row {
-  display: grid;
-  grid-template-columns: 16.667vw 58.333vw;
-  gap: 8.333vw;
-  padding-left: 8.333vw;
-  padding-top: 15svh;
-  min-height: 100svh;
-}
-.ps-row + .ps-row {
-  border-top: 1px solid var(--ps-line);
-}
-.ps-row:last-child {
-  padding-bottom: 15svh;
-}
-.ps-row-pin {
-  position: sticky;
-  top: var(--ps-header, 76px);
-  height: calc(100svh - var(--ps-header, 76px));
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 1.1rem;
-  padding-bottom: 7svh;
-  text-align: center;
-}
-.ps-row-name {
-  font-family: var(--font-ps-display), "Bodoni Moda", Georgia, serif;
-  font-size: clamp(1.4rem, 1.9vw, 2.1rem);
-  line-height: 1.05;
-  letter-spacing: 0.18em;
-  text-indent: 0.18em;
-  text-transform: uppercase;
-}
-.ps-row-tags {
-  font-size: 0.58rem;
-  letter-spacing: 0.3em;
-  color: var(--ps-muted);
-}
-.ps-row-cover {
-  display: block;
-  width: 100%;
-  margin-top: 0.9rem;
-}
-.ps-row-index {
-  font-size: 0.55rem;
-  letter-spacing: 0.3em;
-  color: var(--ps-faint);
-}
-.ps-row-media {
-  display: flex;
-  flex-direction: column;
-  gap: 15svh;
-}
-.ps-row-block-pair {
-  padding-top: 15svh;
-}
-.ps-row-pair {
-  display: flex;
-  gap: 8vw;
-}
-.ps-row-pair > * {
-  flex: 1;
-}
-/* The second of the pair sits a step higher, so the two never line up. */
-.ps-row-step {
-  transform: translateY(-15svh);
-}
-.ps-row-line {
-  width: 71%;
-  margin-top: 2.2rem;
-  font-size: 0.8rem;
-  line-height: 1.6;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ps-text);
-}
-
-/* A phone has no room for a pinned column: cover, name, then the frames. */
-@media (max-width: 767px) {
-  .ps-row {
-    grid-template-columns: 1fr;
-    gap: 3.5rem;
-    padding: 5rem 1.25rem 0;
-  }
-  .ps-row-pin {
-    position: static;
-    height: auto;
-    padding-bottom: 0;
-  }
-  .ps-row-cover {
-    width: 70%;
-  }
-  .ps-row-media {
-    gap: 4rem;
-  }
-  .ps-row-block-pair {
-    padding-top: 0;
-  }
-  .ps-row-pair {
-    gap: 1rem;
-  }
-  .ps-row-step {
-    transform: translateY(-2.5rem);
-  }
-  .ps-row-line {
-    width: 100%;
-  }
-}
-
-/* An open card has to paint over the frame beside it. Each frame sits in a
-   Parallax layer — its own stacking context — so lift the whole layer. */
-.ps-rows .ps-row-block > *:has(.ps-hot[data-open="true"]),
-.ps-rows .ps-row-pair > *:has(.ps-hot[data-open="true"]) {
-  position: relative;
-  z-index: 30;
-}
-
 /* ── Category hero ─────────────────────────────────────────────────
    See CategoryHero.tsx. --e (0 closed -> 1 open) is written from scroll;
    everything here is a function of it. */
@@ -2340,13 +1732,81 @@ body {
 }
 
 /* ── Product gallery ───────────────────────────────────────────────
-   See Gallery.tsx. A stack on a desk; a full-bleed swipe on a phone. */
+   See Gallery.tsx. One horizontal carousel at every size — native
+   scroll-snap; arrows on a desk, a swipe on a phone, where it also runs out
+   to the screen edges. */
+.ps-gallery {
+  position: relative;
+}
 .ps-gallery-track {
-  display: grid;
-  gap: 1.25rem;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.ps-gallery-track::-webkit-scrollbar {
+  display: none;
+}
+.ps-gallery-slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
 }
 .ps-gallery-nav {
-  display: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.9rem;
+}
+.ps-gallery-count {
+  font-size: 0.54rem;
+  color: var(--ps-faint);
+}
+.ps-gallery-bars {
+  display: flex;
+  gap: 6px;
+}
+.ps-gallery-bars button {
+  width: 22px;
+  height: 2px;
+  padding: 0;
+  background: var(--ps-line-strong);
+  transition: background 0.4s var(--ease), width 0.4s var(--ease);
+}
+.ps-gallery-bars button[data-on="true"] {
+  width: 36px;
+  background: var(--ps-text);
+}
+/* Arrows: over the picture's edges, quiet until the gallery is hovered. */
+.ps-gallery-arrow {
+  position: absolute;
+  top: calc(50% - 1.6rem);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ps-bg) 86%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--ps-text);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+.ps-gallery:hover .ps-gallery-arrow:not(:disabled),
+.ps-gallery-arrow:focus-visible {
+  opacity: 1;
+}
+.ps-gallery-arrow:disabled {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+.ps-gallery-arrow[data-dir="prev"] {
+  left: 1rem;
+}
+.ps-gallery-arrow[data-dir="next"] {
+  right: 1rem;
 }
 @media (max-width: 1023px) {
   .ps-gallery {
@@ -2354,46 +1814,11 @@ body {
     margin-inline: -1.25rem;
     margin-top: -1rem;
   }
-  .ps-gallery-track {
-    display: flex;
-    gap: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-  }
-  .ps-gallery-track::-webkit-scrollbar {
-    display: none;
-  }
-  .ps-gallery-slide {
-    flex: 0 0 100%;
-    scroll-snap-align: start;
-  }
   .ps-gallery-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.9rem 1.25rem 0;
+    padding-inline: 1.25rem;
   }
-  .ps-gallery-count {
-    font-size: 0.54rem;
-    color: var(--ps-faint);
-  }
-  .ps-gallery-bars {
-    display: flex;
-    gap: 6px;
-  }
-  .ps-gallery-bars button {
-    width: 22px;
-    height: 2px;
-    padding: 0;
-    background: var(--ps-line-strong);
-    transition: background 0.4s var(--ease), width 0.4s var(--ease);
-  }
-  .ps-gallery-bars button[data-on="true"] {
-    width: 36px;
-    background: var(--ps-text);
+  .ps-gallery-arrow {
+    display: none;
   }
 }
 @media (min-width: 640px) and (max-width: 1023px) {
@@ -2447,11 +1872,6 @@ body {
   }
 }
 
-/* Under its own heading on the Maison page, the first row does not need the
-   full 15svh of air a row opening a page would. */
-.ps-rows > .ps-row:first-child {
-  padding-top: 5svh;
-}
 
 /* ── The rooms (landing) ───────────────────────────────────────────
    Three across on a desk; on a phone a swipe, each room most of the width
@@ -2481,10 +1901,27 @@ body {
   }
 }
 
-/* The marker layers settle with their pictures and are deliberately
-   unclipped, so at the start of the settle they reach past the window edge.
-   `clip`, not `hidden`: it trims the overhang without making this a scroll
-   container, which would break the pinned column. */
-.ps-rows {
-  overflow-x: clip;
+
+/* ── Maison timeline ───────────────────────────────────────────────
+   One row of years you move along — a swipe on a phone, a scroll on a desk
+   — with the next year always showing at the edge. */
+.ps-timeline {
+  display: flex;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 0.5rem;
+}
+.ps-timeline::-webkit-scrollbar {
+  display: none;
+}
+.ps-timeline > li {
+  flex: 0 0 min(78%, 22rem);
+  scroll-snap-align: start;
+}
+@media (min-width: 1024px) {
+  .ps-timeline > li {
+    flex-basis: calc((100% - 3 * 1.75rem) / 3.4);
+  }
 }
