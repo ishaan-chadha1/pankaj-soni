@@ -7,7 +7,6 @@ const COLS = [
     links: [
       { label: "Our Story", href: "/about" },
       { label: "The Atelier", href: "/about" },
-      { label: "The Cloth Room", href: "/atelier" },
       { label: "Sustainability", href: "/world" },
       { label: "Careers", href: "/world" },
     ],

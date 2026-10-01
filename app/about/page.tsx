@@ -170,8 +170,8 @@ export default function AboutPage() {
               <Link href="/contact" className="ps-btn ps-btn-solid">
                 <span>Book an Appointment</span>
               </Link>
-              <Link href="/atelier" className="ps-btn">
-                <span>Enter the Cloth Room</span>
+              <Link href="/world" className="ps-btn">
+                <span>The Maison</span>
               </Link>
             </div>
           </Reveal>

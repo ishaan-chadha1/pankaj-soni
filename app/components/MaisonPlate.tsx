@@ -39,8 +39,7 @@ export default function MaisonPlate({
 }) {
   return (
     <>
-      {/* The mark arrives first and a glint crosses it; the name rises under
-          it. Same timing scale as the letters, so both tempos keep it. */}
+      {/* The mark arrives first; the name rises under it. */}
       <div
         className="mb-8 sm:mb-10"
         style={{
@@ -49,11 +48,7 @@ export default function MaisonPlate({
           transition: `opacity ${letterMs}ms ease, transform ${Math.round(letterMs * 1.2)}ms cubic-bezier(.16,1,.3,1)`,
         }}
       >
-        {shown ? (
-          <Monogram className="h-16 w-auto sm:h-24" sheen />
-        ) : (
-          <Monogram className="h-16 w-auto sm:h-24" />
-        )}
+        <Monogram className="h-16 w-auto sm:h-24" />
       </div>
 
       <div className="overflow-hidden px-6 pb-[0.14em]">

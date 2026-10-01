@@ -243,12 +243,6 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
                 </Reveal>
               ))}
             </div>
-
-            <Reveal delay={400} className="mt-16 text-center">
-              <Link href="/atelier" className="ps-btn">
-                <span>Compose Your Own</span>
-              </Link>
-            </Reveal>
           </div>
         </section>
       ) : null}

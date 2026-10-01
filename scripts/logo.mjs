@@ -3,12 +3,10 @@
  *
  *   npm run logo
  *
- * THE MASTER IS A RASTER. What arrived as `Logo.svg` is a 1600x3200 PNG
- * wrapped in an SVG tag (a Photoshop export) — no paths at all — and the PNG
- * is the same picture. Until a true vector export comes out of the CorelDRAW
- * file, this traces one: the alpha channel is the shape, so it is traced as
- * a silhouette with potrace and the gold is put back afterwards as a
- * gradient, using colours sampled from the master itself.
+ * THE MASTER is `Logo (2).svg`, a true vector in one flat gold (#cba542). It
+ * is rendered at high density and its alpha traced with potrace, which splits
+ * the mark from the name at the gap between them and normalises everything
+ * into two clean paths. The house uses the gold flat — no shading.
  *
  * Output:
  *   lib/brand.ts              path data + gold stops, for inline <svg> in React
@@ -27,7 +25,7 @@ import sharp from "sharp";
 import potrace from "potrace";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SRC = join(ROOT, "media-in", "logo", "Logo (2).png");
+const SRC = join(ROOT, "media-in", "logo", "Logo (2).svg");
 const BRAND = join(ROOT, "public", "brand");
 mkdirSync(BRAND, { recursive: true });
 
@@ -36,7 +34,9 @@ mkdirSync(BRAND, { recursive: true });
    stairs, which is most of the difference in the lettering. */
 const SCALE = 2;
 
-const trim = await sharp(SRC).trim({ threshold: 1 }).toBuffer({ resolveWithObject: true });
+// The vector rendered at 2x its own size (1600px wide) is plenty for potrace.
+const rendered = await sharp(SRC, { density: 144 }).png().toBuffer();
+const trim = await sharp(rendered).trim({ threshold: 1 }).toBuffer({ resolveWithObject: true });
 const W = trim.info.width;
 const H = trim.info.height;
 

@@ -327,6 +327,9 @@ body {
 
 .ps-wordmark {
   font-family: var(--font-ps-display), "Bodoni Moda", Georgia, serif;
+  /* The logo's own gold (#cba542, lib/brand.ts) — the name and the mark are
+     one object, so they are one colour. */
+  color: #cba542;
   text-transform: uppercase;
   letter-spacing: 0.34em;
   font-weight: 500;

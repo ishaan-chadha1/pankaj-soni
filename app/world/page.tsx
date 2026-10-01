@@ -197,9 +197,6 @@ export default function WorldPage() {
               <Link href={`/p/${hero.slug}`} className="ps-btn ps-btn-solid">
                 <span>{hero.soldOut ? "View the Piece" : `From ${money(hero.variants[0].price)}`}</span>
               </Link>
-              <Link href="/atelier" className="ps-caps ps-link ps-link-on">
-                Compose Your Own
-              </Link>
             </Reveal>
           </div>
         </div>
@@ -305,8 +302,8 @@ export default function WorldPage() {
             ))}
           </div>
           <Reveal delay={500}>
-            <Link href="/atelier" className="ps-btn ps-btn-solid mt-14">
-              <span>Enter the Cloth Room</span>
+            <Link href="/contact" className="ps-btn ps-btn-solid mt-14">
+              <span>Book an Appointment</span>
             </Link>
           </Reveal>
         </div>

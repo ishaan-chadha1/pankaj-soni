@@ -284,8 +284,8 @@ export default function CheckoutView() {
                 <Link href="/" className="ps-btn ps-btn-solid">
                   <span>Return to the Maison</span>
                 </Link>
-                <Link href="/atelier" className="ps-btn">
-                  <span>The Cloth Room</span>
+                <Link href="/c/women" className="ps-btn">
+                  <span>Continue Shopping</span>
                 </Link>
               </div>
             </section>
