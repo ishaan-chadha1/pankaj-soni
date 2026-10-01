@@ -79,9 +79,12 @@ const FILMS = [
   {
     match: "SNIPPET 7",
     slug: "film-women",
-    in: 6.16,
-    seconds: 7.8,
-    alt: "A model in a burgundy gown worked with velvet flowers, then in a grey column gown with a crystal hem.",
+    /* Opens on the grey column, full length and dead centre. It used to open
+       on the burgundy close-up at 6.16, where she stands left of centre — and
+       that first frame is also the poster, so the hero opened off-centre. */
+    in: 8.12,
+    seconds: 5.9,
+    alt: "A model in a grey column gown with a crystal hem, then in a burgundy gown worked with velvet flowers.",
   },
   {
     match: "SNIPPET 7",

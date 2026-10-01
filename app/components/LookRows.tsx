@@ -137,8 +137,10 @@ export default function LookRows() {
           <div className="ps-row-media">
             <div className="ps-row-block">
               <Parallax speed={0.9}>
+                {/* Landscape on a desk; on a phone a 1.65:1 crop of a portrait
+                    plate kept 45% of it and blew that up past its resolution. */}
                 <SplitFrame
-                  className="aspect-[1.65/1]"
+                  className="aspect-[1.65/1] max-md:aspect-[4/5]"
                   zoom={0.22}
                   variant={WIDE_REVEAL[i % WIDE_REVEAL.length]}
                   overlay={<ShopFrame id={`${l.name}-wide`} hotspots={l.wide.hots} focus={l.wide.focus} />}

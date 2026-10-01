@@ -9,6 +9,9 @@ import CategoryGrid from "./CategoryGrid";
 import CategoryHero from "./CategoryHero";
 import { stagger } from "@/lib/motion";
 
+/* Women opens with the film over the O-M-E of its name. */
+const COVER_WOMEN: [number, number] = [1, 3];
+
 /* Every room opens on a film of its own. */
 const FILM: Record<Category, string> = {
   women: "film-women",
@@ -63,7 +66,8 @@ export default async function CategoryPage(props: PageProps<"/c/[category]">) {
         tagline={c.tagline}
         film={FILM[c.slug as Category]}
         count={products.length}
-        fill={c.slug === "men"}
+        fill={c.slug === "men" || c.slug === "women"}
+        cover={c.slug === "women" ? COVER_WOMEN : undefined}
       />
 
       <section className="mx-auto max-w-[1560px] px-5 pb-28 pt-8 sm:px-8">

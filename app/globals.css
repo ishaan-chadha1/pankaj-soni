@@ -2263,8 +2263,27 @@ body {
     calc((100% - (100svh - var(--ps-chrome, 110px)) * 0.5625 * 0.54) / 2 * (1 - var(--e)))
   );
 }
+/* Framed from near the top: the face sits in the upper quarter of every
+   shot, and at 18% the landscape crop cut through the forehead. */
+/* Men: framed on the clothes — the jacket and shirt — not the face. */
 .ps-cathero[data-fill] .ps-cathero-intro video {
-  object-position: 50% 18%;
+  object-position: 50% 45%;
+}
+
+/* COVER: the closed box spans named letters of the title (measured into
+   --cl/--cr/--ct/--cb by CategoryHero) and opens to the whole panel. */
+.ps-cathero[data-fill][data-cover] .ps-cathero-frame {
+  clip-path: inset(
+    calc(var(--ct, 10%) * (1 - var(--e)))
+    calc(var(--cr, 30%) * (1 - var(--e)))
+    calc(var(--cb, 10%) * (1 - var(--e)))
+    calc(var(--cl, 30%) * (1 - var(--e)))
+  );
+}
+/* Women: framed on the gowns — the crystal bodice and the velvet flowers —
+   not the face. */
+.ps-cathero[data-fill][data-cover] .ps-cathero-intro video {
+  object-position: 50% 50%;
 }
 
 /* A phone is portrait already: the box opens to the whole stage. */
@@ -2460,4 +2479,12 @@ body {
     flex: 0 0 78%;
     scroll-snap-align: start;
   }
+}
+
+/* The marker layers settle with their pictures and are deliberately
+   unclipped, so at the start of the settle they reach past the window edge.
+   `clip`, not `hidden`: it trims the overhang without making this a scroll
+   container, which would break the pinned column. */
+.ps-rows {
+  overflow-x: clip;
 }

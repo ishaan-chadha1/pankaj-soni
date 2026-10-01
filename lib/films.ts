@@ -43,11 +43,11 @@ export const FILMS: Record<string, Film> = {
   },
   "film-women": {
     "slug": "film-women",
-    "alt": "A model in a burgundy gown worked with velvet flowers, then in a grey column gown with a crystal hem.",
+    "alt": "A model in a grey column gown with a crystal hem, then in a burgundy gown worked with velvet flowers.",
     "width": 720,
     "height": 1280,
-    "seconds": 7.8,
-    "blur": "data:image/webp;base64,UklGRt4AAABXRUJQVlA4INIAAABQBgCdASoUACQAPt1gpE4opaMiKqwBEBuJYwC7AywTmofoeJE3mytl5m1GVr+Dn8zmFMAHoG2wbCySwAD+78iIfvNTO3dZDbGEdBXi9J47sVsQZkjFSQzQihY8Swmk4z2dXNSrAOKKx6SUaeahRX1P7Gind/uHK/aDlg6oxIm3M+YkEhUuQaLiCYpEV9DSDqejadSodoSWl8I0Hs+/rbu4jPl9qgFDkceqV02Puj7EW6JUYNqI8CeNxCRw1mlKJ2suf3+LF4nLC73k0/KDhIf4AAA="
+    "seconds": 5.9,
+    "blur": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAADwBACdASoUACQAPt1mrFCopSQiqrgIARAbiWcAz2QitzPyy7M85zos++KOw0fjsKAA/u/ErJwIIg4Zns9DBLpFPS2tne/GyCvFVjiP8jp/A9Q+IywRYZPql6LJ2TvrDnyYLQUUjXeY37hAwWDzJ2F4P2Dacap2FilYM8lr5lEzO0EtaWsAAAAA"
   },
   "film-men": {
     "slug": "film-men",

@@ -29,6 +29,7 @@ export default function CategoryHero({
   film,
   count,
   fill = false,
+  cover,
 }: {
   label: string;
   tagline: string;
@@ -40,6 +41,12 @@ export default function CategoryHero({
    * on a wide window. On trial on Men only, pending a decision.
    */
   fill?: boolean;
+  /**
+   * With `fill`: the closed box spans these letters of the name (first and
+   * last index, inclusive) and most of the stage's height, then opens to the
+   * whole panel. Without it the closed box is the default portrait.
+   */
+  cover?: [number, number];
 }) {
   const section = useRef<HTMLElement | null>(null);
   const stage = useRef<HTMLDivElement | null>(null);
@@ -109,12 +116,30 @@ export default function CategoryHero({
       const room = document.documentElement.clientWidth * 0.94;
       const cap = window.innerHeight * 0.42;
       el.style.setProperty("--fs", `${Math.min(cap, room / openEm).toFixed(1)}px`);
+
+      // The closed box, from where the covered letters actually land at this
+      // size — measured with the parting switched off, as it is when closed.
+      const st = stage.current;
+      if (cover && st) {
+        h.style.setProperty("--probe", "1");
+        const a = h.children[cover[0]]?.getBoundingClientRect();
+        const b = h.children[cover[1]]?.getBoundingClientRect();
+        h.style.removeProperty("--probe");
+        if (a && b) {
+          const box = st.getBoundingClientRect();
+          const pad = (b.right - a.left) * 0.04;
+          el.style.setProperty("--cl", `${Math.max(0, a.left - box.left - pad).toFixed(1)}px`);
+          el.style.setProperty("--cr", `${Math.max(0, box.right - b.right - pad).toFixed(1)}px`);
+          el.style.setProperty("--ct", `${(box.height * 0.1).toFixed(1)}px`);
+          el.style.setProperty("--cb", `${(box.height * 0.1).toFixed(1)}px`);
+        }
+      }
     };
     fit();
     document.fonts?.ready.then(fit).catch(() => {});
     window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
-  }, [letters.length]);
+  }, [letters.length, cover]);
 
   /* Plays only while on screen and never under reduced motion; the poster is
      the film's own first frame, so either way the picture is right. */
@@ -141,6 +166,7 @@ export default function CategoryHero({
       className="ps-cathero"
       data-shown={shown}
       data-fill={fill || undefined}
+      data-cover={cover ? "" : undefined}
       aria-label={`${label} — ${tagline}`}
     >
       <div ref={stage} className="ps-cathero-stage">
