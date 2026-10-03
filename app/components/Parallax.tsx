@@ -1,5 +1,6 @@
 "use client";
 
+import { setForImage } from "@/lib/photos";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 /**
@@ -73,6 +74,8 @@ export function HeroPlate({ src, alt = "" }: { src: string; alt?: string }) {
     <div className="absolute inset-0 overflow-hidden">
       <img
         src={src}
+        srcSet={setForImage(src)}
+        sizes="100vw"
         alt={alt}
         className="h-full w-full object-cover"
         style={{

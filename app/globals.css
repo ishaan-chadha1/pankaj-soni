@@ -2309,3 +2309,29 @@ body {
 .ps-craft {
   overflow-x: clip;
 }
+
+/* Contact — the five rooms: a row of five on a desk, a swipe row on a phone. */
+.ps-rooms-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 62vw;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  margin-inline: -20px;
+  padding-inline: 20px;
+  scroll-padding-inline: 20px;
+}
+.ps-rooms-row::-webkit-scrollbar { display: none; }
+.ps-rooms-row > * { scroll-snap-align: start; }
+@media (min-width: 1024px) {
+  .ps-rooms-row {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}

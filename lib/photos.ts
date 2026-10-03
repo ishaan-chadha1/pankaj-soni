@@ -19,150 +19,227 @@ export type Photo = {
 export const PHOTOS: Record<string, Photo> = {
   "noir-vine-01": {
     "slug": "noir-vine-01",
-    "alt": "Model in a black bandhgala with silver crystal vine embroidery across the shoulder and sleeve.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAAAwBQCdASoUABsAPt1kqU+opaOiKAqpEBuJZwAD5bkSoUSvl2Cly2zPGfSQdqnaMmC5wAD+3qRezDaskr8N4pHMe9s8v+BdVKbztRCDnC7kZZsKsmqDjRYXGprBWM20p/eEvsoGTCg8VduAU+feAfWXoRpWSbrettAA1BYENmiPmJOXHr4+a14i441qHZWqZ5mOBFX2twe7M6/2Nu7LZRgl4V2cfvmgAAA="
+    "alt": "Model in a long navy sherwani with scalloped metallic embroidery at the hem and cuffs.",
+    "width": 3935,
+    "height": 5247,
+    "blur": "data:image/webp;base64,UklGRqoAAABXRUJQVlA4IJ4AAABQBACdASoUABsAPt1iqE4opaOyMBgIAkAbiWUAx+QQptC0ZD6wupxz47awAP7vw7aP4AALFvIc/gz3VIkt9SuYNpjGNktLASHCPVNf2BNVFnkMymKjsTDCt9NdhHgCjfRdhLBar78TlXRxne+5ddYNCyr+mKYxCrqvFMccPLhe9gB9vH+1vkqrW382Ey6JMEdKVnPgdWr/TwTCyGgAAA=="
   },
   "noir-vine-02": {
     "slug": "noir-vine-02",
-    "alt": "Close study of the crystal vine embroidery on the shoulder of a black bandhgala.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4IKoAAAAwBQCdASoUABsAPt1kp1AopSMiqAqpEBuJZwDLpAzpsXmbNssLfKqxpxXGu/HUVh254AD+bEzAnorRuDS6aeX9T75LozyDDzEuLmR2N95dr/gbX/jMzxmJeXnnWMuvgniq6RsdarsJUUkb2wujPPYu8A37Qk4FhtRqWmhlbjnsAA0nIo/Tj+w5//T5apmBNDPiLKc5bCg6ZS3ru7LW/W5N95yEMRaDvAAAAA=="
+    "alt": "Close detail of the scalloped metallic hem and cuff on a navy sherwani.",
+    "width": 3663,
+    "height": 4885,
+    "blur": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4INgAAABwBQCdASoUABsAPt1aqE6opKOiMBgIARAbiUAW2WWAGuDDS5zRtxwJA2Z4Fosjl2WSMPCAAP7SsrA61gJklE5eWxqdbXodfuHHUIzPDvc4RX1L7qpr+pxaR9+IGUCq59X1Pz5RT2w+4vrmn8fW3/6pH+ZZIMv6f0o8dVOoszi0HH8Usif9HddfsRvZ7QvKjozuKDMsiZEdSlKifgmwAsMZCk8JJ5C0G4mOoEmhTEN8L41O9uN9bj/1zTu9zDuS3//cHl75S9OGRATQg5hQNLnH1LT6lDwAAAA="
   },
   "nocturne-gown-01": {
     "slug": "nocturne-gown-01",
-    "alt": "Model in a black strapless column gown with a crystal-set bodice and peplum hem.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAABQBACdASoUABsAPt1eqU4opSOjMBgIARAbiWcAAC2rCp5yQEtxvtHlh2YIAP7nM03ePUgCxGR72Y2j7dWTsaXT86u1Cy7aYv5DETnJWBTXvy8v2rJmgQy1PE2ZQ+0Absw/FeIXMXa4+hH0joObMuL2u24ud4ycrinhC8f/YugAAA=="
+    "alt": "Model in a navy strapless corset top and draped column skirt, a line of crystal across the bodice.",
+    "width": 3945,
+    "height": 5260,
+    "blur": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAABwBACdASoUABsAPt1kqE2opaOiMBgIARAbiWcAzfwMZ/ft9/AYnBZmEg42AAD+79dGzUUyr1w0kE4GtQXDRF4r6QffL+T8nC1cXqoRpDkscmT55IoQQGAdgC+GVShjvUWZdnMPhJhz85r5jeEP5XEmpccvuXcE2nGEl9qjW22M2yjAHnoegTXyhAA="
   },
   "nocturne-gown-02": {
     "slug": "nocturne-gown-02",
-    "alt": "Black strapless gown with crystal beading at the bust and waist.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAAAQBQCdASoUABsAPt1cp0yopSOiMBgMARAbiWMAy2gPDTE7lI4DBZh5eEglzkqrZtyAAP7evzo6IfVQdOFGQsrxf4S71Ckn5npQ7cnQk/+WunG2PqtTsd+mSd3Vq2bh2tTDxQMhG+dU0ujK5gpD4iwYNuT/g/y27NJbtnE1M6EM4Tb2IngatieH5iF/IBqETLaXbauLJC8MlUYAAAA="
+    "alt": "Navy pleated strapless top with a diagonal crystal line, worn over a draped skirt.",
+    "width": 3469,
+    "height": 4625,
+    "blur": "data:image/webp;base64,UklGRrwAAABXRUJQVlA4ILAAAAAQBQCdASoUABsAPt1mqlEopSOiqAgBEBuJQBYj7IAxUaNTeLUj8WWosw9/IW3vEE7AAP7qtT+Tydjlk1gpbVNszkh0nE7RH0L7K7CdhS1qOnDE+pWacv03GT5Tglkj8X7T/V3F2SovIel+3SfwfHq65n7Q0YYaALvgtTyftofW+CLTM5VRZJ1CnR/pvj4BJFmgrFnM7Sseszul00v1JcBtdFD3J8MCKYjcbiJp6AAAAA=="
   },
   "nocturne-gown-03": {
     "slug": "nocturne-gown-03",
-    "alt": "Full-length black column gown with a crystal peplum.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAAAwBQCdASoUABsAPt1YpkyopKOiMBgMARAbiWUAzf2MHHALgnIqvD4ZwmOD8vq0CuY1QAD+3oxdmagCuHF299foIRg4mIpny8vjvzxLrpYFeHcuYR+nZU9JUem13p9EH1HBZaWxv+OsZr16ha+hbnhmA/pH6TJMiurNrpbHrTrpiCtgtGdr535V0wRKWI1LTvmz1uIAgAA="
+    "alt": "Model in a navy pleated strapless top with crystal trim.",
+    "width": 3533,
+    "height": 4711,
+    "blur": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4INgAAADwBQCdASoUABsAPt1eqE0opSQiKA1REBuJYgCdMuI1O0kUzGe112nRY+nsGOk+abohLy4KD1FEVAD+79cVTcwkE2bQ40a/4oD12aalTHpBcsrqo4YA7K7OdybJbgjaeqp5NolONqkv0VPRm1G+aGSQEXSrzyFJ+NXoyyAxqSSB2PIY3qHdA4aIr6i3RKavvD8UHUVe16yKAMhdCfa25VOScIIN4VlHyV7yAnuwg8ai1ENWmUJ3eLG39LD5L67ItI5G9katwG9MaU/0TL7u4fWPZ56sNIqhBAA="
   },
   "nocturne-gown-04": {
     "slug": "nocturne-gown-04",
-    "alt": "Detail of the crystal-set neckline on a black strapless gown.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRsoAAABXRUJQVlA4IL4AAADwBQCdASoUABsAPt1kp1AopSMiqAqpEBuJYwCy7SAgxgwHul+pzbgY/MyQ7cQUhIZ5iulS2MY34AD+5zU2+qSyQpT19RzJZnxALsk0GO0wXNu+vDNhFRZbRLmSM8IJNQVQdmaNMCXocS5bJcDTpkcvWdMwNSYauIiiu0h4XGLi6/PBL8RgsJHeC+u5dgC2apXWxh1SPHnPPpFRrOZP7frsh7la2uz8QV3zS3BAqRnPflQ0+GzZ0nl+Fk4jJwAA"
+    "alt": "Model in a white pinstripe shirt with a navy claw-mark embroidery at the chest.",
+    "width": 3680,
+    "height": 4906,
+    "blur": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAABwBACdASoUABsAPt1kqE2opiOiMBgIARAbiWkA0JARfNc5Uk5YUOIc+QQAQAD+8dxN+kGS8hPnrLeOpJMOvljJScuwyMyRNKzMGNpyYUprzE+lLbsHegThFWKWu9oQ+Wz9iPVMjikQ7vpuzCvI+kV1WWo1VYPqS5kAAA=="
   },
   "silver-seam-01": {
     "slug": "silver-seam-01",
-    "alt": "Model in a black shawl-collar dinner jacket with crystal-encrusted front panels.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAADwAwCdASoUABsAPt1eo0yopSMiMBgMARAbiWcAACEgBI4SfBbODkZAAP7nQMLyW/sMf/waotteSDDeK7I6TZEyfUYszGZI9pxUWOYXVKXvUYd9UvPMOXg8Dq6BNYXpDrzBm/rPf5L8kefgwxVdY9n1fiXV+DSxzkqNSAS7sik1qb3C9TKpQR9JhJt5wIAA"
+    "alt": "Model in a black zip jacket hand-painted with white brushstrokes.",
+    "width": 3806,
+    "height": 5074,
+    "blur": "data:image/webp;base64,UklGRsYAAABXRUJQVlA4ILoAAADwBACdASoUABsAPt1irE8opaSiKAqpEBuJZQDM0YwSa3OCDfyqW4rHsMEGl+0DAAAA/u/M32bQeJMV2jFQJag7L7jccAPXDCtpY+Q0YroD21wKQ08L6PUiv6+e8grK1MIzAIqKFOTFE2zmfzCb54zWCiWa5XCyA50vJdITkRRIV3UHMt7V3A7hSOpLsFJ5DiUEdIKEazys1IpJshOI981xTO+7uS7ivZjRYFGG08DPvj4ou53Izy0AAAA="
   },
   "silver-seam-02": {
     "slug": "silver-seam-02",
-    "alt": "Black dinner jacket with silver crystal panelling, worn open over a pintucked shirt.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRsIAAABXRUJQVlA4ILYAAABwBQCdASoUABsAPt1kqk+opaOiKAqpEBuJZwAML+B41oipBDSLRJcD0yPxyEBLqRHSfggAAP7qeGAhn5JUXzsYMAYPkADTYI76IoD8W9KVnrvpL4S6DUpB1h3W5Cz3w3yFtYIF7O0wPmtDek4lzgB0LGODAGE4i1Wissp1FsiDoUNKIp48FEluQm2ZwXBNJVq372DndbbbuKuCgey1kuAfDgTCzz2UT69CvYobtNUFUSFyZZgoAA=="
+    "alt": "Full-length model in a black hand-painted zip jacket and black trousers.",
+    "width": 3723,
+    "height": 4964,
+    "blur": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAAAwBACdASoUABsAPt1ip02opaOsMBgIAYAbiWcAACqwMOPbKNdnZb/jwXgA/u/XTTpfujGVCavtN2Cvz21fqR+quGtWkqFGJdAcjIYYDMza9g5r0EWZ8SQXW236rWpq6a4Al0nosrwWFrdd3+CHFFEtPRQKUcTyWpYMWsBUpw2EK8yfksPbS9N87nOqSivrECPhpXR9Zj+a0/qNnvdL3lWUXV4AAA=="
   },
   "silver-seam-detail": {
     "slug": "silver-seam-detail",
-    "alt": "Close detail of hand-set crystal panelling on a black shawl-collar dinner jacket.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRtIAAABXRUJQVlA4IMYAAABwBQCdASoUABsAPt1kqU+opaOiKAqpEBuJZwDIXBIoie3a1Teuli9D9Htnw1aRc9hv3cmAAP7tzxuu+N6j7BBiLWx+P5D9qfUpCN+fwNnoxvuLVQAZAqVX7n7L5sKWC7N81NLaLLhNiqRrH+5BBg78zpXnoJEhe2IZPQnQO5VkMiwhsf+OAo6ElG6GyUYhQXif2TzzGvK/B5yPu1kuWEnHpyqxzIVWMT51ORg5PdgbUjhGYDmdPNPY1UjHtqFxvuO0LjUAAAA="
+    "alt": "Close detail of white brushstroke painting and a pleated collar on a black zip jacket.",
+    "width": 3224,
+    "height": 4299,
+    "blur": "data:image/webp;base64,UklGRgoBAABXRUJQVlA4IP4AAABQBQCdASoUABsAPt1kqU+opaOiKAqpEBuJZQDGfYu4XmZlXxBn3Njq4Qbry3bzpUm5zgAA/cIVCYSCZloqtqOaaMlc/ICOMaKtOE7LKON12axpYpdxvV7DwVGEDFiyoOAetVkPTJi+RVkeI9hUOdchvZntPkt7iv1+SuY+nh6k1TV1NfvGW1UzR7cmjtKrypvA4nL1jwWoV4dXzOSyUmLIVvMogbrCFdh5l0DsPSiT5jQ3GF9QGUqRJUZDueBJWHnrO+0MLdD/ZsMhodbXSGF4tCme54ITnJ+GG+Y+97QDM3AJKnVMdyLeuzKcZbKw8Rdu4L3E6MK6mL4MNkAAAA=="
   },
   "orbit-01": {
     "slug": "orbit-01",
-    "alt": "Model in a black bandhgala scattered with embroidered circles in navy and crystal.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAwBACdASoUABsAPt1iqk8opaOzqAqqcBuJZQAAH4mXrzPWX0n2iJ1foQAA/uqV6Dpr+5i47fSuVmXZCXU7XpUFWbguuMb51r7ghXiGOQSaHrPm/JFjpOaNfv7fJDdWnOwj0A9jlbZsH57wOjE8wL8NqgGDvEzzI2fGsWSZYEZxu5PF/iqChLgAAAA="
+    "alt": "Model in a black shirt with a woven black-and-white checkerboard panel.",
+    "width": 3608,
+    "height": 4811,
+    "blur": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAACwBACdASoUABsAPt1eo0yopSMiMBgMARAbiWUAA+YY1hAyIMUg8boAyfPRhvAAAP7x188MW2HOgsw6dT1AZ7EKwIJJ8GdU36V7CYDUn0xIwBoP5v5R6rQYuoNl+lf0b3wf3zyu/7wJ/M/Vj5evkcBtEqtxR2IM8qkc4HXnLMC7UPC0PYyWTU/XiV762AwOr02o6g3WMslwK8MfCAA="
   },
   "orbit-02": {
     "slug": "orbit-02",
-    "alt": "Black bandhgala with circular embroidery across the chest and sleeve.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAABQBACdASoUABsAPt1cp0yopSOiMBgMARAbiWcAAC62lW05icQIDt7LueUAAP7qelnp3PNAyWMR0R5TJYElQyykDlyf85N5TkCYCg4JDPrXfdpLhduPHwwPgvTuemQo3/CGnlndZRni0HDHOKDi3KNSR/aZPtvuG6MMOpat1lJAMDVrmRD9KJtXigAAAA=="
+    "alt": "Model leaning against a wall in a black checkerboard-panel shirt.",
+    "width": 3848,
+    "height": 5131,
+    "blur": "data:image/webp;base64,UklGRtgAAABXRUJQVlA4IMwAAACwBQCdASoUABsAPt1gp04opaMiMBgIARAbiWUAznWL1mVuttQDiRzfZFIsDzddIbnIdJiueFAA/vHgZv1HI0wPNesKi9OdNJ9W+1Fpawn3z2iJu2v5u0lyKyl28UR2iIcv83c41NHjYNuZuxdD/NjoqZqgbpPPD/YLzF2s7E8Wx5z7scBMz8DwdBZmllgcPU1ym++4JdPXYmjF5HL0pxg6KylLoc9XVfT6Ouje/2af9QRaGH+L78hgaxiuxDEaIA5cqLKs7mjloc8gAAA="
   },
   "orbit-03": {
     "slug": "orbit-03",
-    "alt": "Seated model in a black circle-embroidered bandhgala.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRuIAAABXRUJQVlA4INYAAABQBgCdASoUABsAPt1cqU6opKOiMBgIARAbiWcAy6Xdy35jPKZjez0BBxAfuFpwnZOY1cVD+DbHtacAwAD+5+4fU5CCH9rRfdxZz7pqTg5ZINQXqHLKlAzvTbGcRuyTCgESHE1KdEH1PBtYlzNxqPZQPo/ONZeVy1WE9jySfz2H0J+p0HrqbvRtiRy60G+9ovaGvuKKJFPxuzxeaq6H+/4YRnJuFhLuH9OpYdCpxWqoPb7tbaetLfmk5fetgGY4ItxsIrln85H+VXFLDq6MRGEfqH+3zMAA"
+    "alt": "Model looking back over his shoulder in a white pinstripe shirt with a tiger embroidered on the back.",
+    "width": 3901,
+    "height": 5201,
+    "blur": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAABQBACdASoUABsAPt1ep0yopSOiMAgBEBuJZwDMWCLWuz6crK35E1TCb9eAAP7vzMpbxbERaKE/7x/I4aTOf+zVhx+CTZkvXwbFxak9XTJ1BaTkopNECAy/YF1KgW4sOQevOuAOGxIKNVM6OCTZ6EWwrK/M6hGfDQTO9ScMO3D/JryHC+QAAA=="
   },
   "vapour-gown-01": {
     "slug": "vapour-gown-01",
-    "alt": "Model in a lilac satin slip gown with a sequinned hem.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAAAQBACdASoUABsAPt1ep0yopSOiMAgBEBuJZwDM0CFQM4DZH0/kGKwrgAD+6nq2ZFSQg99cdtAYIPYfT33+26+rdbYgk+CVa6ngvZ0ybot0anHTciT2kYLw0+IEeEbn7d2lPm5v4IAAAA=="
+    "alt": "Model in a lilac satin slip gown with crystal scattered from the waist and a sequinned hem.",
+    "width": 3693,
+    "height": 4924,
+    "blur": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADwAwCdASoUABsAPt1cpkyopSOiMAgBEBuJZwAAWk+Uvx0oKSqC5GqAAP7qezttPekA8XyWI50+2Yu3fYQB4oQYqifPzqjlXkKF/g6qIyriyEGKaUV1cWCOJYvAhgaTey/Dc9Amv9uB4AAA"
   },
   "vapour-gown-detail": {
     "slug": "vapour-gown-detail",
-    "alt": "Detail of graduated sequin work on the bodice of a lilac satin gown.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRsYAAABXRUJQVlA4ILoAAACwBQCdASoUABsAPt1aqU8opKOiMBgIARAbiWMAuyEgAXBuhC57ioWZXZGzQnnZP3TWDpLSkHAA/ucle3JbcaBhRWYW6dVlLxOKsXSLZsrYIZD4Mpjq4FHaDxSENQfBPLKzCF99xSvIyUBEycKSky1DJjS4RMFrd7YY3AxiEnBRqQkaSba6VHxN41JN2Q8gBFU19ud9h7rP0M9GzTHhFRY2Nu9DewQ3M+EJH0ERIvP0aoD/Zln5TYWMAAA="
+    "alt": "Lilac satin slip gown with crystals scattered across the bodice.",
+    "width": 3680,
+    "height": 4906,
+    "blur": "data:image/webp;base64,UklGRsIAAABXRUJQVlA4ILYAAABwBQCdASoUABsAPt1cqU6opKOiMBgIARAbiWMAtukPgURn4dTo8BpSEu5s+ZMmyimYAojQAP7qf7xdp9eTj910IDrJM7AC5MyKGAZ7C3u61Bzg6aNtJWJrHo1dYC7JamnV+Li8DSeZwHwAaJEdDMMMNuZr2mUjZJHY52ZqpyPioj6NNclwx20LVdLXqVuQkRQIrP0W0LmQXpL2RDmY/diTAJYFOYKdpld7oSOQdR4KjmV4wAzgAA=="
   },
   "midnight-swirl-01": {
     "slug": "midnight-swirl-01",
-    "alt": "Model in a navy dinner jacket with crystal swirl embroidery on the shoulders.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAAAQBACdASoUABsAPt1iqk+opSOjKAqpEBuJZQAALrqCbmn4ZJ2QLfKq0AD+6nhfnDzJJ0YCmf6e9Px/tv/XRGVBKcZmkxDZCsFA+U1DNj8hQl4n7ETKJPqPziv1+/0HYvsQZFEF5lK34V0E/MZFI4nV3BeRDr3GF4F+tSE4l3KrA4LOGEZH6BJLWi0iAAAA"
+    "alt": "Model in a charcoal shawl-collar dinner jacket with metallic swirl embroidery.",
+    "width": 3648,
+    "height": 4864,
+    "blur": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAAAQBACdASoUABsAPt1kqk8opaOiKAqpEBuJZwAALdg59eMMz+TdH3j3gAD+7Ug4vy7JjAS8ZudLNMNnWn9ux3z/ffUeXpH14dvb/UrD1NMG/a9ohDvOgn1Du7xS77ghElb85u7HBWDNk4mioKO4Ou1ZNCcMUF5lLvC0ac8BuWdHK+9ouhUWmsZgUwAAAA=="
   },
   "midnight-swirl-detail": {
     "slug": "midnight-swirl-detail",
-    "alt": "Close detail of crystal swirl embroidery on a navy dinner jacket.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRuYAAABXRUJQVlA4INoAAACwBQCdASoUABsAPt1kqU+opaOiKAqpEBuJYwDA3A34vs+dqTci/+3WNJcG+MagBUMs6GgIcUgA/uqWuaLo0F5okEKbMo5KJkBLB5lXLNmK7o0upcVdkm9oyPjdaZMw/mUdVw2Os2cQ00ncJgtB9COqBwKUj6ABEpNxB2Mmi7s0CQvDQq5V58uQIL1c63OZZgmf8qN2+XHqQvx8udVdyWgqcX81aKZ+4lt2Y/byUUbC7l+qfjp2FFWgc8/mb4UGxxNmKc/dPWg8GfQVn8rV5z0Q3rnrysq45gAAAA=="
+    "alt": "Close detail of metallic swirl embroidery on a charcoal dinner jacket.",
+    "width": 3561,
+    "height": 4748,
+    "blur": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4INgAAADQBQCdASoUABsAPt1irE8opaSiKAqpEBuJZQDLaY0Mc+mKMJgOu8P/6DDF/ZEnGVfH3/2A1IIAAP7vxqI6cuTLYu8q8pJFX/7qrr/ZocwTjVFokddjPzXya0jOhn6vk4c6WReRzD9wzWqPGcosSEVDlHchwY5bwoOyOWmpfgtwDN/B/MSceJGQuErNzKescNTHi4fD3qLq1mh5tKJlElHkJGSBk1eYCFpn4W7fNfO+371KUL6ZpCsWJelE/dk4iIyTju1VVPgNwPdd/HtxfmCz8qsRWGImgAA="
   },
   "tidemark-detail": {
     "slug": "tidemark-detail",
     "alt": "Scalloped metallic embroidery along the hem and cuff of a long navy sherwani.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4IKoAAADwBACdASoUABsAPt1apUyopSOiMAgBEBuJZwC7ACPgdGbK6GQIWlHt25iwP4NQ8oAA/up/l0cWfGASGJQBQ+Jir+/KbA6h7G1kXGh8LzEZW+yd896KTeb+SPvIKCDac36kpMZZNn0y/JjM9ls8WAHx9bUwiFKKwfbbB+a1QJDPy8Nck/l0oOImGLfVoGu6ax1sO+u5WiEd24xwmNxZ3zNPhBecR0HvVMgAAA=="
+    "width": 4000,
+    "height": 5333,
+    "blur": "data:image/webp;base64,UklGRsgAAABXRUJQVlA4ILwAAAAwBQCdASoUABsAPt1apEyopSOiMAgBEBuJZQDG9CB0b/9sfpHlvy31pVG/GRiiSazaAAD+79RzWXKAbUAwDna3Ob62tUM4Jh9sPabELdnapYU6O4ZqMim6/6HmH7q06Yjnuw8U00tlvRtfKEKwImktpIgPE1R/bCd/k7CNQCvgpdm2YZn/fE7vSPBNSRFKLlE2nCJe5cmTywvgbzCfWWVTFk7ro1fY03dJke23CHPBw30GJFfyxfRbpOAAAA=="
   },
   "duet-01": {
     "slug": "duet-01",
-    "alt": "A couple in black eveningwear — an embroidered bandhgala and a crystal-set gown.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAACwBQCdASoUABsAPt1mq1CopSOiqAgBEBuJZQDImAyO74Y6A3ZeySLA82L2W/VckDUHAEhKkOAA/ug6s25xVDRPRAqbHyb68BtM4KB3jCRb+io43RP3uLLiqUZujN2f/WnOywQx5qB0XKy3dNV0Bt7rzEaCOvwz8O6heMjDFxEfALyoyK2fuT9xV+3ZAH+D/d4wb3sxFlxgWP8a2xGN3LttoDc9kcvi5gNwy7ZolsiAy1oWttMuAgFzUZ4YF0vJF9ySCcw6DjaUDwGFlFptKnS9AEAAAA=="
+    "alt": "Model in a charcoal dinner jacket with metallic swirl embroidery, hand in pocket.",
+    "width": 3678,
+    "height": 4905,
+    "blur": "data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAABwBACdASoUABsAPt1YqE8opKOiMBgIARAbiWcAA+YBBdtsjQLoPfuQkLZhgAD+78NuksnLL/fuMMG5B1LT1PaFaMRHHNd4Yj+KPKzp44D8lah0G/fVmdezSxRhodxH0IJ+iWp9tmtGnln3djUcRVAEP0jemy4W1x9YKPMXsGpu+lg8cjf9hTSXEr0V0UNMKXE7ju1fhbphCAAA"
   },
   "duet-02": {
     "slug": "duet-02",
-    "alt": "A couple — a man seated in a circle-embroidered bandhgala, a woman standing in a lilac satin gown.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRtIAAABXRUJQVlA4IMYAAACwBQCdASoUABsAPt1cpkyopSOiMBgMARAbiWMAA+XpBdH3GTXX5OfqZXmazHnw29I/ZgCdAEAA/ucZHCDbuF6IlxgPtdlxZo+Hnado5RkVXAV/7s2DxN4wiWCdeh5aFWwhr9EAn5JtNU4V40fv8pIlYCzQuIESKssQDSsHUJUAIdlAOrbDv9ngKSwyZV+5rqxjDLx5/8xZWfFgveyI+7o2G4PYPmszmduRE2XjFie2OO8ENy+sEEGPy4psfOp9S1qkqFgAAAA="
+    "alt": "Back of a white pinstripe shirt embroidered with a tiger among blue clouds.",
+    "width": 3196,
+    "height": 4262,
+    "blur": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAABwBACdASoUABsAPt1gp04opaOiMBgIARAbiWcAzuwPEFZO/ucVSo++ty2EgAD+8dexSiovmguffguXEfxeP2KJcsAKQD+iQadn8uBnM56V5Xj8xzGfPvdRZ2MDwMf2BBteb0cd39a2gnrjujG1aRbriMJr+tihSLN8mOYMNx++HFMAAAA="
   },
   "duet-03": {
     "slug": "duet-03",
-    "alt": "A seated man in an embroidered bandhgala with a woman in a lilac satin gown behind him.",
-    "width": 810,
-    "height": 1080,
-    "blur": "data:image/webp;base64,UklGRq4AAABXRUJQVlA4IKIAAAAQBQCdASoUABsAPt1cok0opSMiMBgMARAbiWcABRKBaXF2F45xPc6d4+DIeBIea98AAP7qepfGKCym2/OK5YKgfRs6rUG+0+sbbx8OZIACfhaGacZz7uTVYbgOnDbhPndQmHRA8V+4lps/8OnUh3yKuHDW9/sPk0qupdP0b/iGYRig3VjD4JthiOtLS2Bu4VS8VQ66iTkXnr+p4yTcIKfAAAA="
+    "alt": "Close view of a white pinstripe shirt with navy claw-mark embroidery.",
+    "width": 2538,
+    "height": 3385,
+    "blur": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAADQAwCdASoUABsAPt1irU6opaSiKAqpEBuJZwDE2AxroNGc/+UdqMAA/vHXDi8i3+MRkQGm7WVVFxkf9m3lhXounN9D2QY8cXEo557hZvd0F+GoZoMp2lIv7+zMZ1taJ6Fj0sAAAAA="
+  },
+  "pinstripe-01": {
+    "slug": "pinstripe-01",
+    "alt": "Model standing in a navy pinstripe wrap shirt, sash belt and wide trousers split at the hem with gold buttons.",
+    "width": 3829,
+    "height": 5105,
+    "blur": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAACQBACdASoUABsAPt1iqE2opaOiMBgIARAbiWUAygAREfLLuzy2VSULTnlfOAAA/vHRtFVctiXqPZHPCYmDW5H7r3WS4gBzZHKlX9OIizi1dtEp3le1zVqPPKHpuI7B9PxLcXg9Rr1RM44cBw8Jg58lLZjm0xdTETI8Qf0BolleqvER2MDaAAAA"
+  },
+  "pinstripe-02": {
+    "slug": "pinstripe-02",
+    "alt": "Navy pinstripe wrap shirt with a wide sash belt and gold-buttoned cuffs.",
+    "width": 3843,
+    "height": 5124,
+    "blur": "data:image/webp;base64,UklGRugAAABXRUJQVlA4INwAAABwBQCdASoUABsAPt1orFCopaQiqAgBEBuJQBWEF/wWgQtCWMknd1llznSOddEpkC6A9gYAAP7x4Ghi+ke/tsHHTLHrq79zVdvkzBMNhOy4htZ6q8Uv4D96uT/h7j0/V28PcHZspaB7a6I2vZ6UTDNY8V2bEWuwc4AW5gvDC0a+f3eYKGhKylE7d4cul/QhfhnHKFH28rUcz0IChcQiCMyMnuxWEVOa7oAckFeSwd7WHPzpV9/LPAw3JKaiVqUZ257YucNBcTk6h7FuaF7qwoeVC4hS20C03OZgfjAA"
+  },
+  "pinstripe-03": {
+    "slug": "pinstripe-03",
+    "alt": "Seated model in a navy pinstripe wrap shirt and split trouser with gold buttons.",
+    "width": 4000,
+    "height": 5333,
+    "blur": "data:image/webp;base64,UklGRuoAAABXRUJQVlA4IN4AAABQBQCdASoUABsAPt1irE8opaSiKAqpEBuJQBdgP4EXKE5CMecPSxob6w8A2RIhIN0YkgAA/uKLTHnG9u9apq153Jud5j5jLD4pbzgcGadDZWH//XlKM/jeF5lP5ji58QmnO9AdM97iB/IN/30I4/B3tB22+F+vaxCXU5KaCG4GrrJe+1hAu9418DnHAfasTkYDKBuvS7nbns/7K0w1EFLy89oqhKc3tyfIRJhuAbOVCFjAD5NB6AI4zZVYatvV10aeMpVpS4hF77fgDc7dPPnj3HtyJEG+igoUEyjIAAA="
+  },
+  "pinstripe-04": {
+    "slug": "pinstripe-04",
+    "alt": "Model seated on a white chair in a navy pinstripe set, the trouser split open to the knee.",
+    "width": 3863,
+    "height": 5151,
+    "blur": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4IMIAAAAQBQCdASoUABsAPt1eqE2opSOiKA1REBuJQBibMYs5R71+0zzUX31zsACoXIDX/jPAAP7358snCkbSaFdhaarfXpRv8Jb1myqtpRlyNl/puUHkfGHE3jV7Gr0o3QgcITnEgxeQ4u5d3xKRRSUwDvikob/CET+vx9Xjqe7YZWPVkpxIJ0CAhM7/Ey+rm5getUcUU57JVy40W2QwQTBAXQpUiqGBmOijAT/wcw+W0DLOS4lPfVXyyzOKsChDPCV9/UAAAA=="
+  },
+  "pinstripe-detail": {
+    "slug": "pinstripe-detail",
+    "alt": "Gold buttons running up the split hem of a navy pinstripe trouser, the sash tie hanging beside it.",
+    "width": 4000,
+    "height": 6000,
+    "blur": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAAAwBACdASoUAB4APt1ep0yopSOiMAgBEBuJQBZwAzoBUDd86qkc8ntatAAA/uyBRdsJSxd5CbjNs3WJ7MXFp8ZHoGnWhezN3OOYRyzAv2gukt/4phgmtAxXk/T6ft+SkLsfbNcxPY5/oaey1cGQktcq5ayT/x7q0U47Y0ZsrUM+yNyHG/BUeeM48aFPax0z9IhhKxQLOkBY75hQZ5gAnuNC/hgAAA=="
+  },
+  "swirl-shirt-01": {
+    "slug": "swirl-shirt-01",
+    "alt": "Model in a navy shirt with white swirl appliqué at the shoulder and hem, worn open with a pearl strand.",
+    "width": 3901,
+    "height": 5201,
+    "blur": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4IMIAAADwBACdASoUABsAPt1gqU4opaOiMBgIARAbiWUAxNssE5SGB3eDwVO3q5HhSaq3X2AA/vHPs4L9R9Vk/eBF0EgJa2RexECMKoQWSC6Pvz/JhDDEFWCfSI77+aLd6Cbsgay+oxT6o8CYHFYWL+ZP9YDAZLq40ZrBVM3Z6dUNLBGGxhuBwusZcZndP+jAbfMKEluYQpaIBdN5oWJ1DCIU/zjf3Qx8bhiX7mIOBS8i4M3kNcp7wdB46JM2y6ewX4JKnkAAAA=="
+  },
+  "swirl-shirt-02": {
+    "slug": "swirl-shirt-02",
+    "alt": "Navy shirt with raised white swirl appliqué at the collar and hem, worn over black trousers.",
+    "width": 4000,
+    "height": 5333,
+    "blur": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAABQBACdASoUABsAPt1gqE4opaOiMBgIARAbiWcAzYQR8CuNpgsznhSoKy5QAP7x30p441l6aJlz3UpqFD4mv83ITNCadnoyB5ac3LnphMsfYBispz1w2RtUwiMyFja1PSLcRCvpgk2svAhGGtjW8Sub2po17u6TIFUGP+aya5Dsnrz7H7s8VebUMwu4Um81PO19K8oIyTP2BkCAwvUs8GWJx8AAAA=="
+  },
+  "swirl-shirt-detail": {
+    "slug": "swirl-shirt-detail",
+    "alt": "Close detail of white swirl appliqué and raw-edged cuffs on a navy shirt.",
+    "width": 3261,
+    "height": 4349,
+    "blur": "data:image/webp;base64,UklGRvAAAABXRUJQVlA4IOQAAACQBQCdASoUABsAPt1ep0yopSOiMAgBEBuJQBajZfy1wkBk69T/aJXM+6wyVzH3bunWJDwK4AD+8F7Xs3lbZQOLlYsgje7da2EeUQRVGFcGU5+u1wJ3Z35DJxHXLQZn2Dk7d61s+kpiwZj5r16WwKRkZb9kFDb80qqrYqRDF7YjJHjgslDfuaRnvOqXw+aGh7EhBMGuLJnZUC1QPhet+LjkVebV+lnAi9L10Jh7cYTKo9WCQCNWAf+YqexjQtGGMPY2UNR4lvpnoN/KPwMsvmXyEL1p83m+NeenVENWNNn15HsAAAA="
+  },
+  "zip-jumpsuit-01": {
+    "slug": "zip-jumpsuit-01",
+    "alt": "Model in a sleeveless charcoal jumpsuit with a mandarin collar and an asymmetric zip.",
+    "width": 4000,
+    "height": 5333,
+    "blur": "data:image/webp;base64,UklGRrIAAABXRUJQVlA4IKYAAABQBACdASoUABsAPt1ep0yopSOiMAgBEBuJZQDI1CFR7lpbIr9H9XgNuFfQAP7vw7ETgGkC1ffzQl6HAo7goXlg7h4LzrstyCLLdeNUGu1K9/tfBVltmepbZyYL+ZbczVn8I3kYDOu9DOoWvqaEwlrO6tUR1dMAESaPXrlnlAkb9ayNjI+Fco48U8yPW/fVCjGmqIZVyVqGQP6ZDMoeijvaNDP19EAA"
+  },
+  "zip-jumpsuit-02": {
+    "slug": "zip-jumpsuit-02",
+    "alt": "Charcoal jumpsuit with a silver zip curving from collar to hem.",
+    "width": 3718,
+    "height": 4958,
+    "blur": "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAABQBQCdASoUABsAPt1mq1CopSOiqAgBEBuJYwDA3fwAXVIFJhj7G75gmthXmzFtzshNUwAA/u/XtJ/K1CsmYNYDTcMMu5CfEueFxXPKPRb0+8u0sE+u0ztESgYT5iq/Rs4CLoApuWEBe+6DbcUSWt5P7H90JGbf3Zzny5tkI79XnMt57SHSgwF4PZL87iODledsGXYmz0PG8oymkJNCkuoJ8XhAWLi0L+LvXMiCAAA="
+  },
+  "checker-shirt-detail": {
+    "slug": "checker-shirt-detail",
+    "alt": "Black shirt with a woven black-and-white checkerboard panel across the chest.",
+    "width": 2817,
+    "height": 3756,
+    "blur": "data:image/webp;base64,UklGRjgBAABXRUJQVlA4ICwBAABwBwCdASoUABsAPt1kqE2opaOiMBgIARAbiWMArAHdI3lfRPsAc0B7Eoeq5YJhFHYB0418TRLLtB8xIOr2HmPnlmpkAAD+7jvO/FZUchCAXCBNHMvTqcCsBLsNU7wufEMNdzxkMlAwCKI1lfiiTJktKN++VpJRxVj1TNhJZ+XTG4mdBshLvVpzV9pI9835PbJaqcQD9myjMCsXXJPa74CIXNSwYK6dCYh8vWxYc3Y2Ed5eDK7tF2aMKrjz0PCT52PU5ToB7KPUE6sguUUhaDa3DclnAqoEACxqapi8JrZ5EEEd3YVIOyDLlOlEaZn+dge3Oup71Gk+kNRe69+2BMVHIfg1m8StMghNJEytE3y7629B7obLSh0TCypHmtw5kXTP5M3lx5vwNqHwAAA="
   },
   "pleated-trouser-crop": {
     "slug": "pleated-trouser-crop",
     "alt": "Black pleated trousers worn under an embroidered bandhgala.",
-    "width": 365,
-    "height": 486,
-    "blur": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAABQBACdASoUABsAPs1WokynpSMiN/qoAPAZiWkAAEqGu5OvFfTe3C8HnLYAAP7gcDa4molFwVHgzQLCYt+TXmioaCljBBeup0cvAMBh9rKoy5TAnLMDroOoHsSTbNbAAAA="
+    "width": 1862,
+    "height": 2234,
+    "blur": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAAAQBACdASoUABgAPt1mrFEopSQiqAgBEBuJZwAAJuHWZxMvYxUtDdGTAAD+3gppRaK3t0cDF6Um4liAn/n4bZ3Te+/uxRl5x9fa3zztUuGxhniP1OWfLJ2xZTZPdzueX8PZyX+hIKxJJ0YMVcYtQq+FYkwK8EmOD9uo8aCzGwFa5i+UH2JsQe6rAfcuw+uXVoUeyrRI3uD0gWTgAAA="
   }
 };
 
@@ -180,7 +257,8 @@ export const photoSm = (slug: string) => `/img/campaign/${slug}-400.webp`;
  * surface paying for the largest.
  */
 export const photoSet = (slug: string) =>
-  `${photoSm(slug)} 400w, ${photo(slug)} 810w`;
+  `${photoSm(slug)} 400w, ${photo(slug)} 810w` +
+  ((PHOTOS[slug]?.width ?? 0) >= 1600 ? `, /img/campaign/${slug}-1600.webp 1600w` : "");
 
 export const blurOf = (slug: string) => PHOTOS[slug]?.blur;
 
@@ -202,7 +280,7 @@ export const blurForImage = (src: string) => {
 /** True for a campaign photograph, false for a generated plate. */
 export const isPhoto = (src: string) => src.startsWith("/img/campaign/");
 
-export const setForImage = (src: string) =>
-  src.endsWith("-810.webp")
-    ? `${src.replace("-810.webp", "-400.webp")} 400w, ${src} 810w`
-    : undefined;
+export const setForImage = (src: string) => {
+  const m = /\/img\/campaign\/(.+)-810\.webp$/.exec(src);
+  return m ? photoSet(m[1]) : undefined;
+};

@@ -52,7 +52,8 @@ export default async function ProductPage(props: PageProps<"/p/[slug]">) {
   // The carousel's run after the first frame: the piece's frames, repeated to
   // five in all until it has more angles of its own.
   const frames = [product.image, product.hover].filter((f, i, a) => f && a.indexOf(f) === i);
-  const extra = Array.from({ length: 4 }, (_, i) => frames[(i + 1) % frames.length]);
+  const extra =
+    product.gallery ?? Array.from({ length: 4 }, (_, i) => frames[(i + 1) % frames.length]);
 
   const accordions = [
     { title: "Details", body: product.details },

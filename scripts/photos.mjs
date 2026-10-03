@@ -26,7 +26,12 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SRC = join(ROOT, "media-in", "shoot-01");
+/* shoot-01 is the 72DPI first cut; shoot-02 the 300DPI selects. Camera
+   numbers never collide across them, so both are searched as one pool. */
+/* shoot-01 (the 72DPI first cut) is no longer read: every slot is filled
+   from the 300DPI selects, some with stand-in garments until the catalogue
+   is re-shot against them — the slugs are kept so nothing downstream moves. */
+const SRCS = ["shoot-02"].map((d) => join(ROOT, "media-in", d));
 const OUT = join(ROOT, "public", "img", "campaign");
 
 /**
@@ -38,43 +43,67 @@ const OUT = join(ROOT, "public", "img", "campaign");
  */
 const FRAMES = [
   /* Look A — black crystal-vine bandhgala */
-  ["01259", "noir-vine-01", "Model in a black bandhgala with silver crystal vine embroidery across the shoulder and sleeve."],
-  ["01271", "noir-vine-02", "Close study of the crystal vine embroidery on the shoulder of a black bandhgala."],
+  ["01479", "noir-vine-01", "Model in a long navy sherwani with scalloped metallic embroidery at the hem and cuffs."],
+  ["01487", "noir-vine-02", "Close detail of the scalloped metallic hem and cuff on a navy sherwani."],
 
   /* Look B — black strapless column gown */
-  ["01320", "nocturne-gown-01", "Model in a black strapless column gown with a crystal-set bodice and peplum hem."],
-  ["01309", "nocturne-gown-02", "Black strapless gown with crystal beading at the bust and waist."],
-  ["01311", "nocturne-gown-03", "Full-length black column gown with a crystal peplum."],
-  ["01294", "nocturne-gown-04", "Detail of the crystal-set neckline on a black strapless gown."],
+  ["01515", "nocturne-gown-01", "Model in a navy strapless corset top and draped column skirt, a line of crystal across the bodice."],
+  ["01527", "nocturne-gown-02", "Navy pleated strapless top with a diagonal crystal line, worn over a draped skirt."],
+  ["01528", "nocturne-gown-03", "Model in a navy pleated strapless top with crystal trim."],
+  ["01503", "nocturne-gown-04", "Model in a white pinstripe shirt with a navy claw-mark embroidery at the chest."],
 
   /* Look C — black tuxedo, silver crystal panels */
-  ["01374", "silver-seam-01", "Model in a black shawl-collar dinner jacket with crystal-encrusted front panels."],
-  ["01367", "silver-seam-02", "Black dinner jacket with silver crystal panelling, worn open over a pintucked shirt."],
-  ["01358", "silver-seam-detail", "Close detail of hand-set crystal panelling on a black shawl-collar dinner jacket."],
+  ["01537", "silver-seam-01", "Model in a black zip jacket hand-painted with white brushstrokes."],
+  ["01538", "silver-seam-02", "Full-length model in a black hand-painted zip jacket and black trousers."],
+  ["01535", "silver-seam-detail", "Close detail of white brushstroke painting and a pleated collar on a black zip jacket."],
 
   /* Look D — circle-embroidered bandhgala */
-  ["01418", "orbit-01", "Model in a black bandhgala scattered with embroidered circles in navy and crystal."],
-  ["01417", "orbit-02", "Black bandhgala with circular embroidery across the chest and sleeve."],
-  ["01415", "orbit-03", "Seated model in a black circle-embroidered bandhgala."],
+  ["01565", "orbit-01", "Model in a black shirt with a woven black-and-white checkerboard panel."],
+  ["01568", "orbit-02", "Model leaning against a wall in a black checkerboard-panel shirt."],
+  ["01489", "orbit-03", "Model looking back over his shoulder in a white pinstripe shirt with a tiger embroidered on the back."],
 
   /* Look E — lilac satin gown */
-  ["01428", "vapour-gown-01", "Model in a lilac satin slip gown with a sequinned hem."],
-  ["01434", "vapour-gown-detail", "Detail of graduated sequin work on the bodice of a lilac satin gown."],
+  ["01428", "vapour-gown-01", "Model in a lilac satin slip gown with crystal scattered from the waist and a sequinned hem."],
+  ["01434", "vapour-gown-detail", "Lilac satin slip gown with crystals scattered across the bodice."],
 
   /* Look F — navy crystal-swirl tuxedo */
-  ["01446", "midnight-swirl-01", "Model in a navy dinner jacket with crystal swirl embroidery on the shoulders."],
-  ["01451", "midnight-swirl-detail", "Close detail of crystal swirl embroidery on a navy dinner jacket."],
+  ["01446", "midnight-swirl-01", "Model in a charcoal shawl-collar dinner jacket with metallic swirl embroidery."],
+  ["01451", "midnight-swirl-detail", "Close detail of metallic swirl embroidery on a charcoal dinner jacket."],
 
   /* Look G — navy scalloped sherwani */
   ["01476", "tidemark-detail", "Scalloped metallic embroidery along the hem and cuff of a long navy sherwani."],
 
   /* Couples */
-  ["01244", "duet-01", "A couple in black eveningwear — an embroidered bandhgala and a crystal-set gown."],
-  ["01392", "duet-02", "A couple — a man seated in a circle-embroidered bandhgala, a woman standing in a lilac satin gown."],
-  ["01389", "duet-03", "A seated man in an embroidered bandhgala with a woman in a lilac satin gown behind him."],
+  ["01454", "duet-01", "Model in a charcoal dinner jacket with metallic swirl embroidery, hand in pocket."],
+  ["01488", "duet-02", "Back of a white pinstripe shirt embroidered with a tiger among blue clouds."],
+  ["01501", "duet-03", "Close view of a white pinstripe shirt with navy claw-mark embroidery."],
+
+  /* ── 300DPI selects (shoot-02) ── */
+
+  /* Look H — navy pinstripe wrap shirt and split trouser */
+  ["01700", "pinstripe-01", "Model standing in a navy pinstripe wrap shirt, sash belt and wide trousers split at the hem with gold buttons."],
+  ["01686", "pinstripe-02", "Navy pinstripe wrap shirt with a wide sash belt and gold-buttoned cuffs."],
+  ["01720", "pinstripe-03", "Seated model in a navy pinstripe wrap shirt and split trouser with gold buttons."],
+  ["01725", "pinstripe-04", "Model seated on a white chair in a navy pinstripe set, the trouser split open to the knee."],
+  ["01674", "pinstripe-detail", "Gold buttons running up the split hem of a navy pinstripe trouser, the sash tie hanging beside it."],
+
+  /* Look I — navy shirt with white swirl appliqué */
+  ["01620", "swirl-shirt-01", "Model in a navy shirt with white swirl appliqué at the shoulder and hem, worn open with a pearl strand."],
+  ["01651", "swirl-shirt-02", "Navy shirt with raised white swirl appliqué at the collar and hem, worn over black trousers."],
+  ["01656", "swirl-shirt-detail", "Close detail of white swirl appliqué and raw-edged cuffs on a navy shirt."],
+
+  /* Look J — charcoal asymmetric zip jumpsuit */
+  ["01600", "zip-jumpsuit-01", "Model in a sleeveless charcoal jumpsuit with a mandarin collar and an asymmetric zip."],
+  ["01613", "zip-jumpsuit-02", "Charcoal jumpsuit with a silver zip curving from collar to hem."],
+
+  /* Look K — checkerboard panel shirt (detail only so far) */
+  ["01572", "checker-shirt-detail", "Black shirt with a woven black-and-white checkerboard panel across the chest."],
 ];
 
-const WIDTHS = [810, 400];
+/* 1600 is cut only from frames at least that wide — the 300DPI set. The 72DPI
+   frames stop at 810, and an upscaled 1600 would weigh more and add nothing. */
+const WIDTHS = [1600, 810, 400];
+const widthsFor = (w) => WIDTHS.filter((x) => x < 1600 || w >= 1600);
 
 /**
  * Crops cut from a frame and published as plates of their own.
@@ -90,17 +119,21 @@ const WIDTHS = [810, 400];
  */
 const CROPS = [
   {
-    from: "01259",
+    from: "01538",
     slug: "pleated-trouser-crop",
-    box: [13, 55, 45, 45],
+    box: [25, 55, 50, 45],
     alt: "Black pleated trousers worn under an embroidered bandhgala.",
   },
 ];
 
 mkdirSync(OUT, { recursive: true });
 
-const available = readdirSync(SRC).filter((f) => /\.jpe?g$/i.test(f));
-const find = (num) => available.find((f) => f.includes(num));
+const available = SRCS.flatMap((d) =>
+  readdirSync(d)
+    .filter((f) => /\.jpe?g$/i.test(f))
+    .map((f) => join(d, f))
+);
+const find = (num) => available.find((f) => f.includes(`AVI-${num}`));
 
 const manifest = [];
 let bytes = 0;
@@ -112,10 +145,10 @@ for (const [num, slug, alt] of FRAMES) {
     continue;
   }
 
-  const src = join(SRC, file);
+  const src = file;
   const { width, height } = await sharp(src).metadata();
 
-  for (const w of WIDTHS) {
+  for (const w of widthsFor(width)) {
     const buf = await sharp(src)
       .resize({ width: w, withoutEnlargement: true })
       .webp({ quality: 80 })
@@ -149,7 +182,7 @@ for (const { from, slug, box, alt } of CROPS) {
     console.warn(`  ✗ ${slug} — no source matching ${from}`);
     continue;
   }
-  const src = join(SRC, file);
+  const src = file;
   const meta = await sharp(src).metadata();
   const region = {
     left: Math.round((box[0] / 100) * meta.width),
@@ -158,7 +191,7 @@ for (const { from, slug, box, alt } of CROPS) {
     height: Math.round((box[3] / 100) * meta.height),
   };
 
-  for (const w of WIDTHS) {
+  for (const w of widthsFor(region.width)) {
     const buf = await sharp(src)
       .extract(region)
       .resize({ width: w, withoutEnlargement: true })
@@ -222,7 +255,8 @@ export const photoSm = (slug: string) => \`/img/campaign/\${slug}-400.webp\`;
  * surface paying for the largest.
  */
 export const photoSet = (slug: string) =>
-  \`\${photoSm(slug)} 400w, \${photo(slug)} 810w\`;
+  \`\${photoSm(slug)} 400w, \${photo(slug)} 810w\` +
+  ((PHOTOS[slug]?.width ?? 0) >= 1600 ? \`, /img/campaign/\${slug}-1600.webp 1600w\` : "");
 
 export const blurOf = (slug: string) => PHOTOS[slug]?.blur;
 
@@ -244,10 +278,10 @@ export const blurForImage = (src: string) => {
 /** True for a campaign photograph, false for a generated plate. */
 export const isPhoto = (src: string) => src.startsWith("/img/campaign/");
 
-export const setForImage = (src: string) =>
-  src.endsWith("-810.webp")
-    ? \`\${src.replace("-810.webp", "-400.webp")} 400w, \${src} 810w\`
-    : undefined;
+export const setForImage = (src: string) => {
+  const m = /\\/img\\/campaign\\/(.+)-810\\.webp$/.exec(src);
+  return m ? photoSet(m[1]) : undefined;
+};
 `;
 
 writeFileSync(join(ROOT, "lib", "photos.ts"), ts);

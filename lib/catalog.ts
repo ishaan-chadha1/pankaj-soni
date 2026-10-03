@@ -42,6 +42,9 @@ export type Product = {
    *  run that has gone stays on the site rather than quietly disappearing. */
   soldOut?: boolean;
   featured?: boolean;
+  /** Every frame of the piece, in carousel order after \`image\`. Without it
+   *  the product page repeats image and hover as a placeholder run. */
+  gallery?: string[];
 };
 
 export const CATEGORIES: {
@@ -87,6 +90,55 @@ const WOMENS = (price: number): Variant[] => [
 
 export const PRODUCTS: Product[] = [
   /* ─────────────  WOMEN  ───────────── */
+  /* PLACEHOLDER name, price and copy — shot in the 300DPI selects. */
+  {
+    slug: "pinstripe-wrap-set",
+    name: "Pinstripe Wrap Set",
+    line: "Tailoring",
+    category: "women",
+    kicker: "Wool pinstripe · Gold buttons",
+    price: 2900,
+    image: "/img/campaign/pinstripe-01-810.webp",
+    hover: "/img/campaign/pinstripe-03-810.webp",
+    gallery: ["/img/campaign/pinstripe-02-810.webp", "/img/campaign/pinstripe-03-810.webp", "/img/campaign/pinstripe-04-810.webp", "/img/campaign/pinstripe-detail-810.webp"],
+    badge: "New",
+    featured: true,
+    story:
+      "A wrap shirt and a wide trouser in navy chalk-stripe wool, held at the waist by a sash cut from the same cloth. The trouser opens at the hem on a run of gold buttons, so it can be worn closed, or split to the knee.",
+    variants: WOMENS(2900),
+    spec: {
+      cloth: ["Wool pinstripe, navy", "Cupro lining", "Gilt metal buttons"],
+      cut: ["Wrap front, shirt collar", "Wide sash belt", "Split-hem trouser"],
+      finish: ["Hand-sewn buttons", "Bound seams", "Made in India"],
+    },
+    details: [
+      "Navy wool pinstripe, wrap shirt and wide-leg trouser",
+      "Self-fabric sash belt with tasselled ties",
+      "Trouser hem opens on twelve gold buttons",
+      "Made in India — dry clean only",
+    ],
+  },
+  {
+    slug: "zip-jumpsuit",
+    name: "Zip Jumpsuit",
+    line: "Ready-to-Wear",
+    category: "women",
+    kicker: "Charcoal wool twill · Asymmetric zip",
+    price: 2400,
+    image: "/img/campaign/zip-jumpsuit-01-810.webp",
+    hover: "/img/campaign/zip-jumpsuit-02-810.webp",
+    gallery: ["/img/campaign/zip-jumpsuit-02-810.webp"],
+    badge: "New",
+    story:
+      "A sleeveless jumpsuit in charcoal twill with a mandarin collar, closed by one silver zip that curves from the collar across the body to the hem.",
+    variants: WOMENS(2400),
+    spec: {
+      cloth: ["Wool twill, charcoal", "Silver metal zip"],
+      cut: ["Mandarin collar", "Sleeveless", "Wide leg"],
+      finish: ["Hand-set zip", "Bound seams", "Made in India"],
+    },
+    details: ["Charcoal wool twill", "Asymmetric silver zip, collar to hem", "Side pockets", "Made in India — dry clean only"],
+  },
   {
     slug: "atelier-tuxedo-dress",
     name: "Atelier Tuxedo Dress",
@@ -123,8 +175,7 @@ export const PRODUCTS: Product[] = [
     image: "/img/campaign/nocturne-gown-01-810.webp",
     hover: "/img/campaign/nocturne-gown-02-810.webp",
     badge: "Limited",
-    featured: true,
-    story:
+        story:
       "Cut on the bias from a single width of silk satin, so it falls without one horizontal break anywhere in its length. It moves before you do.",
     variants: WOMENS(4600).slice(0, 3),
     spec: {
@@ -246,6 +297,34 @@ export const PRODUCTS: Product[] = [
   },
 
   /* ─────────────  MEN  ───────────── */
+  /* PLACEHOLDER name, price and copy — shot in the 300DPI selects. */
+  {
+    slug: "swirl-shirt",
+    name: "Swirl Shirt",
+    line: "Shirting",
+    category: "men",
+    kicker: "Navy cotton · White appliqué",
+    price: 890,
+    image: "/img/campaign/swirl-shirt-01-810.webp",
+    hover: "/img/campaign/swirl-shirt-detail-810.webp",
+    gallery: ["/img/campaign/swirl-shirt-02-810.webp", "/img/campaign/swirl-shirt-detail-810.webp"],
+    badge: "New",
+    featured: true,
+    story:
+      "A heavy navy cotton shirt with spirals of white cloth raised at the shoulder and the hem — each one cut, coiled and stitched down by hand, with the edges left raw on purpose.",
+    variants: [
+      { id: "s", label: "S", price: 890 },
+      { id: "m", label: "M", price: 890 },
+      { id: "l", label: "L", price: 890 },
+      { id: "xl", label: "XL", price: 890 },
+    ],
+    spec: {
+      cloth: ["Heavy cotton, navy", "White cotton appliqué"],
+      cut: ["Point collar", "Relaxed body", "Barrel cuffs"],
+      finish: ["Appliqué coiled by hand", "Raw edges, contrast topstitch", "Made in India"],
+    },
+    details: ["Navy cotton with hand-coiled white appliqué", "Raw-edged collar and cuffs", "Made in India — cold hand wash"],
+  },
   {
     slug: "shawl-collar-dinner-jacket",
     name: "Shawl Collar Dinner Jacket",
@@ -281,8 +360,7 @@ export const PRODUCTS: Product[] = [
     price: 3600,
     image: "/img/campaign/midnight-swirl-01-810.webp",
     hover: "/img/campaign/midnight-swirl-detail-810.webp",
-    featured: true,
-    story:
+        story:
       "Open-weave fresco wool that breathes in August and holds a crease in October. Cut from the same shoulder as the dinner jacket, because there is only one.",
     variants: ITALIAN(3600),
     spec: {
